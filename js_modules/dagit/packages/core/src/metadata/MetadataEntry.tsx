@@ -248,6 +248,7 @@ export const METADATA_ENTRY_FRAGMENT = gql`
         ...TableSchemaFragment
       }
     }
+    ... on NullMetadataEntry {}
   }
   ${TABLE_SCHEMA_FRAGMENT}
 `;
