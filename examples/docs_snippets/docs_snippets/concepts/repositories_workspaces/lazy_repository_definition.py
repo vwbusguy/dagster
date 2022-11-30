@@ -2,26 +2,26 @@
 
 import datetime
 
-from dagster import RunRequest, job, repository, sensor
-from dagster._legacy import InputDefinition, daily_schedule, pipeline, solid
+from dagster import RunRequest, job, op, repository, sensor, In
+from dagster._legacy import daily_schedule, pipeline
 
 
-@solid
+@op
 def return_one():
     return 1
 
 
-@solid
+@op
 def return_two():
     return 2
 
 
-@solid(input_defs=[InputDefinition("left"), InputDefinition("right")])
+@op(ins={"left": In("left"), "right": In("right")})
 def add(left, right):
     return left + right
 
 
-@solid(input_defs=[InputDefinition("left"), InputDefinition("right")])
+@op(ins={"left": In("left"), "right": In("right")})
 def subtract(left, right):
     return left - right
 
