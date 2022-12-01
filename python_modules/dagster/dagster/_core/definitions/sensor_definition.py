@@ -33,8 +33,8 @@ from dagster._serdes import whitelist_for_serdes
 from ..decorator_utils import get_function_params
 from .asset_selection import AssetSelection
 from .graph_definition import GraphDefinition
+from .job_definition import JobDefinition
 from .mode import DEFAULT_MODE_NAME
-from .pipeline_definition import JobDefinition
 from .run_request import PipelineRunReaction, RunRequest, SkipReason
 from .target import DirectTarget, ExecutableDefinition, RepoRelativeTarget
 from .unresolved_asset_job_definition import UnresolvedAssetJobDefinition

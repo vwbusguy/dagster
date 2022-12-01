@@ -4,7 +4,13 @@ import pickle
 import pytest
 
 import dagster._check as check
+<<<<<<< HEAD
 from dagster import DependencyDefinition, In, Int, Out, op
+=======
+from dagster import DependencyDefinition, Int
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
+>>>>>>> d05a50f13b (update PipelineDefinition invocations)
 from dagster._core.definitions.pipeline_base import InMemoryPipeline
 from dagster._core.errors import (
     DagsterExecutionStepNotFoundError,
@@ -18,7 +24,17 @@ from dagster._core.execution.plan.state import KnownExecutionState
 from dagster._core.instance import DagsterInstance
 from dagster._core.system_config.objects import ResolvedRunConfig
 from dagster._core.test_utils import default_mode_def_for_test
+<<<<<<< HEAD
 from dagster._legacy import JobDefinition, execute_pipeline, reexecute_pipeline
+=======
+from dagster._legacy import (
+    InputDefinition,
+    OutputDefinition,
+    execute_pipeline,
+    lambda_solid,
+    reexecute_pipeline,
+)
+>>>>>>> d05a50f13b (update PipelineDefinition invocations)
 
 
 def define_addy_pipeline(using_file_system=False):
@@ -35,13 +51,15 @@ def define_addy_pipeline(using_file_system=False):
         return num + 3
 
     pipeline_def = JobDefinition(
-        name="execution_plan_reexecution",
-        solid_defs=[add_one, add_two, add_three],
-        dependencies={
-            "add_two": {"num": DependencyDefinition("add_one")},
-            "add_three": {"num": DependencyDefinition("add_two")},
-        },
-        mode_defs=[default_mode_def_for_test] if using_file_system else None,
+        graph_def=GraphDefinition(
+            name="execution_plan_reexecution",
+            node_defs=[add_one, add_two, add_three],
+            dependencies={
+                "add_two": {"num": DependencyDefinition("add_one")},
+                "add_three": {"num": DependencyDefinition("add_two")},
+            },
+        ),
+        _mode_def=default_mode_def_for_test if using_file_system else None,
     )
     return pipeline_def
 

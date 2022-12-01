@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     AbstractSet,
     Any,
+    DefaultDict,
     Dict,
     Generator,
     Mapping,
@@ -31,13 +32,14 @@ from dagster._core.definitions import (
     GraphIn,
     GraphOut,
     InputMapping,
+    JobDefinition,
     ModeDefinition,
     OpDefinition,
     OutputMapping,
-    JobDefinition,
     ResourceDefinition,
     lambda_solid,
 )
+from dagster._core.definitions.dependency import IDependencyDefinition
 from dagster._core.definitions.logger_definition import LoggerDefinition
 from dagster._core.definitions.node_definition import NodeDefinition
 from dagster._core.definitions.pipeline_base import InMemoryPipeline
@@ -89,8 +91,11 @@ def create_test_pipeline_execution_context(
         logger_defs, "logger_defs", key_type=str, value_type=LoggerDefinition
     )
     mode_def = ModeDefinition(logger_defs=loggers)
+    my_graph = GraphDefinition(name="test_graph", node_defs=[])
     pipeline_def = JobDefinition(
-        name="test_legacy_context", solid_defs=[], mode_defs=[mode_def]
+        name="test_legacy_context",
+        graph_def=my_graph,
+        _mode_def=mode_def,
     )
     run_config: Dict[str, Dict[str, Dict]] = {"loggers": {key: {} for key in loggers}}
     pipeline_run = DagsterRun(pipeline_name="test_legacy_context", run_config=run_config)
@@ -202,7 +207,7 @@ def execute_solids_within_pipeline(
     check.set_param(solid_names, "solid_names", of_type=str)
     inputs = check.opt_mapping_param(inputs, "inputs", key_type=str, value_type=dict)
 
-    sub_pipeline = pipeline_def.get_pipeline_subset_def(solid_names)
+    sub_pipeline = pipeline_def.get_job_def_for_subset_selection(list(solid_names))
     stubbed_pipeline = build_pipeline_with_input_stubs(sub_pipeline, inputs)
     result = execute_pipeline(
         stubbed_pipeline,
@@ -337,7 +342,7 @@ def execute_solid_within_pipeline(
 
 @overload
 def execute_solid(
-    solid_def: GraphDefinition,
+    op_def: GraphDefinition,
     mode_def: Optional[ModeDefinition] = ...,
     input_values: Optional[Mapping[str, object]] = ...,
     tags: Optional[Mapping[str, Any]] = ...,
@@ -349,7 +354,7 @@ def execute_solid(
 
 @overload
 def execute_solid(
-    solid_def: OpDefinition,
+    op_def: OpDefinition,
     mode_def: Optional[ModeDefinition] = ...,
     input_values: Optional[Mapping[str, object]] = ...,
     tags: Optional[Mapping[str, Any]] = ...,
@@ -360,7 +365,7 @@ def execute_solid(
 
 
 def execute_solid(
-    solid_def: NodeDefinition,
+    op_def: NodeDefinition,
     mode_def: Optional[ModeDefinition] = None,
     input_values: Optional[Mapping[str, object]] = None,
     tags: Optional[Mapping[str, Any]] = None,
@@ -390,10 +395,10 @@ def execute_solid(
         Union[CompositeSolidExecutionResult, SolidExecutionResult]: The result of executing the
         solid.
     """
-    check.inst_param(solid_def, "solid_def", NodeDefinition)
+    check.inst_param(op_def, "op_def", NodeDefinition)
     check.opt_inst_param(mode_def, "mode_def", ModeDefinition)
     input_values = check.opt_mapping_param(input_values, "input_values", key_type=str)
-    solid_defs = [solid_def]
+    node_defs = [op_def]
 
     def create_value_solid(input_name, input_value):
         @lambda_solid(name=input_name)
@@ -402,25 +407,30 @@ def execute_solid(
 
         return input_solid
 
-    dependencies: Dict[str, Dict] = defaultdict(dict)
+    dependencies: DefaultDict[str, Dict[str, IDependencyDefinition]] = defaultdict(dict)
 
     for input_name, input_value in input_values.items():
-        dependencies[solid_def.name][input_name] = DependencyDefinition(input_name)
-        solid_defs.append(create_value_solid(input_name, input_value))
+        dependencies[op_def.name][input_name] = DependencyDefinition(input_name)
+        node_defs.append(create_value_solid(input_name, input_value))
+
+    my_graph = GraphDefinition(
+        name=f"ephemeral_{op_def.name}_solid_pipeline",
+        solid_defs=node_defs,
+        dependencies=dependencies,  # type: ignore
+    )
 
     result = execute_pipeline(
         JobDefinition(
-            name="ephemeral_{}_solid_pipeline".format(solid_def.name),
-            solid_defs=solid_defs,
-            dependencies=dependencies,  # type: ignore
-            mode_defs=[mode_def] if mode_def else None,
+            graph_def=my_graph,
+            name="ephemeral_{}_solid_pipeline".format(op_def.name),
+            _mode_def=mode_def if mode_def else None,
         ),
         run_config=run_config,
         mode=mode_def.name if mode_def else None,
         tags=tags,
         raise_on_error=raise_on_error,
     )
-    return result.result_for_handle(solid_def.name)
+    return result.result_for_handle(op_def.name)
 
 
 @contextmanager

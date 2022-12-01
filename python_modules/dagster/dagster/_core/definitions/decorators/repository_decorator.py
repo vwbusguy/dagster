@@ -7,9 +7,9 @@ from dagster._core.errors import DagsterInvalidDefinitionError
 
 from ..executor_definition import ExecutorDefinition
 from ..graph_definition import GraphDefinition
+from ..job_definition import JobDefinition
 from ..logger_definition import LoggerDefinition
 from ..partition import PartitionSetDefinition
-from ..pipeline_definition import JobDefinition
 from ..repository_definition import (
     VALID_REPOSITORY_DATA_DICT_KEYS,
     CachingRepositoryData,

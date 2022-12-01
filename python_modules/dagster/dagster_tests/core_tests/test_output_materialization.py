@@ -11,18 +11,13 @@ from dagster import (
     String,
     dagster_type_materializer,
 )
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.errors import DagsterInvariantViolationError
 from dagster._core.execution.plan.step import StepKind
 from dagster._core.system_config.objects import ResolvedRunConfig
 from dagster._core.types.dagster_type import create_any_type
-from dagster._legacy import (
-    InputDefinition,
-    OutputDefinition,
-    JobDefinition,
-    execute_pipeline,
-    lambda_solid,
-    solid,
-)
+from dagster._legacy import InputDefinition, OutputDefinition, execute_pipeline, lambda_solid, solid
 from dagster._utils.test import get_temp_file_name, get_temp_file_names
 
 
@@ -31,7 +26,9 @@ def single_int_output_pipeline():
     def return_one():
         return 1
 
-    return JobDefinition(name="single_int_output_pipeline", solid_defs=[return_one])
+    return JobDefinition(
+        graph_def=GraphDefinition(name="single_int_output_pipeline", node_defs=[return_one])
+    )
 
 
 def single_string_output_pipeline():
@@ -39,7 +36,9 @@ def single_string_output_pipeline():
     def return_foo():
         return "foo"
 
-    return JobDefinition(name="single_string_output_pipeline", solid_defs=[return_foo])
+    return JobDefinition(
+        graph_def=GraphDefinition(name="single_string_output_pipeline", node_defs=[return_foo])
+    )
 
 
 def multiple_output_pipeline():
@@ -53,7 +52,9 @@ def multiple_output_pipeline():
         yield Output(1, "number")
         yield Output("foo", "string")
 
-    return JobDefinition(name="multiple_output_pipeline", solid_defs=[return_one_and_foo])
+    return JobDefinition(
+        graph_def=GraphDefinition(name="multiple_output_pipeline", node_defs=[return_one_and_foo])
+    )
 
 
 def single_int_named_output_pipeline():
@@ -62,7 +63,9 @@ def single_int_named_output_pipeline():
         return 1
 
     return JobDefinition(
-        name="single_int_named_output_pipeline", solid_defs=[return_named_one]
+        graph_def=GraphDefinition(
+            name="single_int_named_output_pipeline", node_defs=[return_named_one]
+        )
     )
 
 
@@ -72,7 +75,9 @@ def no_input_no_output_pipeline():
         pass
 
     return JobDefinition(
-        name="no_input_no_output_pipeline", solid_defs=[take_nothing_return_nothing]
+        graph_def=GraphDefinition(
+            name="no_input_no_output_pipeline", node_defs=[take_nothing_return_nothing]
+        )
     )
 
 
@@ -82,7 +87,9 @@ def one_input_no_output_pipeline():
         pass
 
     return JobDefinition(
-        name="one_input_no_output_pipeline", solid_defs=[take_input_return_nothing]
+        graph_def=GraphDefinition(
+            name="one_input_no_output_pipeline", node_defs=[take_input_return_nothing]
+        )
     )
 
 
@@ -352,7 +359,9 @@ def test_basic_yield_multiple_materializations():
     def return_one():
         return 1
 
-    pipeline_def = JobDefinition(name="single_int_output_pipeline", solid_defs=[return_one])
+    pipeline_def = JobDefinition(
+        graph_def=GraphDefinition(name="single_int_output_pipeline", node_defs=[return_one])
+    )
     result = execute_pipeline(
         pipeline_def,
         run_config={"solids": {"return_one": {"outputs": [{"result": 2}]}}},
@@ -383,7 +392,9 @@ def test_basic_bad_output_materialization():
     def return_one():
         return 1
 
-    pipeline_def = JobDefinition(name="single_int_output_pipeline", solid_defs=[return_one])
+    pipeline_def = JobDefinition(
+        graph_def=GraphDefinition(name="single_int_output_pipeline", node_defs=[return_one])
+    )
 
     with pytest.raises(
         DagsterInvariantViolationError, match="You must return an AssetMaterialization"

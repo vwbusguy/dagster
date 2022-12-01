@@ -16,7 +16,6 @@ from dagster._core.definitions import (
     JobDefinition,
     PartitionSetDefinition,
     PartitionsDefinition,
-    JobDefinition,
     PresetDefinition,
     RepositoryDefinition,
     ScheduleDefinition,
@@ -1141,7 +1140,7 @@ def external_pipeline_data_from_def(pipeline_def: JobDefinition) -> ExternalPipe
     return ExternalPipelineData(
         name=pipeline_def.name,
         pipeline_snapshot=pipeline_def.get_pipeline_snapshot(),
-        parent_pipeline_snapshot=pipeline_def.get_parent_pipeline_snapshot(),
+        parent_pipeline_snapshot=pipeline_def.get_parent_job_snapshot(),
         active_presets=sorted(
             list(map(external_preset_data_from_def, pipeline_def.preset_defs)),
             key=lambda pd: pd.name,
@@ -1153,7 +1152,7 @@ def external_pipeline_data_from_def(pipeline_def: JobDefinition) -> ExternalPipe
 def external_job_ref_from_def(pipeline_def: JobDefinition) -> ExternalJobRef:
     check.inst_param(pipeline_def, "pipeline_def", JobDefinition)
 
-    parent = pipeline_def.parent_pipeline_def
+    parent = pipeline_def.parent_job_def
     if parent:
         parent_snapshot_id = parent.get_pipeline_snapshot_id()
     else:

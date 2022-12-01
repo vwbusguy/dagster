@@ -16,9 +16,8 @@ from typing import (
 )
 
 import dagster._check as check
-from dagster._core.definitions import InputDefinition, NodeHandle, JobDefinition
+from dagster._core.definitions import InputDefinition, JobDefinition, NodeHandle
 from dagster._core.definitions.events import AssetLineageInfo
-from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.definitions.metadata import MetadataEntry
 from dagster._core.definitions.version_strategy import ResourceVersionContext
 from dagster._core.errors import (

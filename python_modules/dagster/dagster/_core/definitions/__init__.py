@@ -152,7 +152,6 @@ from .partition_mapping import (
     PartitionMapping,
 )
 from .partitioned_schedule import build_schedule_from_partitioned_job, schedule_from_partitions
-from .pipeline_definition import JobDefinition
 from .preset import PresetDefinition
 from .run_status_sensor_definition import (
     RunFailureSensorContext,

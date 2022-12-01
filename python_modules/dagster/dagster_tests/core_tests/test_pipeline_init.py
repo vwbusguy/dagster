@@ -1,6 +1,8 @@
 import pytest
 
 from dagster import DagsterInstance, resource
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.definitions.pipeline_base import InMemoryPipeline
 from dagster._core.execution.api import create_execution_plan
 from dagster._core.execution.context_creation_pipeline import PlanExecutionContextManager
@@ -12,7 +14,7 @@ from dagster._core.execution.resources_init import (
 from dagster._core.execution.retries import RetryMode
 from dagster._core.log_manager import DagsterLogManager
 from dagster._core.system_config.objects import ResolvedRunConfig
-from dagster._legacy import ModeDefinition, JobDefinition, solid
+from dagster._legacy import ModeDefinition, solid
 
 
 def test_generator_exit():
@@ -56,9 +58,11 @@ def gen_basic_resource_pipeline(called=None, cleaned=None):
         pass
 
     return JobDefinition(
-        name="basic_resource_pipeline",
-        solid_defs=[resource_solid],
-        mode_defs=[ModeDefinition(resource_defs={"a": resource_a, "b": resource_b})],
+        graph_def=GraphDefinition(
+            name="basic_resource_pipeline",
+            node_defs=[resource_solid],
+        ),
+        _mode_def=ModeDefinition(resource_defs={"a": resource_a, "b": resource_b}),
     )
 
 

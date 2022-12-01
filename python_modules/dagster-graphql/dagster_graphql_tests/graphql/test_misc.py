@@ -14,7 +14,7 @@ from dagster import (
     dagster_type_materializer,
     repository,
 )
-from dagster._legacy import OutputDefinition, JobDefinition
+from dagster._legacy import JobDefinition, OutputDefinition
 
 from .production_query import PRODUCTION_QUERY
 

@@ -1,13 +1,9 @@
 import pytest
 
 from dagster import DagsterInvalidConfigError, DependencyDefinition, List, NodeInvocation, String
-from dagster._legacy import (
-    InputDefinition,
-    OutputDefinition,
-    JobDefinition,
-    execute_pipeline,
-    solid,
-)
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
+from dagster._legacy import InputDefinition, OutputDefinition, execute_pipeline, solid
 
 
 def test_string_from_inputs():
@@ -19,7 +15,7 @@ def test_string_from_inputs():
         called["yup"] = True
 
     pipeline = JobDefinition(
-        name="test_string_from_inputs_pipeline", solid_defs=[str_as_input]
+        graph_def=GraphDefinition(name="test_string_from_inputs_pipeline", node_defs=[str_as_input])
     )
 
     result = execute_pipeline(
@@ -40,9 +36,11 @@ def test_string_from_aliased_inputs():
         called["yup"] = True
 
     pipeline = JobDefinition(
-        solid_defs=[str_as_input],
-        name="test",
-        dependencies={NodeInvocation("str_as_input", alias="aliased"): {}},
+        graph_def=GraphDefinition(
+            node_defs=[str_as_input],
+            name="test",
+            dependencies={NodeInvocation("str_as_input", alias="aliased"): {}},
+        )
     )
 
     result = execute_pipeline(
@@ -61,7 +59,9 @@ def test_string_missing_inputs():
     def str_as_input(_context, string_input):  # pylint: disable=W0613
         called["yup"] = True
 
-    pipeline = JobDefinition(name="missing_inputs", solid_defs=[str_as_input])
+    pipeline = JobDefinition(
+        graph_def=GraphDefinition(name="missing_inputs", node_defs=[str_as_input])
+    )
     with pytest.raises(DagsterInvalidConfigError) as exc_info:
         execute_pipeline(pipeline)
 
@@ -88,9 +88,11 @@ def test_string_missing_input_collision():
         called["yup"] = True
 
     pipeline = JobDefinition(
-        name="overlapping",
-        solid_defs=[str_as_input, str_as_output],
-        dependencies={"str_as_input": {"string_input": DependencyDefinition("str_as_output")}},
+        graph_def=GraphDefinition(
+            name="overlapping",
+            node_defs=[str_as_input, str_as_output],
+            dependencies={"str_as_input": {"string_input": DependencyDefinition("str_as_output")}},
+        )
     )
     with pytest.raises(DagsterInvalidConfigError) as exc_info:
         execute_pipeline(
@@ -114,7 +116,7 @@ def test_composite_input_type():
         called["yup"] = True
 
     pipeline = JobDefinition(
-        name="test_string_from_inputs_pipeline", solid_defs=[str_as_input]
+        graph_def=GraphDefinition(name="test_string_from_inputs_pipeline", node_defs=[str_as_input])
     )
 
     result = execute_pipeline(

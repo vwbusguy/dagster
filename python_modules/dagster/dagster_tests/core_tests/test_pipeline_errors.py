@@ -10,11 +10,12 @@ from dagster import (
     Output,
 )
 from dagster import _check as check
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.definitions.op_definition import OpDefinition
 from dagster._core.definitions.output import Out
 from dagster._legacy import (
     InputDefinition,
-    JobDefinition,
     execute_pipeline,
     execute_solid,
     lambda_solid,
@@ -43,8 +44,10 @@ def create_root_fn_failure_solid(name):
 
 def test_compute_failure_pipeline():
     pipeline_def = JobDefinition(
-        solid_defs=[create_root_fn_failure_solid("failing")],
-        name="test",
+        graph_def=GraphDefinition(
+            solid_defs=[create_root_fn_failure_solid("failing")],
+            name="test",
+        )
     )
     pipeline_result = execute_pipeline(pipeline_def, raise_on_error=False)
 
@@ -209,9 +212,11 @@ def test_user_error_propogation():
         return num + 1
 
     pipeline_def = JobDefinition(
-        name="test_user_error_propogation",
-        solid_defs=[throws_user_error, return_one, add_one],
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        graph_def=GraphDefinition(
+            name="test_user_error_propogation",
+            node_defs=[throws_user_error, return_one, add_one],
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        )
     )
 
     with pytest.raises(UserError) as e_info:

@@ -12,7 +12,6 @@ from dagster._core.code_pointer import load_python_file, load_python_module
 from dagster._core.definitions import AssetGroup
 from dagster._core.definitions.definitions_class import Definitions
 from dagster._core.definitions.repository_definition import PendingRepositoryDefinition
-from dagster._legacy import JobDefinition
 
 LOAD_ALL_ASSETS = "<<LOAD_ALL_ASSETS>>"
 

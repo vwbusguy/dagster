@@ -1,35 +1,39 @@
-import logging
-
 import pytest
-from dagster_tests.general_tests.test_legacy_repository import (
-    define_multi_mode_pipeline,
-    define_multi_mode_with_resources_pipeline,
-    define_single_mode_pipeline,
-)
 
-from dagster import (
-    DagsterInvalidConfigError,
-    DagsterInvalidDefinitionError,
-    DagsterInvariantViolationError,
-    Field,
-    String,
-    logger,
-    resource,
-)
+from dagster import DagsterInvalidDefinitionError, DagsterInvariantViolationError, resource
 from dagster._check import CheckError
-from dagster._core.utils import coerce_valid_log_level
-from dagster._legacy import ModeDefinition, JobDefinition, execute_pipeline, pipeline, solid
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
+from dagster._legacy import ModeDefinition, execute_pipeline, pipeline, solid
 from dagster._utils.test import execute_solids_within_pipeline
 
 
+def define_single_mode_pipeline():
+    @solid
+    def return_two(_context):
+        return 2
+
+    return JobDefinition(
+        graph_def=GraphDefinition(
+            name="single_mode",
+            node_defs=[return_two],
+        ),
+        _mode_def=ModeDefinition(name="the_mode"),
+    )
+
+
 def test_default_mode_definition():
-    pipeline_def = JobDefinition(name="takesamode", solid_defs=[])
+    pipeline_def = JobDefinition(graph_def=GraphDefinition(name="takesamode", node_defs=[]))
     assert pipeline_def
 
 
 def test_mode_takes_a_name():
     pipeline_def = JobDefinition(
-        name="takesamode", solid_defs=[], mode_defs=[ModeDefinition(name="a_mode")]
+        graph_def=GraphDefinition(
+            name="takesamode",
+            node_defs=[],
+        ),
+        _mode_def=ModeDefinition(name="a_mode"),
     )
     assert pipeline_def
 
@@ -86,6 +90,7 @@ def test_wrong_single_mode():
         )
 
 
+<<<<<<< HEAD
 def test_mode_double_default_name():
     with pytest.raises(DagsterInvalidDefinitionError) as ide:
         JobDefinition(
@@ -162,6 +167,8 @@ def test_execute_multi_mode_with_resources():
     assert mult_mode_result.result_for_node("apply_to_three").output_value() == 9
 
 
+=======
+>>>>>>> 15470d3713 (update PipelineDefinition invocations)
 def test_mode_with_resource_deps():
 
     called = {"count": 0}
@@ -176,9 +183,11 @@ def test_mode_with_resource_deps():
         assert context.resources.a == 1
 
     pipeline_def_good_deps = JobDefinition(
-        name="mode_with_good_deps",
-        solid_defs=[requires_a],
-        mode_defs=[ModeDefinition(resource_defs={"a": resource_a})],
+        graph_def=GraphDefinition(
+            name="mode_with_good_deps",
+            node_defs=[requires_a],
+        ),
+        _mode_def=ModeDefinition(resource_defs={"a": resource_a}),
     )
 
     execute_pipeline(pipeline_def_good_deps)
@@ -190,9 +199,11 @@ def test_mode_with_resource_deps():
         match="resource with key 'a' required by op 'requires_a' was not provided",
     ):
         JobDefinition(
-            name="mode_with_bad_deps",
-            solid_defs=[requires_a],
-            mode_defs=[ModeDefinition(resource_defs={"ab": resource_a})],
+            graph_def=GraphDefinition(
+                name="mode_with_bad_deps",
+                node_defs=[requires_a],
+            ),
+            _mode_def=ModeDefinition(resource_defs={"ab": resource_a}),
         )
 
     @solid(required_resource_keys={"a"})
@@ -201,9 +212,11 @@ def test_mode_with_resource_deps():
         assert context.resources.a == 1
 
     pipeline_def_no_deps = JobDefinition(
-        name="mode_with_no_deps",
-        solid_defs=[no_deps],
-        mode_defs=[ModeDefinition(resource_defs={"a": resource_a})],
+        graph_def=GraphDefinition(
+            name="mode_with_no_deps",
+            node_defs=[no_deps],
+        ),
+        _mode_def=ModeDefinition(resource_defs={"a": resource_a}),
     )
 
     execute_pipeline(pipeline_def_no_deps)
@@ -234,9 +247,11 @@ def test_subset_with_mode_definitions():
         assert context.resources.b == 2
 
     pipeline_def = JobDefinition(
-        name="subset_test",
-        solid_defs=[requires_a, requires_b],
-        mode_defs=[ModeDefinition(resource_defs={"a": resource_a, "b": resource_b})],
+        graph_def=GraphDefinition(
+            name="subset_test",
+            node_defs=[requires_a, requires_b],
+        ),
+        _mode_def=ModeDefinition(resource_defs={"a": resource_a, "b": resource_b}),
     )
 
     assert execute_pipeline(pipeline_def).success is True
@@ -253,46 +268,6 @@ def test_subset_with_mode_definitions():
     assert called == {"a": 2, "b": 1}
 
 
-def define_multi_mode_with_loggers_pipeline():
-    foo_logger_captured_results = []
-    bar_logger_captured_results = []
-
-    @logger(config_schema={"log_level": Field(String, is_required=False, default_value="INFO")})
-    def foo_logger(init_context):
-        logger_ = logging.Logger("foo")
-        logger_.log = lambda level, msg, **kwargs: foo_logger_captured_results.append((level, msg))
-        logger_.setLevel(coerce_valid_log_level(init_context.logger_config["log_level"]))
-        return logger_
-
-    @logger(config_schema={"log_level": Field(String, is_required=False, default_value="INFO")})
-    def bar_logger(init_context):
-        logger_ = logging.Logger("bar")
-        logger_.log = lambda level, msg, **kwargs: bar_logger_captured_results.append((level, msg))
-        logger_.setLevel(coerce_valid_log_level(init_context.logger_config["log_level"]))
-        return logger_
-
-    @solid
-    def return_six(context):
-        context.log.critical("Here we are")
-        return 6
-
-    return (
-        JobDefinition(
-            name="multi_mode",
-            solid_defs=[return_six],
-            mode_defs=[
-                ModeDefinition(name="foo_mode", logger_defs={"foo": foo_logger}),
-                ModeDefinition(
-                    name="foo_bar_mode",
-                    logger_defs={"foo": foo_logger, "bar": bar_logger},
-                ),
-            ],
-        ),
-        foo_logger_captured_results,
-        bar_logger_captured_results,
-    )
-
-
 def parse_captured_results(captured_results):
     # each result will be a tuple like:
     # (10,
@@ -303,85 +278,3 @@ def parse_captured_results(captured_results):
 
     # Extract the text string and remove key = value tuples on later lines
     return [x[1].split("\n")[0] for x in captured_results]
-
-
-def test_execute_multi_mode_loggers_with_single_logger():
-    (
-        pipeline_def,
-        foo_logger_captured_results,
-        bar_logger_captured_results,
-    ) = define_multi_mode_with_loggers_pipeline()
-
-    execute_pipeline(
-        pipeline=pipeline_def,
-        mode="foo_mode",
-        run_config={"loggers": {"foo": {"config": {"log_level": "DEBUG"}}}},
-    )
-
-    assert not bar_logger_captured_results
-
-    original_messages = parse_captured_results(foo_logger_captured_results)
-    assert len([x for x in original_messages if "Here we are" in x]) == 1
-
-
-def test_execute_multi_mode_loggers_with_single_logger_extra_config():
-    pipeline_def, _, __ = define_multi_mode_with_loggers_pipeline()
-
-    with pytest.raises(DagsterInvalidConfigError):
-        execute_pipeline(
-            pipeline=pipeline_def,
-            mode="foo_mode",
-            run_config={
-                "loggers": {
-                    "foo": {"config": {"log_level": "DEBUG"}},
-                    "bar": {"config": {"log_level": "DEBUG"}},
-                }
-            },
-        )
-
-
-def test_execute_multi_mode_loggers_with_multiple_loggers():
-    (
-        pipeline_def,
-        foo_logger_captured_results,
-        bar_logger_captured_results,
-    ) = define_multi_mode_with_loggers_pipeline()
-
-    execute_pipeline(
-        pipeline=pipeline_def,
-        mode="foo_bar_mode",
-        run_config={
-            "loggers": {
-                "foo": {"config": {"log_level": "DEBUG"}},
-                "bar": {"config": {"log_level": "DEBUG"}},
-            }
-        },
-    )
-
-    foo_original_messages = parse_captured_results(foo_logger_captured_results)
-
-    assert len([x for x in foo_original_messages if "Here we are" in x]) == 1
-
-    bar_original_messages = parse_captured_results(bar_logger_captured_results)
-
-    assert len([x for x in bar_original_messages if "Here we are" in x]) == 1
-
-
-def test_execute_multi_mode_loggers_with_multiple_loggers_single_config():
-    (
-        pipeline_def,
-        foo_logger_captured_results,
-        bar_logger_captured_results,
-    ) = define_multi_mode_with_loggers_pipeline()
-
-    execute_pipeline(
-        pipeline_def,
-        mode="foo_bar_mode",
-        run_config={"loggers": {"foo": {"config": {"log_level": "DEBUG"}}}},
-    )
-
-    foo_original_messages = parse_captured_results(foo_logger_captured_results)
-
-    assert len([x for x in foo_original_messages if "Here we are" in x]) == 1
-
-    assert not bar_logger_captured_results

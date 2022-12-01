@@ -1,5 +1,7 @@
 from dagster import NodeInvocation
-from dagster._legacy import JobDefinition, execute_pipeline, solid
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
+from dagster._legacy import execute_pipeline, solid
 
 
 def test_solid_instance_tags():
@@ -11,15 +13,17 @@ def test_solid_instance_tags():
         called["yup"] = True
 
     pipeline = JobDefinition(
-        name="metadata_pipeline",
-        solid_defs=[metadata_solid],
-        dependencies={
-            NodeInvocation(
-                "metadata_solid",
-                alias="aliased_metadata_solid",
-                tags={"foo": "oof", "bip": "bop"},
-            ): {}
-        },
+        graph_def=GraphDefinition(
+            name="metadata_pipeline",
+            node_defs=[metadata_solid],
+            dependencies={
+                NodeInvocation(
+                    "metadata_solid",
+                    alias="aliased_metadata_solid",
+                    tags={"foo": "oof", "bip": "bop"},
+                ): {}
+            },
+        ),
     )
 
     result = execute_pipeline(

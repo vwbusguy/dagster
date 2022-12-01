@@ -8,7 +8,6 @@ from dagster import (
     Field,
     Int,
     List,
-    MultiDependencyDefinition,
     Nothing,
     Optional,
     Output,
@@ -17,6 +16,7 @@ from dagster import (
 )
 from dagster import _check as check
 from dagster import reconstructable
+from dagster._core.definitions.decorators.job_decorator import job
 from dagster._core.definitions.dependency import DependencyStructure, OpNode
 from dagster._core.definitions.graph_definition import GraphDefinition, _create_adjacency_lists
 from dagster._core.definitions.job_definition import JobDefinition
@@ -39,7 +39,6 @@ from dagster._legacy import (
     InputDefinition,
     ModeDefinition,
     OutputDefinition,
-    JobDefinition,
     execute_pipeline,
     execute_pipeline_iterator,
     pipeline,
@@ -80,6 +79,7 @@ def make_compute_fn():
     return compute
 
 
+<<<<<<< HEAD
 def _do_construct(ops, dependencies):
     job_def = JobDefinition(
         graph_def=GraphDefinition(name="test", node_defs=ops, dependencies=dependencies)
@@ -87,6 +87,18 @@ def _do_construct(ops, dependencies):
     ops = {s.name: OpNode(name=s.name, definition=s, graph_definition=job_def.graph) for s in ops}
     dependency_structure = DependencyStructure.from_definitions(ops, dependencies)
     return _create_adjacency_lists(list(ops.values()), dependency_structure)
+=======
+def _do_construct(solids, dependencies):
+    pipeline_def = JobDefinition(
+        graph_def=GraphDefinition(name="test", node_defs=solids, dependencies=dependencies)
+    )
+    solids = {
+        s.name: GraphNode(name=s.name, definition=s, graph_definition=pipeline_def.graph)
+        for s in solids
+    }
+    dependency_structure = DependencyStructure.from_definitions(solids, dependencies)
+    return _create_adjacency_lists(list(solids.values()), dependency_structure)
+>>>>>>> 57cb7509e2 (update PipelineDefinition invocations)
 
 
 def test_empty_adjacency_lists():
@@ -165,9 +177,11 @@ def create_diamond_solids():
 
 def create_diamond_pipeline():
     return JobDefinition(
-        name="diamond_pipeline",
-        solid_defs=create_diamond_solids(),
-        dependencies=diamond_deps(),
+        graph_def=GraphDefinition(
+            name="diamond_pipeline",
+            node_defs=create_diamond_solids(),
+            dependencies=diamond_deps(),
+        )
     )
 
 
@@ -223,7 +237,9 @@ def assert_all_results_equivalent(expected_results, result_results):
 
 def test_pipeline_execution_graph_diamond():
     pipe = JobDefinition(
-        solid_defs=create_diamond_solids(), name="test", dependencies=diamond_deps()
+        graph_def=GraphDefinition(
+            node_defs=create_diamond_solids(), name="test", dependencies=diamond_deps()
+        )
     )
     return _do_test(pipe)
 
@@ -297,9 +313,11 @@ def test_two_root_solid_pipeline_with_partial_dependency_definition():
     stub_solid_b = define_stub_solid("stub_b", [{"a key": "a value"}])
 
     single_dep_pipe = JobDefinition(
-        solid_defs=[stub_solid_a, stub_solid_b],
-        name="test",
-        dependencies={"stub_a": {}},
+        graph_def=GraphDefinition(
+            node_defs=[stub_solid_a, stub_solid_b],
+            name="test",
+            dependencies={"stub_a": {}},
+        )
     )
 
     assert execute_pipeline(single_dep_pipe).success
@@ -341,7 +359,7 @@ def _do_test(pipe):
 
 
 def test_empty_pipeline_execution():
-    result = execute_pipeline(JobDefinition(solid_defs=[], name="test"))
+    result = execute_pipeline(JobDefinition(graph_def=GraphDefinition(node_defs=[], name="test")))
 
     assert result.success
 
@@ -353,7 +371,9 @@ def test_pipeline_name_threaded_through_context():
     def assert_name_solid(context):
         assert context.pipeline_name == name
 
-    result = execute_pipeline(JobDefinition(name="foobar", solid_defs=[assert_name_solid]))
+    result = execute_pipeline(
+        JobDefinition(graph_def=GraphDefinition(name="foobar", solid_defs=[assert_name_solid]))
+    )
 
     assert result.success
 
@@ -368,9 +388,11 @@ def test_pipeline_subset():
         return num + 1
 
     pipeline_def = JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        graph_def=GraphDefinition(
+            solid_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        )
     )
 
     pipeline_result = execute_pipeline(pipeline_def)
@@ -380,7 +402,7 @@ def test_pipeline_subset():
     env_config = {"solids": {"add_one": {"inputs": {"num": {"value": 3}}}}}
 
     subset_result = execute_pipeline(
-        pipeline_def.get_pipeline_subset_def({"add_one"}), run_config=env_config
+        pipeline_def.get_job_def_for_subset_selection(["add_one"]), run_config=env_config
     )
 
     assert subset_result.success
@@ -398,9 +420,11 @@ def test_pipeline_explicit_subset():
         return num + 1
 
     pipeline_def = JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        graph_def=GraphDefinition(
+            solid_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        )
     )
 
     pipeline_result = execute_pipeline(pipeline_def)
@@ -437,7 +461,7 @@ def test_pipeline_subset_of_subset():
     assert len(pipeline_result.node_result_list) == 4
     assert pipeline_result.result_for_node("add_one_a").output_value() == 2
 
-    subset_pipeline = pipeline_def.get_pipeline_subset_def({"add_one_a", "return_one_a"})
+    subset_pipeline = pipeline_def.get_job_def_for_subset_selection(["add_one_a", "return_one_a"])
     subset_result = execute_pipeline(subset_pipeline)
     assert subset_result.success
     assert len(subset_result.node_result_list) == 2
@@ -447,13 +471,13 @@ def test_pipeline_subset_of_subset():
         DagsterInvariantViolationError,
         match="Pipeline subsets may not be subset again.",
     ):
-        subset_pipeline.get_pipeline_subset_def({"add_one_a"})
+        subset_pipeline.get_job_def_for_subset_selection(["add_one_a"])
 
     with pytest.raises(
         DagsterInvariantViolationError,
         match="Pipeline subsets may not be subset again.",
     ):
-        subset_pipeline.get_pipeline_subset_def({"add_one_a", "return_one_a"})
+        subset_pipeline.get_job_def_for_subset_selection(["add_one_a", "return_one_a"])
 
 
 def test_pipeline_subset_with_multi_dependency():
@@ -469,33 +493,22 @@ def test_pipeline_subset_with_multi_dependency():
     def noop():
         return 3
 
-    pipeline_def = JobDefinition(
-        solid_defs=[return_one, return_two, noop],
-        name="test",
-        dependencies={
-            "noop": {
-                "dep": MultiDependencyDefinition(
-                    [
-                        DependencyDefinition("return_one"),
-                        DependencyDefinition("return_two"),
-                    ]
-                )
-            }
-        },
-    )
+    @job(name="test")
+    def pipeline_def():
+        noop(return_one(), return_two())
 
     pipeline_result = execute_pipeline(pipeline_def)
     assert pipeline_result.success
     assert pipeline_result.result_for_node("noop").output_value() == 3
 
-    subset_result = execute_pipeline(pipeline_def.get_pipeline_subset_def({"noop"}))
+    subset_result = execute_pipeline(pipeline_def.get_job_def_for_subset_selection(["noop"]))
 
     assert subset_result.success
     assert len(subset_result.node_result_list) == 1
     assert pipeline_result.result_for_node("noop").output_value() == 3
 
     subset_result = execute_pipeline(
-        pipeline_def.get_pipeline_subset_def({"return_one", "return_two", "noop"})
+        pipeline_def.get_job_def_for_subset_selection(["return_one", "return_two", "noop"])
     )
 
     assert subset_result.success
@@ -516,20 +529,9 @@ def test_pipeline_explicit_subset_with_multi_dependency():
     def noop():
         return 3
 
-    pipeline_def = JobDefinition(
-        solid_defs=[return_one, return_two, noop],
-        name="test",
-        dependencies={
-            "noop": {
-                "dep": MultiDependencyDefinition(
-                    [
-                        DependencyDefinition("return_one"),
-                        DependencyDefinition("return_two"),
-                    ]
-                )
-            }
-        },
-    )
+    @job(name="test")
+    def pipeline_def(return_one, return_two):
+        noop(return_one(), return_two())
 
     pipeline_result = execute_pipeline(pipeline_def)
     assert pipeline_result.success
@@ -563,16 +565,22 @@ def define_three_part_pipeline():
     def add_three(num):
         return num + 3
 
-    return JobDefinition(name="three_part_pipeline", solid_defs=[add_one, add_two, add_three])
+    @job
+    def three_part_pipeline(num):
+        add_one(num)
+        add_two(num)
+        add_three(num)
+
+    return three_part_pipeline
 
 
 def define_created_disjoint_three_part_pipeline():
-    return define_three_part_pipeline().get_pipeline_subset_def({"add_one", "add_three"})
+    return define_three_part_pipeline().get_job_def_for_subset_selection(["add_one", "add_three"])
 
 
 def test_pipeline_disjoint_subset():
-    disjoint_pipeline = define_three_part_pipeline().get_pipeline_subset_def(
-        {"add_one", "add_three"}
+    disjoint_pipeline = define_three_part_pipeline().get_job_def_for_subset_selection(
+        ["add_one", "add_three"]
     )
     assert len(disjoint_pipeline.solids) == 2
 
@@ -755,10 +763,12 @@ def test_reexecution_fs_storage():
         return num + 1
 
     pipeline_def = JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
-        mode_defs=[default_mode_def_for_test],
+        graph_def=GraphDefinition(
+            node_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        ),
+        _mode_def=default_mode_def_for_test,
     )
     instance = DagsterInstance.ephemeral()
     pipeline_result = execute_pipeline(pipeline_def, instance=instance)
@@ -810,10 +820,12 @@ def retry_pipeline():
         return num + 1
 
     return JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
-        mode_defs=[default_mode_def_for_test],
+        graph_def=GraphDefinition(
+            node_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        ),
+        _mode_def=default_mode_def_for_test,
     )
 
 
@@ -872,10 +884,12 @@ def test_reexecution_fs_storage_with_solid_selection():
         return num + 1
 
     pipeline_def = JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
-        mode_defs=[default_mode_def_for_test],
+        graph_def=GraphDefinition(
+            node_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        ),
+        _mode_def=default_mode_def_for_test,
     )
     instance = DagsterInstance.ephemeral()
     # Case 1: re-execute a part of a pipeline when the original pipeline doesn't have solid selection
@@ -956,10 +970,12 @@ def test_single_step_reexecution():
         return num + 1
 
     pipeline_def = JobDefinition(
-        solid_defs=[return_one, add_one],
-        name="test",
-        dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
-        mode_defs=[default_mode_def_for_test],
+        graph_def=GraphDefinition(
+            node_defs=[return_one, add_one],
+            name="test",
+            dependencies={"add_one": {"num": DependencyDefinition("return_one")}},
+        ),
+        _mode_def=default_mode_def_for_test,
     )
     instance = DagsterInstance.ephemeral()
     pipeline_result = execute_pipeline(pipeline_def, instance=instance)
@@ -1052,7 +1068,9 @@ def test_selector_with_partial_dependency_dict():
         executed["two"] = True
 
     pipe_two = JobDefinition(
-        name="pipe_two", solid_defs=[def_one, def_two], dependencies={"def_one": {}}
+        graph_def=GraphDefinition(
+            name="pipe_two", node_defs=[def_one, def_two], dependencies={"def_one": {}}
+        )
     )
 
     execute_pipeline(pipe_two)
@@ -1076,7 +1094,7 @@ def test_selector_with_subset_for_execution():
         def_one()
         def_two()
 
-    assert pipe.get_pipeline_subset_def({"def_two"}).solids_to_execute == {"def_two"}
+    assert pipe.get_job_def_for_subset_selection(["def_two"]).solids_to_execute == {"def_two"}
 
 
 def test_default_run_id():
@@ -1088,7 +1106,7 @@ def test_default_run_id():
         assert uuid.UUID(context.run_id)
         called["run_id"] = context.run_id
 
-    pipeline_def = JobDefinition(solid_defs=[check_run_id], name="test")
+    pipeline_def = JobDefinition(graph_def=GraphDefinition(node_defs=[check_run_id], name="test"))
 
     result = execute_pipeline(pipeline_def)
     assert result.run_id == called["run_id"]
@@ -1104,7 +1122,11 @@ def test_pipeline_tags():
         called["yup"] = True
 
     pipeline_def_with_tags = JobDefinition(
-        name="injected_run_id", solid_defs=[check_tags], tags={"foo": "bar"}
+        graph_def=GraphDefinition(
+            name="injected_run_id",
+            node_defs=[check_tags],
+        ),
+        tags={"foo": "bar"},
     )
     result = execute_pipeline(pipeline_def_with_tags)
     assert result.success
@@ -1112,7 +1134,11 @@ def test_pipeline_tags():
 
     called = {}
     pipeline_def_with_override_tags = JobDefinition(
-        name="injected_run_id", solid_defs=[check_tags], tags={"foo": "notbar"}
+        graph_def=GraphDefinition(
+            name="injected_run_id",
+            node_defs=[check_tags],
+        ),
+        tags={"foo": "notbar"},
     )
     result = execute_pipeline(pipeline_def_with_override_tags, tags={"foo": "bar"})
     assert result.success
@@ -1204,3 +1230,4 @@ def test_multi_dep_optional():
     result = execute_pipeline(test_other_skip_upstream)
     assert result.success
     assert result.result_for_node("collect_and").skipped
+

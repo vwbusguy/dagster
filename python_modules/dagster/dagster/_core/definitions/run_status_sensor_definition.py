@@ -30,7 +30,6 @@ from dagster._utils.error import serializable_error_info_from_exc_info
 from ..decorator_utils import get_function_params
 from .graph_definition import GraphDefinition
 from .job_definition import JobDefinition
-from .pipeline_definition import JobDefinition
 from .sensor_definition import (
     DefaultSensorStatus,
     PipelineRunReaction,

@@ -38,7 +38,6 @@ from .graph_definition import GraphDefinition, SubselectedGraphDefinition
 from .job_definition import JobDefinition
 from .logger_definition import LoggerDefinition
 from .partition import PartitionScheduleDefinition, PartitionSetDefinition
-from .pipeline_definition import JobDefinition
 from .schedule_definition import ScheduleDefinition
 from .sensor_definition import SensorDefinition
 from .source_asset import SourceAsset

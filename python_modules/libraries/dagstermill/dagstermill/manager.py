@@ -32,7 +32,7 @@ from dagster._core.instance import DagsterInstance
 from dagster._core.storage.pipeline_run import DagsterRun, DagsterRunStatus
 from dagster._core.system_config.objects import ResolvedRunConfig
 from dagster._core.utils import make_new_run_id
-from dagster._legacy import Materialization, ModeDefinition, JobDefinition
+from dagster._legacy import JobDefinition, Materialization, ModeDefinition
 from dagster._loggers import colored_console_logger
 from dagster._serdes import unpack_value
 from dagster._utils import EventGenerationManager, ensure_gen

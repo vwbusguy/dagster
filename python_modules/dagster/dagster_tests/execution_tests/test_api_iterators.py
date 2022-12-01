@@ -2,6 +2,8 @@ import pytest
 
 from dagster import _check as check
 from dagster import resource
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.definitions.pipeline_base import InMemoryPipeline
 from dagster._core.errors import DagsterInvariantViolationError
 from dagster._core.events.log import EventLogEntry, construct_event_logger
@@ -14,7 +16,7 @@ from dagster._core.execution.api import (
 )
 from dagster._core.storage.pipeline_run import DagsterRunStatus
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import ModeDefinition, JobDefinition, solid
+from dagster._legacy import ModeDefinition, solid
 
 
 @resource
@@ -47,14 +49,14 @@ def test_execute_pipeline_iterator():
             records.append(record)
 
         pipeline = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         iterator = execute_pipeline_iterator(
             pipeline, run_config={"loggers": {"callback": {}}}, instance=instance
@@ -84,14 +86,14 @@ def test_execute_run_iterator():
 
     with instance_for_test() as instance:
         pipeline_def = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         pipeline_run = instance.create_run_for_pipeline(
             pipeline_def=pipeline_def,
@@ -190,14 +192,14 @@ def test_restart_running_run_worker():
 
     with instance_for_test() as instance:
         pipeline_def = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         pipeline_run = instance.create_run_for_pipeline(
             pipeline_def=pipeline_def,
@@ -226,14 +228,14 @@ def test_start_run_worker_after_run_failure():
 
     with instance_for_test() as instance:
         pipeline_def = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         pipeline_run = instance.create_run_for_pipeline(
             pipeline_def=pipeline_def,
@@ -256,14 +258,14 @@ def test_execute_canceled_state():
 
     with instance_for_test() as instance:
         pipeline_def = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         pipeline_run = instance.create_run_for_pipeline(
             pipeline_def=pipeline_def,
@@ -346,14 +348,14 @@ def test_execute_plan_iterator():
 
     with instance_for_test() as instance:
         pipeline = JobDefinition(
-            name="basic_resource_pipeline",
-            solid_defs=[resource_solid],
-            mode_defs=[
-                ModeDefinition(
-                    resource_defs={"a": resource_a, "b": resource_b},
-                    logger_defs={"callback": construct_event_logger(event_callback)},
-                )
-            ],
+            graph_def=GraphDefinition(
+                name="basic_resource_pipeline",
+                node_defs=[resource_solid],
+            ),
+            _mode_def=ModeDefinition(
+                resource_defs={"a": resource_a, "b": resource_b},
+                logger_defs={"callback": construct_event_logger(event_callback)},
+            ),
         )
         run_config = {"loggers": {"callback": {}}}
 

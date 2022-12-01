@@ -1,22 +1,4 @@
-from dagster_tests.general_tests.test_legacy_repository import (
-    define_multi_mode_with_resources_pipeline,
-)
-
 from dagster._legacy import PresetDefinition
-from dagster._utils import file_relative_path
-
-
-def test_preset_yaml_roundtrip():
-    pipeline = define_multi_mode_with_resources_pipeline()
-
-    preset_def = pipeline.get_preset("add")
-
-    with open(
-        file_relative_path(__file__, "../environments/multi_mode_with_resources/add_mode.yaml"),
-        "r",
-        encoding="utf8",
-    ) as fd:
-        assert preset_def.get_environment_yaml() == fd.read()
 
 
 def test_empty_preset():

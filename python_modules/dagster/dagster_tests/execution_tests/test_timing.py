@@ -4,7 +4,8 @@ import time
 import pytest
 
 from dagster import Output
-from dagster._legacy import JobDefinition, execute_pipeline, solid
+from dagster._core.definitions.job_definition import JobDefinition
+from dagster._legacy import execute_pipeline, solid
 
 
 @pytest.mark.skipif(
