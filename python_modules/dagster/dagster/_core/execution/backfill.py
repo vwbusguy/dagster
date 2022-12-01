@@ -71,7 +71,7 @@ class PartitionBackfill(
         partition_names: Sequence[str],
         from_failure: bool,
         reexecution_steps: Optional[Sequence[str]],
-        tags: Mapping[str, str],
+        tags: Optional[Mapping[str, str]],
         backfill_timestamp: float,
         last_submitted_partition_name: Optional[str] = None,
         error: Optional[SerializableErrorInfo] = None,

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, AbstractSet, FrozenSet, Optional, Sequence
+from typing import TYPE_CHECKING, AbstractSet, Optional, Sequence
 
 import dagster._check as check
 from dagster._core.definitions.events import AssetKey
@@ -51,7 +51,11 @@ class IPipeline(ABC):
 
 class InMemoryPipeline(IPipeline, object):
     def __init__(
-            self, pipeline_def: "JobDefinition", solid_selection: Optional[Sequence[str]]=None, solids_to_execute: Optional[AbstractSet[str]]=None, asset_selection: Optional[AbstractSet[AssetKey]]=None
+        self,
+        pipeline_def: "JobDefinition",
+        solid_selection: Optional[Sequence[str]] = None,
+        solids_to_execute: Optional[AbstractSet[str]] = None,
+        asset_selection: Optional[AbstractSet[AssetKey]] = None,
     ):
         self._pipeline_def = pipeline_def
         self._solid_selection = solid_selection
@@ -76,7 +80,12 @@ class InMemoryPipeline(IPipeline, object):
             )
         return solids_to_execute
 
-    def _subset_for_execution(self, solids_to_execute: Optional[AbstractSet[str]], solid_selection: Optional[Sequence[str]]=None, asset_selection: Optional[AbstractSet[AssetKey]]=None) -> "InMemoryPipeline":
+    def _subset_for_execution(
+        self,
+        solids_to_execute: Optional[AbstractSet[str]],
+        solid_selection: Optional[Sequence[str]] = None,
+        asset_selection: Optional[AbstractSet[AssetKey]] = None,
+    ) -> "InMemoryPipeline":
         if asset_selection:
             return InMemoryPipeline(
                 self._pipeline_def.get_job_def_for_subset_selection(

@@ -16,13 +16,7 @@ from dagster._core.execution.plan.objects import StepFailureData
 from dagster._core.execution.plan.outputs import StepOutputHandle
 from dagster._core.log_manager import DagsterLogManager
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import (
-    DagsterRun,
-    ModeDefinition,
-    execute_pipeline,
-    pipeline,
-    solid,
-)
+from dagster._legacy import DagsterRun, execute_pipeline, pipeline, solid
 from dagster._loggers import colored_console_logger, default_system_loggers, json_console_logger
 from dagster._utils.error import SerializableErrorInfo
 from dagster._utils.test import wrap_op_in_graph_and_execute
@@ -383,14 +377,14 @@ def test_io_context_logging(capsys):
     assert re.search("test INPUT debug logging from logged_solid.", captured.err, re.MULTILINE)
 
 
-@solid
+@op
 def log_solid(context):
     context.log.info("Hello world")
     context.log.error("My test error")
 
 
 @job
-def log_pipeline():
+def log_job():
     log_solid()
 
 
@@ -401,7 +395,10 @@ def test_conf_file_logging(capsys):
                 "handlers": {
                     "handlerOne": {
                         "class": "logging.StreamHandler",
+                        # "class": "logging.FileHandler",
                         "level": "INFO",
+                        # "filename": "/Users/smackesey/stm/desktop/mydaglog.log",
+                        # "mode": "a",
                         "stream": "ext://sys.stdout",
                     },
                     "handlerTwo": {
@@ -415,7 +412,7 @@ def test_conf_file_logging(capsys):
     }
 
     with instance_for_test(overrides=config_settings) as instance:
-        execute_job(reconstructable(log_pipeline), instance=instance)
+        log_job.execute_in_process(instance=instance)
 
     out, _ = capsys.readouterr()
 
@@ -442,7 +439,7 @@ def test_custom_class_handler(capsys):
     }
 
     with instance_for_test(overrides=config_settings) as instance:
-        execute_pipeline(log_pipeline, instance=instance)
+        log_job.execute_in_process(instance=instance)
 
     out, _ = capsys.readouterr()
 
@@ -462,7 +459,7 @@ def test_error_when_logger_defined_yaml():
 
     with pytest.raises(DagsterInvalidConfigError):
         with instance_for_test(overrides=config_settings) as instance:
-            execute_pipeline(log_pipeline, instance=instance)
+            execute_pipeline(log_job, instance=instance)
 
 
 def test_python_log_level_context_logging():
@@ -475,11 +472,11 @@ def test_python_log_level_context_logging():
         logged_solid()
 
     with instance_for_test() as instance:
-        result = execute_pipeline(pipe, instance=instance)
+        result = pipe.execute_in_process(instance=instance)
         logs_default = instance.event_log_storage.get_logs_for_run(result.run_id)
 
     with instance_for_test(overrides={"python_logs": {"python_log_level": "CRITICAL"}}) as instance:
-        result = execute_pipeline(pipe, instance=instance)
+        result = pipe.execute_in_process(instance=instance)
         logs_critical = instance.event_log_storage.get_logs_for_run(result.run_id)
 
     assert len(logs_critical) > 0  # DagsterEvents should still be logged

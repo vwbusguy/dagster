@@ -28,7 +28,9 @@ def test_basic_list_input_pass():
     def ingest_list(alist):
         return alist
 
-    assert wrap_op_in_graph_and_execute(ingest_list, input_values={"alist": [2]}).output_value() == [2]
+    assert wrap_op_in_graph_and_execute(
+        ingest_list, input_values={"alist": [2]}
+    ).output_value() == [2]
 
 
 def test_basic_list_input_fail():
@@ -62,7 +64,9 @@ def test_typing_list_input_pass():
     def ingest_list(alist):
         return alist
 
-    assert wrap_op_in_graph_and_execute(ingest_list, input_values={"alist": [2]}).output_value() == [2]
+    assert wrap_op_in_graph_and_execute(
+        ingest_list, input_values={"alist": [2]}
+    ).output_value() == [2]
 
 
 def test_typing_list_input_fail():
@@ -96,7 +100,9 @@ def test_typing_list_of_int_input_pass():
     def ingest_list(alist):
         return alist
 
-    assert wrap_op_in_graph_and_execute(ingest_list, input_values={"alist": [2]}).output_value() == [2]
+    assert wrap_op_in_graph_and_execute(
+        ingest_list, input_values={"alist": [2]}
+    ).output_value() == [2]
 
 
 def test_typing_list_of_int_input_fail():
@@ -133,7 +139,9 @@ def test_typing_list_of_list_of_int_input_pass():
     def ingest_list(alist):
         return alist
 
-    assert wrap_op_in_graph_and_execute(ingest_list, input_values={"alist": [[1, 2], [3, 4]]}).output_value() == [
+    assert wrap_op_in_graph_and_execute(
+        ingest_list, input_values={"alist": [[1, 2], [3, 4]]}
+    ).output_value() == [
         [1, 2],
         [3, 4],
     ]

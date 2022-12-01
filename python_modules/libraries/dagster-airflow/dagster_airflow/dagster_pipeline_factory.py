@@ -18,6 +18,8 @@ from airflow.models.baseoperator import BaseOperator
 from airflow.models.dag import DAG
 from airflow.models.dagbag import DagBag
 from airflow.settings import LOG_FORMAT
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.mode import ModeDefinition
 from dagster_airflow.patch_airflow_example_dag import patch_airflow_example_dag
 
 from dagster import (
@@ -518,12 +520,14 @@ def make_dagster_pipeline_from_airflow_dag(
         }
 
     pipeline_def = JobDefinition(
+        graph_def=GraphDefinition(
         name=normalized_name(dag.dag_id, None),
-        solid_defs=solid_defs,
+        node_defs=solid_defs,
         dependencies=pipeline_dependencies,
-        mode_defs=[ModeDefinition(resource_defs={"airflow_db": airflow_db})]
+        ),
+        _mode_def=ModeDefinition(resource_defs={"airflow_db": airflow_db})
         if use_ephemeral_airflow_db
-        else [],
+        else None,
         tags=tags,
     )
     return pipeline_def

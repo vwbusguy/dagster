@@ -14,7 +14,9 @@ from dagster import (
     dagster_type_materializer,
     repository,
 )
-from dagster._legacy import JobDefinition, OutputDefinition
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
+from dagster._legacy import OutputDefinition
 
 from .production_query import PRODUCTION_QUERY
 
@@ -145,16 +147,18 @@ def test_type_rendering(graphql_context):
 
 def define_circular_dependency_pipeline():
     return JobDefinition(
-        name="circular_dependency_pipeline",
-        solid_defs=[
-            OpDefinition(
-                name="csolid",
-                ins={"num": In("num", PoorMansDataFrame)},
-                outs={"result": OutputDefinition(PoorMansDataFrame)},
-                compute_fn=lambda *_args: None,
-            )
-        ],
-        dependencies={"csolid": {"num": DependencyDefinition("csolid")}},
+        graph_def=GraphDefinition(
+            name="circular_dependency_pipeline",
+            node_defs=[
+                OpDefinition(
+                    name="csolid",
+                    ins={"num": In("num", PoorMansDataFrame)},
+                    outs={"result": OutputDefinition(PoorMansDataFrame)},
+                    compute_fn=lambda *_args: None,
+                )
+            ],
+            dependencies={"csolid": {"num": DependencyDefinition("csolid")}},
+        )
     )
 
 
