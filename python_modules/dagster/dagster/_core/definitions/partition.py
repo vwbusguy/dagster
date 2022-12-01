@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import inspect
 import json
 from abc import ABC, abstractmethod
@@ -251,6 +252,10 @@ class PartitionsDefinition(ABC, Generic[T]):
 
     def deserialize_subset(self, serialized: str) -> "PartitionsSubset":
         return DefaultPartitionsSubset.from_serialized(self, serialized)
+
+    @property
+    def serializable_unique_identifier(self) -> str:
+        return hashlib.sha1(json.dumps(self.get_partition_keys()).encode("utf-8")).hexdigest()
 
 
 class StaticPartitionsDefinition(
@@ -1030,6 +1035,10 @@ class PartitionsSubset(ABC):
     def serialize(self) -> str:
         raise NotImplementedError()
 
+    @abstractmethod
+    def get_partition_keys(self) -> Iterable[str]:
+        raise NotImplementedError()
+
 
 class DefaultPartitionsSubset(PartitionsSubset):
     def __init__(self, partitions_def: PartitionsDefinition, subset=None):
@@ -1040,6 +1049,9 @@ class DefaultPartitionsSubset(PartitionsSubset):
         self, current_time: Optional[datetime] = None
     ) -> Iterable[str]:
         return set(self._partitions_def.get_partition_keys()) - self._subset
+
+    def get_partition_keys(self) -> Iterable[str]:
+        return self._subset
 
     def with_partition_keys(self, partition_keys: Iterable[str]) -> "DefaultPartitionsSubset":
         return DefaultPartitionsSubset(self._partitions_def, self._subset | set(partition_keys))
