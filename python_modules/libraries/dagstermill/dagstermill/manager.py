@@ -32,7 +32,7 @@ from dagster._core.instance import DagsterInstance
 from dagster._core.storage.pipeline_run import DagsterRun, DagsterRunStatus
 from dagster._core.system_config.objects import ResolvedRunConfig
 from dagster._core.utils import make_new_run_id
-from dagster._legacy import Materialization, ModeDefinition, PipelineDefinition
+from dagster._legacy import Materialization, ModeDefinition, JobDefinition
 from dagster._loggers import colored_console_logger
 from dagster._serdes import unpack_value
 from dagster._utils import EventGenerationManager, ensure_gen
@@ -258,7 +258,7 @@ class Manager:
             required_resource_keys=mode_def.resource_key_set,
         )
 
-        pipeline_def = PipelineDefinition(
+        pipeline_def = JobDefinition(
             [solid_def], mode_defs=[mode_def], name="ephemeral_dagstermill_pipeline"
         )
 

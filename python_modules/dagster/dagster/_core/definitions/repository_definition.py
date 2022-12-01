@@ -38,7 +38,7 @@ from .graph_definition import GraphDefinition, SubselectedGraphDefinition
 from .job_definition import JobDefinition
 from .logger_definition import LoggerDefinition
 from .partition import PartitionScheduleDefinition, PartitionSetDefinition
-from .pipeline_definition import PipelineDefinition
+from .pipeline_definition import JobDefinition
 from .schedule_definition import ScheduleDefinition
 from .sensor_definition import SensorDefinition
 from .source_asset import SourceAsset
@@ -63,7 +63,7 @@ VALID_REPOSITORY_DATA_DICT_KEYS = {
 
 RepositoryLevelDefinition = TypeVar(
     "RepositoryLevelDefinition",
-    PipelineDefinition,
+    JobDefinition,
     JobDefinition,
     PartitionSetDefinition,
     ScheduleDefinition,
@@ -75,7 +75,7 @@ RepositoryListDefinition = Union[
     "AssetGroup",
     GraphDefinition,
     PartitionSetDefinition[object],
-    PipelineDefinition,
+    JobDefinition,
     ScheduleDefinition,
     SensorDefinition,
     SourceAsset,
@@ -268,7 +268,7 @@ class RepositoryData(ABC):
     """
 
     @abstractmethod
-    def get_all_pipelines(self) -> Sequence[PipelineDefinition]:
+    def get_all_pipelines(self) -> Sequence[JobDefinition]:
         """Return all pipelines/jobs in the repository as a list.
 
         Returns:
@@ -324,7 +324,7 @@ class RepositoryData(ABC):
         """
         return job_name in self.get_job_names()
 
-    def get_pipeline(self, pipeline_name) -> PipelineDefinition:
+    def get_pipeline(self, pipeline_name) -> JobDefinition:
         """Get a pipeline/job by name.
 
         Args:
@@ -489,11 +489,11 @@ class CachingRepositoryData(RepositoryData):
     """Default implementation of RepositoryData used by the :py:func:`@repository <repository>` decorator."""
 
     _all_jobs: Optional[Sequence[JobDefinition]]
-    _all_pipelines: Optional[Sequence[PipelineDefinition]]
+    _all_pipelines: Optional[Sequence[JobDefinition]]
 
     def __init__(
         self,
-        pipelines: Mapping[str, Union[PipelineDefinition, Resolvable[PipelineDefinition]]],
+        pipelines: Mapping[str, Union[JobDefinition, Resolvable[JobDefinition]]],
         jobs: Mapping[str, Union[JobDefinition, Resolvable[JobDefinition]]],
         partition_sets: Mapping[
             str, Union[PartitionSetDefinition, Resolvable[PartitionSetDefinition]]
@@ -532,7 +532,7 @@ class CachingRepositoryData(RepositoryData):
         from dagster._core.definitions import AssetsDefinition
 
         check.mapping_param(
-            pipelines, "pipelines", key_type=str, value_type=(PipelineDefinition, FunctionType)
+            pipelines, "pipelines", key_type=str, value_type=(JobDefinition, FunctionType)
         )
         check.mapping_param(jobs, "jobs", key_type=str, value_type=(JobDefinition, FunctionType))
         check.mapping_param(
@@ -555,7 +555,7 @@ class CachingRepositoryData(RepositoryData):
         )
 
         self._pipelines = _CacheingDefinitionIndex(
-            PipelineDefinition,
+            JobDefinition,
             "PipelineDefinition",
             "pipeline",
             pipelines,
@@ -712,7 +712,7 @@ class CachingRepositoryData(RepositoryData):
         """
         from dagster._core.definitions import AssetGroup, AssetsDefinition
 
-        pipelines_or_jobs: Dict[str, Union[PipelineDefinition, JobDefinition]] = {}
+        pipelines_or_jobs: Dict[str, Union[JobDefinition, JobDefinition]] = {}
         coerced_graphs: Dict[str, JobDefinition] = {}
         unresolved_jobs: Dict[str, UnresolvedAssetJobDefinition] = {}
         partition_sets: Dict[str, PartitionSetDefinition[object]] = {}
@@ -723,7 +723,7 @@ class CachingRepositoryData(RepositoryData):
         source_assets: List[SourceAsset] = []
         combined_asset_group = None
         for definition in repository_definitions:
-            if isinstance(definition, PipelineDefinition):
+            if isinstance(definition, JobDefinition):
                 if (
                     definition.name in pipelines_or_jobs
                     and pipelines_or_jobs[definition.name] != definition
@@ -858,7 +858,7 @@ class CachingRepositoryData(RepositoryData):
             )
             pipelines_or_jobs[name] = resolved_job
 
-        pipelines: Dict[str, PipelineDefinition] = {}
+        pipelines: Dict[str, JobDefinition] = {}
         jobs: Dict[str, JobDefinition] = {}
         for name, pipeline_or_job in pipelines_or_jobs.items():
             if isinstance(pipeline_or_job, JobDefinition):
@@ -929,7 +929,7 @@ class CachingRepositoryData(RepositoryData):
         check.str_param(job_name, "job_name")
         return self._jobs.has_definition(job_name)
 
-    def get_all_pipelines(self) -> Sequence[PipelineDefinition]:
+    def get_all_pipelines(self) -> Sequence[JobDefinition]:
         """Return all pipelines/jobs in the repository as a list.
 
         Note that this will construct any pipeline/job that has not yet been constructed.
@@ -941,7 +941,7 @@ class CachingRepositoryData(RepositoryData):
             return self._all_pipelines
 
         self._all_jobs = self._jobs.get_all_definitions()
-        pipelines: List[PipelineDefinition] = [
+        pipelines: List[JobDefinition] = [
             *self._pipelines.get_all_definitions(),
             *self._all_jobs,
         ]
@@ -968,7 +968,7 @@ class CachingRepositoryData(RepositoryData):
         # The `get_all_pipelines` call ensures _all_jobs is set.
         return cast(Sequence[JobDefinition], self._all_jobs)
 
-    def get_pipeline(self, pipeline_name: str) -> PipelineDefinition:
+    def get_pipeline(self, pipeline_name: str) -> JobDefinition:
         """Get a pipeline/job by name.
 
         If this pipeline/job has not yet been constructed, only this pipeline/job is constructed, and will
@@ -1109,7 +1109,7 @@ class CachingRepositoryData(RepositoryData):
     def get_assets_defs_by_key(self) -> Mapping[AssetKey, "AssetsDefinition"]:
         return self._assets_defs_by_key
 
-    def _check_solid_defs(self, pipelines: Sequence[PipelineDefinition]) -> None:
+    def _check_solid_defs(self, pipelines: Sequence[JobDefinition]) -> None:
         solid_defs = {}
         solid_to_pipeline = {}
         for pipeline in pipelines:
@@ -1135,7 +1135,7 @@ class CachingRepositoryData(RepositoryData):
                         )
                     )
 
-    def _validate_pipeline(self, pipeline: PipelineDefinition) -> PipelineDefinition:
+    def _validate_pipeline(self, pipeline: JobDefinition) -> JobDefinition:
         return pipeline
 
     def _validate_job(self, job: JobDefinition) -> JobDefinition:
@@ -1240,7 +1240,7 @@ class RepositoryDefinition:
         """
         return self._repository_data.has_pipeline(name)
 
-    def get_pipeline(self, name: str) -> PipelineDefinition:
+    def get_pipeline(self, name: str) -> JobDefinition:
         """Get a pipeline/job by name.
 
         If this pipeline/job is present in the lazily evaluated dictionary passed to the
@@ -1255,7 +1255,7 @@ class RepositoryDefinition:
         """
         return self._repository_data.get_pipeline(name)
 
-    def get_all_pipelines(self) -> Sequence[PipelineDefinition]:
+    def get_all_pipelines(self) -> Sequence[JobDefinition]:
         """Return all pipelines/jobs in the repository as a list.
 
         Note that this will construct any pipeline/job in the lazily evaluated dictionary that
@@ -1553,8 +1553,8 @@ def _process_and_validate_target(
     schedule_or_sensor_def: Union[SensorDefinition, ScheduleDefinition],
     coerced_graphs: Dict[str, JobDefinition],
     unresolved_jobs: Dict[str, UnresolvedAssetJobDefinition],
-    pipelines_or_jobs: Dict[str, PipelineDefinition],
-    target: Union[GraphDefinition, PipelineDefinition, UnresolvedAssetJobDefinition],
+    pipelines_or_jobs: Dict[str, JobDefinition],
+    target: Union[GraphDefinition, JobDefinition, UnresolvedAssetJobDefinition],
 ):
     # This function modifies the state of coerced_graphs and unresolved_jobs
     targeter = (

@@ -9,7 +9,7 @@ from ..executor_definition import ExecutorDefinition
 from ..graph_definition import GraphDefinition
 from ..logger_definition import LoggerDefinition
 from ..partition import PartitionSetDefinition
-from ..pipeline_definition import PipelineDefinition
+from ..pipeline_definition import JobDefinition
 from ..repository_definition import (
     VALID_REPOSITORY_DATA_DICT_KEYS,
     CachingRepositoryData,
@@ -70,7 +70,7 @@ class _Repository:
                 if isinstance(definition, CacheableAssetsDefinition):
                     defer_repository_data = True
                 elif not (
-                    isinstance(definition, PipelineDefinition)
+                    isinstance(definition, JobDefinition)
                     or isinstance(definition, PartitionSetDefinition)
                     or isinstance(definition, ScheduleDefinition)
                     or isinstance(definition, SensorDefinition)

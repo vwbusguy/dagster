@@ -14,7 +14,7 @@ from dagster import (
     dagster_type_materializer,
     repository,
 )
-from dagster._legacy import OutputDefinition, PipelineDefinition
+from dagster._legacy import OutputDefinition, JobDefinition
 
 from .production_query import PRODUCTION_QUERY
 
@@ -144,7 +144,7 @@ def test_type_rendering(graphql_context):
 
 
 def define_circular_dependency_pipeline():
-    return PipelineDefinition(
+    return JobDefinition(
         name="circular_dependency_pipeline",
         solid_defs=[
             OpDefinition(

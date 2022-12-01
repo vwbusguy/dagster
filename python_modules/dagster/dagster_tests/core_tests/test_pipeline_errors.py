@@ -14,7 +14,7 @@ from dagster._core.definitions.op_definition import OpDefinition
 from dagster._core.definitions.output import Out
 from dagster._legacy import (
     InputDefinition,
-    PipelineDefinition,
+    JobDefinition,
     execute_pipeline,
     execute_solid,
     lambda_solid,
@@ -42,7 +42,7 @@ def create_root_fn_failure_solid(name):
 
 
 def test_compute_failure_pipeline():
-    pipeline_def = PipelineDefinition(
+    pipeline_def = JobDefinition(
         solid_defs=[create_root_fn_failure_solid("failing")],
         name="test",
     )
@@ -208,7 +208,7 @@ def test_user_error_propogation():
     def add_one(num):
         return num + 1
 
-    pipeline_def = PipelineDefinition(
+    pipeline_def = JobDefinition(
         name="test_user_error_propogation",
         solid_defs=[throws_user_error, return_one, add_one],
         dependencies={"add_one": {"num": DependencyDefinition("return_one")}},

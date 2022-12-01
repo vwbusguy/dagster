@@ -3,7 +3,7 @@ from collections import defaultdict
 from dagster import DependencyDefinition, Int, NodeInvocation
 from dagster._legacy import (
     InputDefinition,
-    PipelineDefinition,
+    JobDefinition,
     execute_pipeline,
     lambda_solid,
     solid,
@@ -19,7 +19,7 @@ def test_aliased_solids():
     def not_first(prev):
         return prev + ["not_first"]
 
-    pipeline = PipelineDefinition(
+    pipeline = JobDefinition(
         solid_defs=[first, not_first],
         name="test",
         dependencies={
@@ -51,7 +51,7 @@ def test_only_aliased_solids():
     def not_first(prev):
         return prev + ["not_first"]
 
-    pipeline = PipelineDefinition(
+    pipeline = JobDefinition(
         solid_defs=[first, not_first],
         name="test",
         dependencies={
@@ -73,7 +73,7 @@ def test_aliased_configs():
     def load_constant(context):
         return context.solid_config
 
-    pipeline = PipelineDefinition(
+    pipeline = JobDefinition(
         solid_defs=[load_constant],
         name="test",
         dependencies={
@@ -100,7 +100,7 @@ def test_aliased_solids_context():
         op_def_value = context.op_def.name
         record[op_def_value].add(solid_value)
 
-    pipeline = PipelineDefinition(
+    pipeline = JobDefinition(
         solid_defs=[log_things],
         name="test",
         dependencies={

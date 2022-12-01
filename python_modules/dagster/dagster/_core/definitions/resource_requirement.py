@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from ..types.dagster_type import DagsterType
     from .dependency import Node, NodeHandle
     from .op_definition import OpDefinition
-    from .pipeline_definition import PipelineDefinition
+    from .pipeline_definition import JobDefinition
     from .resource_definition import ResourceDefinition
 
 

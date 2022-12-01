@@ -13,7 +13,7 @@ from dagster._core.execution.stats import RunStepKeyStatsSnapshot, StepEventStat
 from dagster._core.host_representation import PipelineSelector
 from dagster._core.storage.pipeline_run import RunRecord, RunsFilter
 from dagster._core.storage.tags import TagType, get_tag_type
-from dagster._legacy import DagsterRunStatus, PipelineDefinition
+from dagster._legacy import DagsterRunStatus, JobDefinition
 
 from .events import from_event_record
 from .external import ensure_valid_config, get_external_pipeline_or_raise
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 def is_config_valid(pipeline_def, run_config, mode):
     check.str_param(mode, "mode")
-    check.inst_param(pipeline_def, "pipeline_def", PipelineDefinition)
+    check.inst_param(pipeline_def, "pipeline_def", JobDefinition)
 
     run_config_schema = create_run_config_schema(pipeline_def, mode)
     validated_config = validate_config(run_config_schema.config_type, run_config)
@@ -36,7 +36,7 @@ def get_validated_config(pipeline_def, run_config, mode):
     from ..schema.pipelines.config import GrapheneRunConfigValidationInvalid
 
     check.str_param(mode, "mode")
-    check.inst_param(pipeline_def, "pipeline_def", PipelineDefinition)
+    check.inst_param(pipeline_def, "pipeline_def", JobDefinition)
 
     run_config_schema = create_run_config_schema(pipeline_def, mode)
 

@@ -4,7 +4,7 @@ from dagster_msteams.card import Card
 from dagster_msteams.client import TeamsClient
 
 from dagster import DefaultSensorStatus
-from dagster._core.definitions import GraphDefinition, PipelineDefinition
+from dagster._core.definitions import GraphDefinition, JobDefinition
 from dagster._core.definitions.run_status_sensor_definition import (
     RunFailureSensorContext,
     run_failure_sensor,
@@ -38,7 +38,7 @@ def make_teams_on_run_failure_sensor(
     monitored_jobs: Optional[
         Sequence[
             Union[
-                PipelineDefinition,
+                JobDefinition,
                 GraphDefinition,
                 UnresolvedAssetJobDefinition,
                 "RepositorySelector",

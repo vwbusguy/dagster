@@ -14,7 +14,7 @@ from typing import (
 from slack_sdk.web.client import WebClient
 
 from dagster import DefaultSensorStatus
-from dagster._core.definitions import GraphDefinition, PipelineDefinition
+from dagster._core.definitions import GraphDefinition, JobDefinition
 from dagster._core.definitions.run_status_sensor_definition import (
     RunFailureSensorContext,
     RunStatusSensorContext,
@@ -86,7 +86,7 @@ def make_slack_on_run_failure_sensor(
     monitored_jobs: Optional[
         Sequence[
             Union[
-                PipelineDefinition,
+                JobDefinition,
                 GraphDefinition,
                 UnresolvedAssetJobDefinition,
                 "RepositorySelector",
@@ -97,7 +97,7 @@ def make_slack_on_run_failure_sensor(
     job_selection: Optional[
         Sequence[
             Union[
-                PipelineDefinition,
+                JobDefinition,
                 GraphDefinition,
                 UnresolvedAssetJobDefinition,
                 "RepositorySelector",

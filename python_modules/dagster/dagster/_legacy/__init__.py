@@ -8,7 +8,7 @@ from dagster._core.definitions import (
     NodeInvocation,
     OutputDefinition,
     PartitionSetDefinition,
-    PipelineDefinition,
+    JobDefinition,
     PresetDefinition,
     ScheduleExecutionContext,
     SensorExecutionContext,

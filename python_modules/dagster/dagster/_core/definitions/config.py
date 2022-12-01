@@ -15,7 +15,7 @@ from dagster._core.errors import DagsterInvalidConfigError
 from .definition_config_schema import convert_user_facing_definition_config_schema
 
 if TYPE_CHECKING:
-    from .pipeline_definition import PipelineDefinition
+    from .pipeline_definition import JobDefinition
 
 
 def is_callable_valid_config_arg(config: Union[Callable[..., Any], Mapping[str, object]]) -> bool:

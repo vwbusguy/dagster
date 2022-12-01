@@ -19,7 +19,7 @@ from dagster._core.executor.step_delegating.step_handler.base import StepHandler
 from dagster._core.storage.fs_io_manager import fs_io_manager
 from dagster._core.test_utils import create_run_for_test, environ, instance_for_test
 from dagster._grpc.types import ExecuteStepArgs
-from dagster._legacy import PipelineDefinition, execute_pipeline, solid
+from dagster._legacy import JobDefinition, execute_pipeline, solid
 
 
 def _get_pipeline(name, solid_tags=None):
@@ -27,7 +27,7 @@ def _get_pipeline(name, solid_tags=None):
     def foo():
         return 1
 
-    return PipelineDefinition(
+    return JobDefinition(
         name=name,
         solid_defs=[foo],
         mode_defs=[
