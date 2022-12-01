@@ -5,7 +5,7 @@ import pytest
 from dagster import DagsterTypeCheckDidNotPass, In, Optional, Out, op
 from dagster._core.types.dagster_type import resolve_dagster_type
 from dagster._core.types.python_set import create_typed_runtime_set
-from dagster._legacy import execute_solid
+from dagster._utils.test import wrap_op_in_graph_and_execute
 
 
 def test_vanilla_set_output():
@@ -13,7 +13,7 @@ def test_vanilla_set_output():
     def emit_set():
         return {1, 2}
 
-    assert execute_solid(emit_set).output_value() == {1, 2}
+    assert wrap_op_in_graph_and_execute(emit_set).output_value() == {1, 2}
 
 
 def test_vanilla_set_output_fail():
@@ -22,7 +22,7 @@ def test_vanilla_set_output_fail():
         return "foo"
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(emit_set)
+        wrap_op_in_graph_and_execute(emit_set)
 
 
 def test_vanilla_set_input():
@@ -30,7 +30,7 @@ def test_vanilla_set_input():
     def take_set(tt):
         return tt
 
-    assert execute_solid(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
+    assert wrap_op_in_graph_and_execute(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
 
 
 def test_vanilla_set_input_fail():
@@ -39,7 +39,7 @@ def test_vanilla_set_input_fail():
         return tt
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(take_set, input_values={"tt": "fkjdf"})
+        wrap_op_in_graph_and_execute(take_set, input_values={"tt": "fkjdf"})
 
 
 def test_open_typing_set_output():
@@ -47,7 +47,7 @@ def test_open_typing_set_output():
     def emit_set():
         return {1, 2}
 
-    assert execute_solid(emit_set).output_value() == {1, 2}
+    assert wrap_op_in_graph_and_execute(emit_set).output_value() == {1, 2}
 
 
 def test_open_typing_set_output_fail():
@@ -56,7 +56,7 @@ def test_open_typing_set_output_fail():
         return "foo"
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(emit_set)
+        wrap_op_in_graph_and_execute(emit_set)
 
 
 def test_open_typing_set_input():
@@ -64,7 +64,7 @@ def test_open_typing_set_input():
     def take_set(tt):
         return tt
 
-    assert execute_solid(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
+    assert wrap_op_in_graph_and_execute(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
 
 
 def test_open_typing_set_input_fail():
@@ -73,7 +73,7 @@ def test_open_typing_set_input_fail():
         return tt
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(take_set, input_values={"tt": "fkjdf"})
+        wrap_op_in_graph_and_execute(take_set, input_values={"tt": "fkjdf"})
 
 
 def test_runtime_set_of_int():
@@ -111,7 +111,7 @@ def test_closed_typing_set_input():
     def take_set(tt):
         return tt
 
-    assert execute_solid(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
+    assert wrap_op_in_graph_and_execute(take_set, input_values={"tt": {2, 3}}).output_value() == {2, 3}
 
 
 def test_closed_typing_set_input_fail():
@@ -120,10 +120,10 @@ def test_closed_typing_set_input_fail():
         return tt
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(take_set, input_values={"tt": "fkjdf"})
+        wrap_op_in_graph_and_execute(take_set, input_values={"tt": "fkjdf"})
 
     with pytest.raises(DagsterTypeCheckDidNotPass):
-        execute_solid(take_set, input_values={"tt": {"fkjdf"}})
+        wrap_op_in_graph_and_execute(take_set, input_values={"tt": {"fkjdf"}})
 
 
 def test_typed_set_type_loader():
@@ -133,9 +133,9 @@ def test_typed_set_type_loader():
 
     expected_output = set([1, 2, 3, 4])
     assert (
-        execute_solid(
+        wrap_op_in_graph_and_execute(
             take_set,
-            run_config={"solids": {"take_set": {"inputs": {"tt": list(expected_output)}}}},
+            run_config={"inputs": {"tt": list(expected_output)}},
         ).output_value()
         == expected_output
     )
