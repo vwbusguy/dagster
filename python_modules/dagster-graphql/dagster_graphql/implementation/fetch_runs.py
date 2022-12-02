@@ -1,6 +1,5 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Dict, KeysView, List, Mapping, Sequence, cast
-from dagster._core.definitions.job_definition import JobDefinition
 
 from dagster_graphql.implementation.fetch_assets import get_asset_nodes_by_asset_key
 from graphene import ResolveInfo
@@ -9,6 +8,7 @@ from dagster import AssetKey
 from dagster import _check as check
 from dagster._config import validate_config
 from dagster._core.definitions import create_run_config_schema
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.errors import DagsterRunNotFoundError
 from dagster._core.execution.stats import RunStepKeyStatsSnapshot, StepEventStatus
 from dagster._core.host_representation import PipelineSelector

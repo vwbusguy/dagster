@@ -3,12 +3,12 @@ import json
 from unittest import mock
 
 import pytest
-from dagster._core.definitions.graph_definition import GraphDefinition
-from dagster._core.definitions.job_definition import JobDefinition
 from dagster_k8s.container_context import K8sContainerContext
 from dagster_k8s.executor import K8sStepHandler, k8s_job_executor
 from dagster_k8s.job import UserDefinedDagsterK8sConfig
 
+from dagster._core.definitions.graph_definition import GraphDefinition
+from dagster._core.definitions.job_definition import JobDefinition
 from dagster._core.definitions.mode import ModeDefinition
 from dagster._core.definitions.reconstruct import reconstructable
 from dagster._core.errors import DagsterUnmetExecutorRequirementsError
@@ -31,13 +31,13 @@ def _get_pipeline(name, solid_tags=None):
 
     return JobDefinition(
         graph_def=GraphDefinition(
-        name=name,
-        node_defs=[foo],
+            name=name,
+            node_defs=[foo],
         ),
         _mode_def=ModeDefinition(
-                executor_defs=[k8s_job_executor],
-                resource_defs={"io_manager": fs_io_manager},
-            )
+            executor_defs=[k8s_job_executor],
+            resource_defs={"io_manager": fs_io_manager},
+        ),
     )
 
 

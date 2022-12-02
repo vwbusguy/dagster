@@ -1,7 +1,8 @@
-from typing import Any, Dict, NamedTuple, Optional, Union
+from typing import Any, Callable, Dict, NamedTuple, Optional, Union
 
 import dagster._check as check
 from dagster._annotations import PublicAttr, public
+from dagster._core.definitions.logger_definition import LoggerDefinition
 from dagster._core.errors import DagsterInvariantViolationError
 from dagster._core.events import DagsterEvent
 from dagster._core.utils import coerce_valid_log_level
@@ -167,7 +168,7 @@ def construct_event_record(logger_message: StructuredLoggerMessage) -> EventLogE
     )
 
 
-def construct_event_logger(event_record_callback):
+def construct_event_logger(event_record_callback: Callable[[EventLogEntry], None]) -> LoggerDefinition:
     """
     Callback receives a stream of event_records. Piggybacks on the logging machinery.
     """
@@ -182,7 +183,7 @@ def construct_event_logger(event_record_callback):
     )
 
 
-def construct_json_event_logger(json_path):
+def construct_json_event_logger(json_path: str) -> LoggerDefinition:
     """Record a stream of event records to json"""
     check.str_param(json_path, "json_path")
     return construct_single_handler_logger(

@@ -4,98 +4,95 @@ from dagster import (
     Any,
     DagsterInvalidDefinitionError,
     DependencyDefinition,
+    In,
     Int,
     List,
     MultiDependencyDefinition,
     Nothing,
+    op,
 )
 from dagster._core.definitions.composition import MappedInputPlaceholder
 from dagster._core.definitions.decorators.graph_decorator import graph
+from dagster._core.definitions.decorators.job_decorator import job
 from dagster._core.definitions.graph_definition import GraphDefinition
 from dagster._core.definitions.job_definition import JobDefinition
-from dagster._legacy import (
-    InputDefinition,
-    OutputDefinition,
-    execute_pipeline,
-    lambda_solid,
-    pipeline,
-    solid,
-)
+from dagster._core.definitions.output import Out
+from dagster._legacy import InputDefinition, OutputDefinition
 
 
 def test_simple_values():
-    @solid(input_defs=[InputDefinition("numbers", List[Int])])
+    @op(ins={"numbers": In(List[Int])})
     def sum_num(_context, numbers):
         # cant guarantee order
         assert set(numbers) == set([1, 2, 3])
         return sum(numbers)
 
-    @lambda_solid
+    @op
     def emit_1():
         return 1
 
-    @lambda_solid
+    @op
     def emit_2():
         return 2
 
-    @lambda_solid
+    @op
     def emit_3():
         return 3
 
-    result = execute_pipeline(
-        JobDefinition(
-            graph_def=GraphDefinition(
-                name="input_test",
-                solid_defs=[emit_1, emit_2, emit_3, sum_num],
-                dependencies={
-                    "sum_num": {
-                        "numbers": MultiDependencyDefinition(
-                            [
-                                DependencyDefinition("emit_1"),
-                                DependencyDefinition("emit_2"),
-                                DependencyDefinition("emit_3"),
-                            ]
-                        )
-                    }
-                },
-            )
+    foo_job = JobDefinition(
+        graph_def=GraphDefinition(
+            name="input_test",
+            node_defs=[emit_1, emit_2, emit_3, sum_num],
+            dependencies={
+                "sum_num": {
+                    "numbers": MultiDependencyDefinition(
+                        [
+                            DependencyDefinition("emit_1"),
+                            DependencyDefinition("emit_2"),
+                            DependencyDefinition("emit_3"),
+                        ]
+                    )
+                }
+            },
         )
     )
+    result = foo_job.execute_in_process()
     assert result.success
-    assert result.result_for_node("sum_num").output_value() == 6
+
+    assert result.output_for_node("sum_num") == 6
 
 
-@solid(input_defs=[InputDefinition("stuff", List[Any])])
+@op(ins={"stuff": In(List[Any])})
 def collect(_context, stuff):
     assert set(stuff) == set([1, None, "one"])
     return stuff
 
 
-@lambda_solid
+@op
 def emit_num():
     return 1
 
 
-@lambda_solid
+@op
 def emit_none():
     pass
 
 
-@lambda_solid
+@op
 def emit_str():
     return "one"
 
 
-@lambda_solid(output_def=OutputDefinition(Nothing))
+@op(out=Out(Nothing))
 def emit_nothing():
     pass
 
 
 def test_interleaved_values():
-    result = execute_pipeline(
-        JobDefinition(
+    foo_job = JobDefinition(
+        graph_def=GraphDefinition(
             name="input_test",
-            solid_defs=[emit_num, emit_none, emit_str, collect],
+            node_defs=[emit_num, emit_none, emit_str, collect],
             dependencies={
                 "collect": {
                     "stuff": MultiDependencyDefinition(
@@ -109,29 +106,30 @@ def test_interleaved_values():
             },
         )
     )
+    result = foo_job.execute_in_process()
     assert result.success
 
 
 def test_dsl():
-    @pipeline
+    @job
     def input_test():
         collect([emit_num(), emit_none(), emit_str()])
 
-    result = execute_pipeline(input_test)
+    result = input_test.execute_in_process()
 
     assert result.success
 
 
 def test_collect_one():
-    @lambda_solid
+    @op
     def collect_one(list_arg):
         assert list_arg == ["one"]
 
-    @pipeline
+    @job
     def multi_one():
         collect_one([emit_str()])
 
-    assert execute_pipeline(multi_one).success
+    assert multi_one.execute_in_process().success
 
 
 def test_fan_in_manual():
@@ -230,7 +228,7 @@ def test_nothing_deps():
     JobDefinition(
         graph_def=GraphDefinition(
             name="input_test",
-            solid_defs=[emit_num, emit_nothing, emit_str, collect],
+            node_defs=[emit_num, emit_nothing, emit_str, collect],
             dependencies={
                 "collect": {
                     "stuff": MultiDependencyDefinition(

@@ -121,7 +121,7 @@ class ExecutionResult(ABC):
         return self._filter_events_by_handle(NodeHandle.from_string(node_name))
 
     def get_job_failure_event(self) -> DagsterEvent:
-        """Returns a DagsterEvent with type DagsterEventType.PIPELINE_FAILURE if it ocurred during
+        """Returns a DagsterEvent with type DagsterEventType.PIPELINE_FAILURE if it occurred during
         execution
         """
         events = self.filter_events(
