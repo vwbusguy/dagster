@@ -122,6 +122,31 @@ def _step_output_error_checked_user_event_sequence(
                     "must yield DynamicOutput, got Output."
                 )
 
+            # For any output associated with an asset, make sure that it has been yielded only after
+            # any dependency assets in the same step have been yielded. Without this chcek,
+            # downstream assets may be yielded before their dependencies, which disrupts the logical
+            # version computation.
+            asset_layer = step_context.pipeline_def.asset_layer
+            node_handle = step_context.solid_handle
+            asset_info = asset_layer.asset_info_for_output(node_handle, output_def.name)
+            if (
+                asset_info is not None
+                and asset_info.is_required
+                and asset_layer.has_assets_def_for_asset(asset_info.key)
+            ):
+                assets_def = asset_layer.assets_def_for_asset(asset_info.key)
+                if assets_def is not None:
+                    all_dep_keys = asset_layer.upstream_assets_for_asset(asset_info.key)
+                    step_local_asset_keys = assets_def.asset_keys
+                    step_local_dep_keys = all_dep_keys & step_local_asset_keys
+                    for dep_key in step_local_dep_keys:
+                        output_name = assets_def.get_output_name_for_asset_key(dep_key)
+                        if not step_context.has_seen_output(output_name):
+                            raise DagsterInvariantViolationError(
+                                f'Asset "{asset_info.key.to_user_string()}" was yielded before its dependency "{dep_key.to_user_string()}".'
+                                f"Multiassets yielding multiple asset outputs must yield them in topological order."
+                            )
+
             step_context.observe_output(output.output_name)
 
             metadata = step_context.get_output_metadata(output.output_name)

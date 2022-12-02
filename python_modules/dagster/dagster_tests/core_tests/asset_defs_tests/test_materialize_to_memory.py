@@ -219,8 +219,8 @@ def test_materialize_multi_asset():
         },
     )
     def multi_asset_with_internal_deps(thing):  # pylint: disable=unused-argument
-        yield Output(1, "my_out_name")
         yield Output(2, "my_other_out_name")
+        yield Output(1, "my_out_name")
 
     result = materialize_to_memory([thing_asset, multi_asset_with_internal_deps])
     assert result.success
