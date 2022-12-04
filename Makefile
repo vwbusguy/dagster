@@ -25,35 +25,29 @@ check_black:
 	black --check --fast \
     examples/docs_snippets
 
+# The `--exit-zero` for the first command means `make` will run the second
+# (docs_snippets-specific) command even if `ruff` has unfixable errors from the
+# first command.
+ruff:
+	ruff --fix \
+		--exit-zero \
+		--extend-exclude="*/__generated__/*,*/dagster_airflow/vendor/*,*/snapshots/*,examples/docs_snippets/*.py" \
+		--config=pyproject.toml \
+		`git ls-files '*.py'`
+	ruff --fix \
+		--line-length=88 \
+		--config=pyproject.toml \
+		`git ls-files 'examples/docs_snippets/*.py'`
 
-# NOTE: We use `git ls-files` instead of isort's built-in recursive discovery
-# because it is much faster. Note that we also need to skip files with `git
-# ls-files` (the `:!:` directives are exclued patterns). Even isort
-# `--skip`/`--filter-files` is very slow.
-isort:
-	isort \
-    `git ls-files '.buildkite/*.py' 'examples/*.py' 'integration_tests/*.py' 'helm/*.py' 'python_modules/*.py' \
-      ':!:examples/docs_snippets' \
-      ':!:*/snapshots/*.py'`
-	isort \
-   `git ls-files 'examples/docs_snippets/*.py'`
-
-check_isort:
-	isort --check \
-    `git ls-files '.buildkite/*.py' 'examples/*.py' 'integration_tests/*.py' 'helm/*.py' 'python_modules/*.py' \
-      ':!:examples/docs_snippets' \
-      ':!:*/snapshots/*.py'`
-	isort --check \
-    `git ls-files 'examples/docs_snippets/*.py'`
-
-pylint:
-	pylint \
-    `git ls-files '.buildkite/*.py' 'examples/*.py' 'integration_tests/*.py' \
-      'helm/*.py' 'python_modules/*.py' 'scripts/*.py' \
-      ':!:examples/with_airflow' \
-      ':!:python_modules/libraries/dagster-airflow' \
-      ':!:vendor' \
-      ':!:*/snapshots/*.py'`
+check_ruff:
+	ruff \
+		--extend-exclude="*/__generated__/*,*/dagster_airflow/vendor/*,*/snapshots/*,examples/docs_snippets/*.py" \
+		--config=pyproject.toml \
+		`git ls-files '*.py'`
+	ruff \
+		--line-length=88 \
+		--config=pyproject.toml \
+		`git ls-files 'examples/docs_snippets/*.py'`
 
 yamllint:
 	yamllint -c .yamllint.yaml --strict \
