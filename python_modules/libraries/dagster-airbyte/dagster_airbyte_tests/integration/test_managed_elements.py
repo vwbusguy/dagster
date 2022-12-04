@@ -47,7 +47,6 @@ def docker_compose_airbyte_instance_fixture(
     """
 
     with docker_compose_cm(docker_compose_file, env_file=docker_compose_env_file) as hostnames:
-
         webapp_host = hostnames["airbyte-webapp"]
         webapp_port = "8000" if webapp_host == "localhost" else "80"
 
@@ -107,7 +106,6 @@ def airbyte_source_files_fixture():
 
 @pytest.mark.parametrize("filename", ["example_airbyte_stack", "example_airbyte_stack_generated"])
 def test_basic_integration(empty_airbyte_instance, airbyte_source_files, filename):
-
     ab_instance = airbyte_resource.configured(
         {
             "host": os.getenv("AIRBYTE_HOSTNAME"),
@@ -220,7 +218,6 @@ def test_basic_integration(empty_airbyte_instance, airbyte_source_files, filenam
 
 
 def test_change_source_and_destination(empty_airbyte_instance, airbyte_source_files):
-
     # Set up example element and ensure no diff
     apply(TEST_ROOT_DIR, "example_airbyte_stack:reconciler")
 
@@ -277,7 +274,6 @@ def test_change_source_and_destination(empty_airbyte_instance, airbyte_source_fi
 
 
 def test_mark_secrets_as_changed(docker_compose_airbyte_instance, airbyte_source_files):
-
     # First, apply a stack and check that there's no diff after applying it
     apply(TEST_ROOT_DIR, "example_airbyte_stack:reconciler")
 
@@ -315,7 +311,6 @@ def test_mark_secrets_as_changed(docker_compose_airbyte_instance, airbyte_source
 
 
 def test_change_destination_namespace(empty_airbyte_instance, airbyte_source_files):
-
     # Set up example element and ensure no diff
     apply(TEST_ROOT_DIR, "example_airbyte_stack:reconciler")
     check_result = check(TEST_ROOT_DIR, "example_airbyte_stack:reconciler")
@@ -372,7 +367,6 @@ def test_change_destination_namespace(empty_airbyte_instance, airbyte_source_fil
 
 
 def test_sync_modes(docker_compose_airbyte_instance, airbyte_source_files):
-
     # First, apply a stack and check that there's no diff after applying it
     apply(TEST_ROOT_DIR, "example_airbyte_stack:reconciler")
 

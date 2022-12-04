@@ -35,8 +35,9 @@ def kernel():
     ]
     if "dagster" not in installed_kernels:
         warnings.warn(
-            'Jupyter kernel "dagster" not found, installing. Don\'t worry, this is noninvasive '
-            "and you can reverse it by running `jupyter kernelspec uninstall dagster`."
+            'Jupyter kernel "dagster" not found, installing. Don\'t worry, this is'
+            " noninvasive and you can reverse it by running `jupyter kernelspec"
+            " uninstall dagster`."
         )
         subprocess.check_output(
             ["ipython", "kernel", "install", "--name", "dagster", "--user"]

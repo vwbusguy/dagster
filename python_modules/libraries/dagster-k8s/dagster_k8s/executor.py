@@ -40,8 +40,10 @@ from .job import (
             "max_concurrent": Field(
                 IntSource,
                 is_required=False,
-                description="Limit on the number of pods that will run concurrently within the scope "
-                "of a Dagster run. Note that this limit is per run, not global.",
+                description=(
+                    "Limit on the number of pods that will run concurrently within the scope "
+                    "of a Dagster run. Note that this limit is per run, not global."
+                ),
             ),
         },
     ),

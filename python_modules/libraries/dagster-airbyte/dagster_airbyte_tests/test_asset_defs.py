@@ -12,7 +12,6 @@ from .utils import get_sample_connection_json, get_sample_job_json
 @responses.activate
 @pytest.mark.parametrize("schema_prefix", ["", "the_prefix_"])
 def test_assets(schema_prefix):
-
     ab_resource = airbyte_resource(
         build_init_resource_context(
             config={
@@ -98,7 +97,6 @@ def test_assets(schema_prefix):
 @pytest.mark.parametrize("schema_prefix", ["", "the_prefix_"])
 @pytest.mark.parametrize("source_asset", [None, "my_source_asset_key"])
 def test_assets_with_normalization(schema_prefix, source_asset):
-
     ab_resource = airbyte_resource(
         build_init_resource_context(
             config={

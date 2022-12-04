@@ -93,8 +93,10 @@ class DbIOManager(IOManager):
             obj_type = type(obj)
             check.invariant(
                 obj_type in self._handlers_by_type,
-                f"{self._io_manager_name} does not have a handler for type '{obj_type}'. Has handlers "
-                f"for types '{', '.join([str(handler_type) for handler_type in self._handlers_by_type.keys()])}'",
+                f"{self._io_manager_name} does not have a handler for type '{obj_type}'. Has"
+                " handlers "
+                "for types"
+                f" '{', '.join([str(handler_type) for handler_type in self._handlers_by_type.keys()])}'",
             )
 
             self._db_client.delete_table_slice(context, table_slice)
@@ -105,7 +107,8 @@ class DbIOManager(IOManager):
         else:
             check.invariant(
                 context.dagster_type.is_nothing,
-                "Unexpected 'None' output value. If a 'None' value is intentional, set the output type to None.",
+                "Unexpected 'None' output value. If a 'None' value is intentional, set the output"
+                " type to None.",
             )
             # if obj is None, assume that I/O was handled in the op body
             handler_metadata = {}
@@ -119,7 +122,8 @@ class DbIOManager(IOManager):
         check.invariant(
             obj_type in self._handlers_by_type,
             f"{self._io_manager_name} does not have a handler for type '{obj_type}'. Has handlers "
-            f"for types '{', '.join([str(handler_type) for handler_type in self._handlers_by_type.keys()])}'",
+            "for types"
+            f" '{', '.join([str(handler_type) for handler_type in self._handlers_by_type.keys()])}'",
         )
         return self._handlers_by_type[obj_type].load_input(
             context, self._get_table_slice(context, cast(OutputContext, context.upstream_output))

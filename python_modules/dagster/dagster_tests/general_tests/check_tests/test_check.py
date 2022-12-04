@@ -1107,7 +1107,6 @@ def test_sequence_param():
 
 
 def test_opt_sequence_param():
-
     assert check.opt_sequence_param([], "sequence_param") == []
     assert check.opt_sequence_param(tuple(), "sequence_param") == tuple()
 
@@ -1125,7 +1124,6 @@ def test_opt_sequence_param():
 
 
 def test_opt_nullable_sequence_param():
-
     assert check.opt_nullable_sequence_param([], "sequence_param") == []
     assert check.opt_nullable_sequence_param(tuple(), "sequence_param") == tuple()
 

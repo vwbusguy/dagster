@@ -25,7 +25,6 @@ DELEGATE_MARKER = "celery_queue_wait"
 
 
 def core_celery_execution_loop(pipeline_context, execution_plan, step_execution_fn):
-
     check.inst_param(pipeline_context, "pipeline_context", PlanOrchestrationContext)
     check.inst_param(execution_plan, "execution_plan", ExecutionPlan)
     check.callable_param(step_execution_fn, "step_execution_fn")
@@ -59,14 +58,14 @@ def core_celery_execution_loop(pipeline_context, execution_plan, step_execution_
         retry_mode=pipeline_context.executor.retries,
         sort_key_fn=priority_for_step,
     ) as active_execution:
-
         stopping = False
 
         while (not active_execution.is_complete and not stopping) or step_results:
             if active_execution.check_for_interrupts():
                 yield DagsterEvent.engine_event(
                     pipeline_context,
-                    "Celery executor: received termination signal - revoking active tasks from workers",
+                    "Celery executor: received termination signal - revoking active tasks from"
+                    " workers",
                     EngineEventData.interrupted(list(step_results.keys())),
                 )
                 stopping = True

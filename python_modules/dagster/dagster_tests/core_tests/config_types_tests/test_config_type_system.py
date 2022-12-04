@@ -152,7 +152,10 @@ def test_single_required_enum_field_config_type():
     expected_suggested_config = {"enum_field": "OptionA"}
     with pytest.raises(
         AssertionError,
-        match=f'Missing required config entry "enum_field" at the root. .* {expected_suggested_config}',
+        match=(
+            'Missing required config entry "enum_field" at the root. .*'
+            f" {expected_suggested_config}"
+        ),
     ):
         _validate(_single_required_enum_config_dict(), {})
 
@@ -206,14 +209,20 @@ def test_multiple_required_fields_failing():
     expected_suggested_config = {"field_one": "...", "field_two": "..."}
     with pytest.raises(
         AssertionError,
-        match=rf"Missing required config entries \['field_one', 'field_two'\] at the root. .* {expected_suggested_config}",
+        match=(
+            r"Missing required config entries \['field_one', 'field_two'\] at the root. .*"
+            rf" {expected_suggested_config}"
+        ),
     ):
         _validate(_multiple_required_fields_config_dict(), {})
 
     expected_suggested_config = {"field_two": "..."}
     with pytest.raises(
         AssertionError,
-        match=rf'Missing required config entry "field_two" at the root. .* {expected_suggested_config}',
+        match=(
+            r'Missing required config entry "field_two" at the root. .*'
+            rf" {expected_suggested_config}"
+        ),
     ):
         _validate(_multiple_required_fields_config_dict(), {"field_one": "yup"})
 
@@ -250,7 +259,6 @@ def test_single_optional_field_passing():
 
 def test_single_optional_field_failing():
     with pytest.raises(AssertionError):
-
         _validate(_single_optional_string_config_dict(), {"optional_field": 1})
 
     with pytest.raises(AssertionError):
@@ -521,7 +529,10 @@ def test_single_nested_config_undefined_errors():
 
     with pytest.raises(
         AssertionError,
-        match='Invalid scalar at path root:nested:int_field. Value "dkjfdk" of type .* is not valid for expected type "Int".',
+        match=(
+            'Invalid scalar at path root:nested:int_field. Value "dkjfdk" of type .* is not valid'
+            ' for expected type "Int".'
+        ),
     ):
         _validate(_single_nested_config(), {"nested": {"int_field": "dkjfdk"}})
 
@@ -536,7 +547,10 @@ def test_single_nested_config_undefined_errors():
 
     with pytest.raises(
         AssertionError,
-        match="Invalid scalar at path root:nested:int_field. Value \"{'too_nested': 'dkjfdk'}\" of type .* is not valid for expected type \"Int\".",
+        match=(
+            "Invalid scalar at path root:nested:int_field. Value \"{'too_nested': 'dkjfdk'}\" of"
+            ' type .* is not valid for expected type "Int".'
+        ),
     ):
         _validate(_single_nested_config(), {"nested": {"int_field": {"too_nested": "dkjfdk"}}})
 
@@ -1109,7 +1123,6 @@ def test_typing_types_into_config():
         typing.Tuple[int, int],
     ]:
         with pytest.raises(DagsterInvalidDefinitionError):
-
             # pylint: disable=cell-var-from-loop; (false positive)
             @op(config_schema=Field(ttype))
             def _op(_):

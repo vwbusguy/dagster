@@ -104,7 +104,8 @@ def rename_warning(
     Common utility for managing backwards compatibility of renaming.
     """
     warnings.warn(
-        '"{old_name}" is deprecated and will be removed in {breaking_version}, use "{new_name}" instead.'.format(
+        '"{old_name}" is deprecated and will be removed in {breaking_version}, use "{new_name}"'
+        " instead.".format(
             old_name=old_name,
             new_name=new_name,
             breaking_version=breaking_version,
@@ -193,10 +194,8 @@ def experimental_functionality_warning(desc: str, stacklevel: int = 3) -> None:
 def experimental_class_param_warning(param_name: str, class_name: str, stacklevel=3) -> None:
     """Utility for warning that an argument to a constructor is experimental"""
     warnings.warn(
-        (
-            f'"{param_name}" is an experimental parameter to the class "{class_name}". It may '
-            f"break in future versions, even between dot releases. {EXPERIMENTAL_WARNING_HELP}"
-        ),
+        f'"{param_name}" is an experimental parameter to the class "{class_name}". It may '
+        f"break in future versions, even between dot releases. {EXPERIMENTAL_WARNING_HELP}",
         ExperimentalWarning,
         stacklevel=stacklevel,
     )

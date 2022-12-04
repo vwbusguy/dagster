@@ -132,7 +132,6 @@ def noop_job():
 
 
 def test_create_pipeline_snapshot():
-
     with instance_for_test() as instance:
         result = execute_job(reconstructable(noop_job), instance=instance)
         assert result.success

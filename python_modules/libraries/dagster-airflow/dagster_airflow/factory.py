@@ -88,11 +88,9 @@ class DagsterOperatorInvocationArgs(
 class DagsterOperatorParameters(
     namedtuple(
         "_DagsterOperatorParameters",
-        (
-            "recon_repo pipeline_name run_config "
-            "mode task_id step_keys dag instance_ref op_kwargs pipeline_snapshot "
-            "execution_plan_snapshot parent_pipeline_snapshot"
-        ),
+        "recon_repo pipeline_name run_config "
+        "mode task_id step_keys dag instance_ref op_kwargs pipeline_snapshot "
+        "execution_plan_snapshot parent_pipeline_snapshot",
     )
 ):
     def __new__(

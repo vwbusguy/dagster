@@ -88,7 +88,11 @@ def test_materialize_resources_not_satisfied():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="Attempted to call `materialize_to_memory` with a resource provided for io manager key 'io_manager'. Do not provide resources for io manager keys when calling `materialize_to_memory`, as it will override io management behavior for all keys.",
+        match=(
+            "Attempted to call `materialize_to_memory` with a resource provided for io manager key"
+            " 'io_manager'. Do not provide resources for io manager keys when calling"
+            " `materialize_to_memory`, as it will override io management behavior for all keys."
+        ),
     ):
         materialize_to_memory(
             with_resources([the_asset], {"foo": ResourceDefinition.hardcoded_resource("blah")})
@@ -112,7 +116,11 @@ def test_materialize_conflicting_resources():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match="resource with key 'foo' provided to job conflicts with resource provided to assets. When constructing a job, all resource definitions provided must match by reference equality for a given key.",
+        match=(
+            "resource with key 'foo' provided to job conflicts with resource provided to assets."
+            " When constructing a job, all resource definitions provided must match by reference"
+            " equality for a given key."
+        ),
     ):
         materialize_to_memory(
             [first], resources={"foo": ResourceDefinition.hardcoded_resource("2")}
@@ -139,10 +147,12 @@ def test_materialize_source_assets():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="Attempted to call `materialize_to_memory` with a resource "
-        "provided for io manager key 'the_source__io_manager'. Do not provide "
-        "resources for io manager keys when calling `materialize_to_memory`, as "
-        "it will override io management behavior for all keys.",
+        match=(
+            "Attempted to call `materialize_to_memory` with a resource "
+            "provided for io manager key 'the_source__io_manager'. Do not provide "
+            "resources for io manager keys when calling `materialize_to_memory`, as "
+            "it will override io management behavior for all keys."
+        ),
     ):
         materialize_to_memory([the_asset, the_source])
 
@@ -264,10 +274,12 @@ def test_materialize_to_memory_provided_io_manager_instance():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="Attempted to call `materialize_to_memory` with a resource "
-        "provided for io manager key 'blah'. Do not provide resources for io "
-        "manager keys when calling `materialize_to_memory`, as it will override "
-        "io management behavior for all keys.",
+        match=(
+            "Attempted to call `materialize_to_memory` with a resource "
+            "provided for io manager key 'blah'. Do not provide resources for io "
+            "manager keys when calling `materialize_to_memory`, as it will override "
+            "io management behavior for all keys."
+        ),
     ):
         materialize_to_memory([the_asset], resources={"blah": the_manager})
 
@@ -280,10 +292,12 @@ def test_materialize_to_memory_provided_io_manager_instance():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="Attempted to call `materialize_to_memory` with a resource "
-        "provided for io manager key 'blah'. Do not provide resources for io "
-        "manager keys when calling `materialize_to_memory`, as it will override "
-        "io management behavior for all keys.",
+        match=(
+            "Attempted to call `materialize_to_memory` with a resource "
+            "provided for io manager key 'blah'. Do not provide resources for io "
+            "manager keys when calling `materialize_to_memory`, as it will override "
+            "io management behavior for all keys."
+        ),
     ):
         materialize_to_memory([the_asset], resources={"blah": MyIOManager()})
 

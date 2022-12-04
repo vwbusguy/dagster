@@ -376,9 +376,9 @@ class DagsterInstance:
         if self.run_monitoring_enabled and self.run_monitoring_max_resume_run_attempts:
             check.invariant(
                 self.run_launcher.supports_resume_run,
-                "The configured run launcher does not support resuming runs. "
-                "Set max_resume_run_attempts to 0 to use run monitoring. Any runs with a failed run "
-                "worker will be marked as failed, but will not be resumed.",
+                "The configured run launcher does not support resuming runs. Set"
+                " max_resume_run_attempts to 0 to use run monitoring. Any runs with a failed run"
+                " worker will be marked as failed, but will not be resumed.",
             )
 
         if self.run_retries_enabled:
@@ -389,8 +389,8 @@ class DagsterInstance:
             )
             check.invariant(
                 self.event_log_storage.supports_event_consumer_queries(),
-                "Run retries are enabled, but the configured event log storage does not support them. "
-                "Consider switching to Postgres or Mysql.",
+                "Run retries are enabled, but the configured event log storage does not support"
+                " them. Consider switching to Postgres or Mysql.",
             )
 
     # ctors
@@ -427,19 +427,16 @@ class DagsterInstance:
 
         if not dagster_home_path:
             raise DagsterHomeNotSetError(
-                (
-                    "The environment variable $DAGSTER_HOME is not set. \n"
-                    "Dagster requires this environment variable to be set to an existing directory in your filesystem. "
-                    "This directory is used to store metadata across sessions, or load the dagster.yaml "
-                    "file which can configure storing metadata in an external database.\n"
-                    "You can resolve this error by exporting the environment variable. For example, you can run the following command in your shell or include it in your shell configuration file:\n"
-                    '\texport DAGSTER_HOME=~"/dagster_home"\n'
-                    "or PowerShell\n"
-                    "$env:DAGSTER_HOME = ($home + '\\dagster_home')"
-                    "or batch"
-                    "set DAGSTER_HOME=%UserProfile%/dagster_home"
-                    "Alternatively, DagsterInstance.ephemeral() can be used for a transient instance.\n"
-                )
+                "The environment variable $DAGSTER_HOME is not set. \nDagster requires this"
+                " environment variable to be set to an existing directory in your filesystem. This"
+                " directory is used to store metadata across sessions, or load the dagster.yaml"
+                " file which can configure storing metadata in an external database.\nYou can"
+                " resolve this error by exporting the environment variable. For example, you can"
+                " run the following command in your shell or include it in your shell configuration"
+                ' file:\n\texport DAGSTER_HOME=~"/dagster_home"\nor PowerShell\n$env:DAGSTER_HOME'
+                " = ($home + '\\dagster_home')or batchset"
+                " DAGSTER_HOME=%UserProfile%/dagster_homeAlternatively, DagsterInstance.ephemeral()"
+                " can be used for a transient instance.\n"
             )
 
         dagster_home_path = os.path.expanduser(dagster_home_path)
@@ -455,8 +452,8 @@ class DagsterInstance:
         if not (os.path.exists(dagster_home_path) and os.path.isdir(dagster_home_path)):
             raise DagsterInvariantViolationError(
                 (
-                    '$DAGSTER_HOME "{}" is not a directory or does not exist. Dagster requires this '
-                    "environment variable to be set to an existing directory in your filesystem"
+                    '$DAGSTER_HOME "{}" is not a directory or does not exist. Dagster requires this'
+                    " environment variable to be set to an existing directory in your filesystem"
                 ).format(dagster_home_path)
             )
 
@@ -531,9 +528,11 @@ class DagsterInstance:
             "Attempted to prepare an ineligible DagsterInstance ({inst_type}) for cross "
             "process communication.{dagster_home_msg}".format(
                 inst_type=self._instance_type,
-                dagster_home_msg="\nDAGSTER_HOME environment variable is not set, set it to "
-                "a directory on the filesystem for dagster to use for storage and cross "
-                "process coordination."
+                dagster_home_msg=(
+                    "\nDAGSTER_HOME environment variable is not set, set it to "
+                    "a directory on the filesystem for dagster to use for storage and cross "
+                    "process coordination."
+                )
                 if os.getenv("DAGSTER_HOME") is None
                 else "",
             )
@@ -570,7 +569,6 @@ class DagsterInstance:
         )
 
     def info_dict(self):
-
         settings = self._settings if self._settings else {}
 
         ret = {
@@ -755,7 +753,6 @@ class DagsterInstance:
         from dagster._core.storage.migration.utils import upgrading_instance
 
         with upgrading_instance(self):
-
             if print_fn:
                 print_fn("Updating run storage...")
             self._run_storage.upgrade()
@@ -970,7 +967,6 @@ class DagsterInstance:
         external_pipeline_origin=None,
         pipeline_code_origin=None,
     ) -> DagsterRun:
-
         # https://github.com/dagster-io/dagster/issues/2403
         if tags and IS_AIRFLOW_INGEST_PIPELINE_STR in tags:
             if AIRFLOW_EXECUTION_DATE_STR not in tags:
@@ -1104,7 +1100,10 @@ class DagsterInstance:
                         event = DagsterEvent(
                             event_type_value=DagsterEventType.ASSET_MATERIALIZATION_PLANNED.value,
                             pipeline_name=pipeline_name,
-                            message=f"{pipeline_name} intends to materialize asset {asset_key.to_string()}",
+                            message=(
+                                f"{pipeline_name} intends to materialize asset"
+                                f" {asset_key.to_string()}"
+                            ),
                             event_specific_data=AssetMaterializationPlannedData(asset_key),
                         )
                         self.report_dagster_event(event, pipeline_run.run_id, logging.DEBUG)
@@ -1129,7 +1128,6 @@ class DagsterInstance:
         external_pipeline_origin=None,
         pipeline_code_origin=None,
     ) -> DagsterRun:
-
         pipeline_run = self._construct_run_with_snapshots(
             pipeline_name=pipeline_name,
             run_id=run_id,
@@ -1672,7 +1670,6 @@ class DagsterInstance:
         self.handle_new_event(event_record)
 
     def report_run_canceling(self, run, message=None):
-
         from dagster._core.events import DagsterEvent, DagsterEventType
 
         check.inst_param(run, "run", DagsterRun)

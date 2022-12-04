@@ -69,7 +69,10 @@ def normalize_metadata(
         deprecation_warning(
             'Argument "metadata_entries"',
             "1.0.0",
-            additional_warn_txt="Use argument `metadata` instead. The `MetadataEntry` `description` attribute is also deprecated-- argument `metadata` takes a label: value dictionary.",
+            additional_warn_txt=(
+                "Use argument `metadata` instead. The `MetadataEntry` `description` attribute is"
+                " also deprecated-- argument `metadata` takes a label: value dictionary."
+            ),
             stacklevel=4,  # to get the caller of `normalize_metadata`
         )
         return check.sequence_param(
@@ -89,7 +92,10 @@ def normalize_metadata(
                 deprecation_warning(
                     "Support for arbitrary metadata values",
                     "1.0.0",
-                    additional_warn_txt=f"In the future, all user-supplied metadata values must be one of {RawMetadataValue}",
+                    additional_warn_txt=(
+                        "In the future, all user-supplied metadata values must be one of"
+                        f" {RawMetadataValue}"
+                    ),
                     stacklevel=4,  # to get the caller of `normalize_metadata`
                 )
                 metadata_entries.append(
@@ -139,8 +145,8 @@ def package_metadata_value(label: str, raw_value: RawMetadataValue) -> "Metadata
 
     if isinstance(raw_value, (MetadataEntry, PartitionMetadataEntry)):
         raise DagsterInvalidMetadata(
-            f"Expected a metadata value, found an instance of {raw_value.__class__.__name__}. Consider "
-            "instead using a MetadataValue wrapper for the value."
+            f"Expected a metadata value, found an instance of {raw_value.__class__.__name__}."
+            " Consider instead using a MetadataValue wrapper for the value."
         )
     try:
         value = normalize_metadata_value(raw_value)
@@ -848,7 +854,6 @@ class TableMetadataValue(
             return "string"
 
     def __new__(cls, records: Sequence[TableRecord], schema: Optional[TableSchema]):
-
         check.sequence_param(records, "records", of_type=TableRecord)
         check.opt_inst_param(schema, "schema", TableSchema)
 

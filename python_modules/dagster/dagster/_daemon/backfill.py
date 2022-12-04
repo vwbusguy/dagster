@@ -61,7 +61,8 @@ def execute_backfill_iteration(
             logger.info(f"Starting backfill for {backfill_id}")
         else:
             logger.info(
-                f"Resuming backfill for {backfill_id} from {backfill_job.last_submitted_partition_name}"
+                f"Resuming backfill for {backfill_id} from"
+                f" {backfill_job.last_submitted_partition_name}"
             )
 
         origin = (
@@ -107,7 +108,8 @@ def execute_backfill_iteration(
                     time.sleep(CHECKPOINT_INTERVAL)
                 else:
                     logger.info(
-                        f"Backfill completed for {backfill_id} for {len(backfill_job.partition_names)} partitions"
+                        f"Backfill completed for {backfill_id} for"
+                        f" {len(backfill_job.partition_names)} partitions"
                     )
                     instance.update_backfill(backfill_job.with_status(BulkActionStatus.COMPLETED))
                     yield None

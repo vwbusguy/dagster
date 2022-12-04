@@ -118,7 +118,6 @@ class StepDelegatingExecutor(Executor):
 
                 possibly_in_flight_steps = active_execution.rebuild_from_events(prior_events)
                 for step in possibly_in_flight_steps:
-
                     step_handler_context = self._get_step_handler_context(
                         plan_context, [step], active_execution
                     )
@@ -139,7 +138,8 @@ class StepDelegatingExecutor(Executor):
                         # This should probably be a separate should_resume_step method on the step handler.
                         DagsterEvent.engine_event(
                             step_handler_context.get_step_context(step.key),
-                            f"Including {step.key} in the new run since it raised an error when checking whether it was running",
+                            f"Including {step.key} in the new run since it raised an error when"
+                            " checking whether it was running",
                             EngineEventData(
                                 error=serializable_error_info_from_exc_info(sys.exc_info())
                             ),
@@ -149,7 +149,8 @@ class StepDelegatingExecutor(Executor):
                         if not health_check.is_healthy:
                             DagsterEvent.engine_event(
                                 step_handler_context.get_step_context(step.key),
-                                f"Including step {step.key} in the new run since it is not currently running: {health_check.unhealthy_reason}",
+                                f"Including step {step.key} in the new run since it is not"
+                                f" currently running: {health_check.unhealthy_reason}",
                             )
                             should_retry_step = True
 
@@ -171,7 +172,6 @@ class StepDelegatingExecutor(Executor):
             # then is_complete. get_steps_to_execute updates the state of ActiveExecution, and without it
             # is_complete can return true when we're just between steps.
             while not active_execution.is_complete:
-
                 if active_execution.check_for_interrupts():
                     active_execution.mark_interrupted()
                     if not plan_context.instance.run_will_resume(plan_context.run_id):
@@ -208,7 +208,6 @@ class StepDelegatingExecutor(Executor):
                     plan_context.instance,
                     plan_context.run_id,
                 ):  # type: ignore
-
                     yield dagster_event
                     # STEP_SKIPPED events are only emitted by ActiveExecution, which already handles
                     # and yields them.
@@ -241,7 +240,6 @@ class StepDelegatingExecutor(Executor):
                 ).total_seconds() >= self._check_step_health_interval_seconds:
                     last_check_step_health_time = curr_time
                     for _, step in running_steps.items():
-
                         step_context = plan_context.for_step(step)
 
                         try:
@@ -257,7 +255,10 @@ class StepDelegatingExecutor(Executor):
                                         error=None,
                                         user_failure_data=None,
                                     ),
-                                    message=f"Step {step.key} failed health check: {health_check_result.unhealthy_reason}",
+                                    message=(
+                                        f"Step {step.key} failed health check:"
+                                        f" {health_check_result.unhealthy_reason}"
+                                    ),
                                 )
                         except Exception:
                             serializable_error = serializable_error_info_from_exc_info(

@@ -230,7 +230,6 @@ def test_k8s_run_launcher_resources(template: HelmTemplate):
 
 
 def test_k8s_run_launcher_scheduler_name(template: HelmTemplate):
-
     helm_values = DagsterHelmValues.construct(
         runLauncher=RunLauncher.construct(
             type=RunLauncherType.K8S,

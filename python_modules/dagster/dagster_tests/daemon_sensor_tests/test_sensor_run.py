@@ -989,7 +989,8 @@ def test_bad_load_sensor_repository(caplog, executor, instance, workspace_contex
         assert len(ticks) == 0
 
         assert (
-            "Could not find repository invalid_repo_name in location test_location to run sensor simple_sensor"
+            "Could not find repository invalid_repo_name in location test_location to run sensor"
+            " simple_sensor"
             in caplog.text
         )
 
@@ -1074,7 +1075,8 @@ def test_error_sensor(caplog, executor, instance, workspace_context, external_re
 
         assert (
             "Error occurred during the execution of evaluation_fn for sensor error_sensor"
-        ) in caplog.text
+            in caplog.text
+        )
 
         # Tick updated the sensor's last tick time, but not its cursor (due to the failure)
         state = instance.get_instigator_state(
@@ -1128,7 +1130,7 @@ def test_wrong_config_sensor(caplog, executor, instance, workspace_context, exte
             "Error in config for pipeline",
         )
 
-        assert ("Error in config for pipeline") in caplog.text
+        assert "Error in config for pipeline" in caplog.text
 
     freeze_datetime = freeze_datetime.add(seconds=60)
     caplog.clear()
@@ -1151,7 +1153,7 @@ def test_wrong_config_sensor(caplog, executor, instance, workspace_context, exte
             "Error in config for pipeline",
         )
 
-        assert ("Error in config for pipeline") in caplog.text
+        assert "Error in config for pipeline" in caplog.text
 
 
 @pytest.mark.parametrize("executor", get_sensor_executors())
@@ -1202,7 +1204,8 @@ def test_launch_failure(caplog, executor, workspace_context, external_repo):
 
             assert (
                 "Run {run_id} created successfully but failed to launch:".format(run_id=run.run_id)
-            ) in caplog.text
+                in caplog.text
+            )
 
             assert "The entire purpose of this is to throw on launch" in caplog.text
 
@@ -1223,7 +1226,6 @@ def test_launch_once(caplog, executor, instance, workspace_context, external_rep
     )
 
     with pendulum.test(freeze_datetime):
-
         external_sensor = external_repo.get_external_sensor("run_key_sensor")
         instance.add_instigator_state(
             InstigatorState(
@@ -1275,7 +1277,8 @@ def test_launch_once(caplog, executor, instance, workspace_context, external_rep
         assert not ticks[0].run_ids
 
         assert (
-            'Skipping 1 run for sensor run_key_sensor already completed with run keys: ["only_once"]'
+            "Skipping 1 run for sensor run_key_sensor already completed with run keys:"
+            ' ["only_once"]'
             in caplog.text
         )
 
@@ -1343,7 +1346,6 @@ def test_launch_once_unbatched(caplog, executor, workspace_context, external_rep
         no_bucket_workspace_context = workspace_context.copy_for_test_instance(instance)
 
         with pendulum.test(freeze_datetime):
-
             external_sensor = external_repo.get_external_sensor("run_key_sensor")
             instance.add_instigator_state(
                 InstigatorState(
@@ -1391,7 +1393,8 @@ def test_launch_once_unbatched(caplog, executor, workspace_context, external_rep
                 TickStatus.SKIPPED,
             )
             assert (
-                'Skipping 1 run for sensor run_key_sensor already completed with run keys: ["only_once"]'
+                "Skipping 1 run for sensor run_key_sensor already completed with run keys:"
+                ' ["only_once"]'
                 in caplog.text
             )
 
@@ -1488,7 +1491,6 @@ def test_custom_interval_sensor_with_offset(
     monkeypatch.setattr(time, "sleep", fake_sleep)
 
     with pendulum.test(freeze_datetime):
-
         # 60 second custom interval
         external_sensor = external_repo.get_external_sensor("custom_interval_sensor")
 
@@ -1825,7 +1827,6 @@ def test_asset_sensor(executor, instance, workspace_context, external_repo):
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate the foo asset
         execute_pipeline(foo_pipeline, instance=instance)
 
@@ -1868,7 +1869,6 @@ def test_asset_job_sensor(executor, instance, workspace_context, external_repo):
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate the foo asset
         execute_pipeline(foo_pipeline, instance=instance)
 
@@ -1917,7 +1917,6 @@ def test_asset_sensor_not_triggered_on_observation(
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate the foo asset
         execute_pipeline(foo_pipeline, instance=instance)
 
@@ -1962,7 +1961,6 @@ def test_multi_asset_sensor(executor, instance, workspace_context, external_repo
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate asset_a
         materialize([asset_a], instance=instance)
 
@@ -1983,7 +1981,6 @@ def test_multi_asset_sensor(executor, instance, workspace_context, external_repo
         freeze_datetime = freeze_datetime.add(seconds=60)
 
     with pendulum.test(freeze_datetime):
-
         # should generate asset_b
         materialize([asset_b], instance=instance)
 
@@ -2054,7 +2051,6 @@ def test_multi_asset_sensor_w_many_events(executor, instance, workspace_context,
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate asset_a
         materialize([asset_a], instance=instance)
 
@@ -2074,7 +2070,6 @@ def test_multi_asset_sensor_w_many_events(executor, instance, workspace_context,
         freeze_datetime = freeze_datetime.add(seconds=60)
 
     with pendulum.test(freeze_datetime):
-
         # should generate asset_a
         materialize([asset_a], instance=instance)
 
@@ -2123,7 +2118,6 @@ def test_multi_asset_sensor_w_no_cursor_update(
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should generate asset_a
         materialize([asset_a], instance=instance)
 
@@ -2243,7 +2237,6 @@ def test_multi_job_sensor(executor, instance, workspace_context, external_repo):
 
         freeze_datetime = freeze_datetime.add(seconds=60)
     with pendulum.test(freeze_datetime):
-
         # should fire the asset sensor
         evaluate_sensors(workspace_context, executor)
         ticks = instance.get_ticks(job_sensor.get_external_origin_id(), job_sensor.selector_id)
@@ -2281,11 +2274,9 @@ def test_bad_run_request_untargeted(executor, instance, workspace_context, exter
             freeze_datetime,
             TickStatus.FAILURE,
             None,
-            (
-                "Error in sensor bad_request_untargeted: Sensor evaluation function returned a "
-                "RunRequest for a sensor lacking a specified target (job_name, job, or "
-                "jobs)."
-            ),
+            "Error in sensor bad_request_untargeted: Sensor evaluation function returned a "
+            "RunRequest for a sensor lacking a specified target (job_name, job, or "
+            "jobs).",
         )
 
 
@@ -2309,10 +2300,8 @@ def test_bad_run_request_mismatch(executor, instance, workspace_context, externa
             freeze_datetime,
             TickStatus.FAILURE,
             None,
-            (
-                "Error in sensor bad_request_mismatch: Sensor returned a RunRequest with "
-                "job_name config_pipeline. Expected one of: ['the_graph']"
-            ),
+            "Error in sensor bad_request_mismatch: Sensor returned a RunRequest with "
+            "job_name config_pipeline. Expected one of: ['the_graph']",
         )
 
 
@@ -2336,11 +2325,9 @@ def test_bad_run_request_unspecified(executor, instance, workspace_context, exte
             freeze_datetime,
             TickStatus.FAILURE,
             None,
-            (
-                "Error in sensor bad_request_unspecified: Sensor returned a RunRequest that "
-                "did not specify job_name for the requested run. Expected one of: "
-                "['the_graph', 'config_graph']"
-            ),
+            "Error in sensor bad_request_unspecified: Sensor returned a RunRequest that "
+            "did not specify job_name for the requested run. Expected one of: "
+            "['the_graph', 'config_graph']",
         )
 
 
@@ -2359,7 +2346,6 @@ def test_status_in_code_sensor(executor, instance):
         ).repository_location.get_repository("the_status_in_code_repo")
 
         with pendulum.test(freeze_datetime):
-
             running_sensor = external_repo.get_external_sensor("always_running_sensor")
             not_running_sensor = external_repo.get_external_sensor("never_running_sensor")
 

@@ -99,7 +99,8 @@ class DagsterGraphQLClient:
             return self._client.execute(gql(query), variable_values=variables)
         except Exception as exc:  # catch generic Exception from the gql client
             raise DagsterGraphQLClientError(
-                f"Exception occured during execution of query \n{query}\n with variables \n{variables}\n"
+                f"Exception occured during execution of query \n{query}\n with variables"
+                f" \n{variables}\n"
             ) from exc
 
     def _get_repo_locations_and_names_with_pipeline(self, pipeline_name: str) -> List[PipelineInfo]:
@@ -148,7 +149,8 @@ class DagsterGraphQLClient:
             if len(pipeline_info_lst) == 0:
                 raise DagsterGraphQLClientError(
                     f"{pipeline_or_job}NotFoundError",
-                    f"No {'jobs' if is_using_job_op_graph_apis else 'pipelines'} with the name `{pipeline_name}` exist",
+                    f"No {'jobs' if is_using_job_op_graph_apis else 'pipelines'} with the name"
+                    f" `{pipeline_name}` exist",
                 )
             elif len(pipeline_info_lst) == 1:
                 pipeline_info = pipeline_info_lst[0]
@@ -156,9 +158,9 @@ class DagsterGraphQLClient:
                 repository_name = pipeline_info.repository_name
             else:
                 raise DagsterGraphQLClientError(
-                    "Must specify repository_location_name and repository_name"
-                    f" since there are multiple {'jobs' if is_using_job_op_graph_apis else 'pipelines'} with the name {pipeline_name}."
-                    f"\n\tchoose one of: {pipeline_info_lst}"
+                    "Must specify repository_location_name and repository_name since there are"
+                    f" multiple {'jobs' if is_using_job_op_graph_apis else 'pipelines'} with the"
+                    f" name {pipeline_name}.\n\tchoose one of: {pipeline_info_lst}"
                 )
 
         variables: Dict[str, Any] = {

@@ -256,12 +256,14 @@ class FromSourceAsset(
         )
         if input_asset_key is None:
             check.failed(
-                f"Must have an asset key associated with input {self.input_name} to load it using FromSourceAsset",
+                f"Must have an asset key associated with input {self.input_name} to load it using"
+                " FromSourceAsset",
             )
         input_manager_key = pipeline_def.asset_layer.io_manager_key_for_asset(input_asset_key)
         if input_manager_key is None:
             check.failed(
-                f"Must have an io_manager associated with asset {input_asset_key} to load it using FromSourceAsset"
+                f"Must have an io_manager associated with asset {input_asset_key} to load it using"
+                " FromSourceAsset"
             )
         return {input_manager_key}
 
@@ -481,7 +483,7 @@ class FromStepOutput(
                 isinstance(input_manager, InputManager),
                 f'Input "{input_def.name}" for step "{step_context.step.key}" is depending on '
                 f'the manager "{manager_key}" to load it, but it is not an InputManager. '
-                f"Please ensure that the resource returned for resource key "
+                "Please ensure that the resource returned for resource key "
                 f'"{manager_key}" is an InputManager.',
             )
         else:
@@ -494,7 +496,7 @@ class FromStepOutput(
                 f'Input "{input_def.name}" for step "{step_context.step.key}" is depending on '
                 f'the manager of upstream output "{source_handle.output_name}" from step '
                 f'"{source_handle.step_key}" to load it, but that manager is not an IOManager. '
-                f"Please ensure that the resource returned for resource key "
+                "Please ensure that the resource returned for resource key "
                 f'"{manager_key}" is an IOManager.',
             )
         load_input_context = self.get_load_context(step_context, input_def)
@@ -615,10 +617,7 @@ class FromConfig(
     ) -> Any:
         with user_code_error_boundary(
             DagsterTypeLoadingError,
-            msg_fn=lambda: (
-                f'Error occurred while loading input "{self.input_name}" of '
-                f'step "{step_context.step.key}":'
-            ),
+            msg_fn=lambda: f'Error occurred while loading input "{self.input_name}" of step "{step_context.step.key}":',
             log_manager=step_context.log,
         ):
             dagster_type = self.get_associated_input_def(step_context.pipeline_def).dagster_type
@@ -638,7 +637,6 @@ class FromConfig(
         pipeline_def: PipelineDefinition,
         resolved_run_config: ResolvedRunConfig,
     ) -> Optional[str]:
-
         config_data = self.get_associated_config(resolved_run_config)
         input_def = self.get_associated_input_def(pipeline_def)
         dagster_type = input_def.dagster_type
@@ -666,7 +664,6 @@ class FromDirectInputValue(
     def load_input_object(
         self, step_context: "StepExecutionContext", _input_def: InputDefinition
     ) -> Any:
-
         pipeline_def = step_context.pipeline_def
         if not pipeline_def.is_job:
             raise DagsterInvariantViolationError(
@@ -740,7 +737,8 @@ class FromMultipleSources(
     ),
     StepInputSource,
 ):
-    """This step input is fans-in multiple sources in to a single input. The input will receive a list."""
+    """This step input is fans-in multiple sources in to a single input. The input will receive a list.
+    """
 
     def __new__(
         cls,
@@ -845,10 +843,7 @@ def _load_input_with_input_manager(input_manager: "InputManager", context: "Inpu
     step_context = cast(StepExecutionContext, context.step_context)
     with op_execution_error_boundary(
         DagsterExecutionLoadInputError,
-        msg_fn=lambda: (
-            f'Error occurred while loading input "{context.name}" of '
-            f'step "{step_context.step.key}":'
-        ),
+        msg_fn=lambda: f'Error occurred while loading input "{context.name}" of step "{step_context.step.key}":',
         step_context=step_context,
         step_key=step_context.step.key,
         input_name=context.name,

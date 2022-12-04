@@ -206,7 +206,6 @@ def test_add_bulk_actions_columns(conn_string):
                 target_fd.write(template)
 
         with DagsterInstance.from_config(tempdir) as instance:
-
             assert get_columns(instance, "bulk_actions") & new_columns == set()
             assert get_indexes(instance, "bulk_actions") & new_indexes == set()
 
@@ -231,7 +230,6 @@ def test_add_kvs_table(conn_string):
                 target_fd.write(template)
 
         with DagsterInstance.from_config(tempdir) as instance:
-
             assert "kvs" not in get_tables(instance)
 
             instance.upgrade()
@@ -301,7 +299,6 @@ def test_add_cached_status_data_column(conn_string):
                 target_fd.write(template)
 
         with DagsterInstance.from_config(tempdir) as instance:
-
             assert get_columns(instance, "asset_keys") & new_columns == set()
 
             instance.upgrade()

@@ -32,7 +32,6 @@ if TYPE_CHECKING:
 # base class for SolidDefinition and GraphDefinition
 # represents that this is embedable within a graph
 class NodeDefinition(NamedConfigurableDefinition):
-
     _name: str
     _description: Optional[str]
     _tags: Mapping[str, str]

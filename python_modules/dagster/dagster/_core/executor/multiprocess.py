@@ -286,7 +286,8 @@ class MultiprocessExecutor(Executor):
                     raise DagsterExecutionInterruptedError()
                 elif errs:
                     raise DagsterSubprocessError(
-                        "During multiprocess execution errors occurred in child processes:\n{error_list}".format(
+                        "During multiprocess execution errors occurred in child"
+                        " processes:\n{error_list}".format(
                             error_list="\n".join(
                                 [
                                     "In process {pid}: {err}".format(pid=pid, err=err.to_string())

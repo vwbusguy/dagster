@@ -125,7 +125,6 @@ class CachingInstanceQueryer:
         after_cursor: Optional[int] = None,
         before_cursor: Optional[int] = None,
     ) -> Optional["EventLogRecord"]:
-
         if isinstance(asset, AssetKey):
             asset_partition = AssetKeyPartitionKey(asset_key=asset)
         else:
@@ -274,7 +273,6 @@ class CachingInstanceQueryer:
         record_tags: Mapping[str, str],
         required_keys: AbstractSet[AssetKey],
     ) -> Dict[AssetKey, Tuple[Optional[int], Optional[float]]]:
-
         if record_id is None:
             return {key: (None, None) for key in required_keys}
 
@@ -286,7 +284,6 @@ class CachingInstanceQueryer:
         # not all required keys have known values
         unknown_required_keys = required_keys - set(known_data.keys())
         if unknown_required_keys:
-
             # find the upstream times of each of the parents of this asset
             for parent_key in asset_graph.get_parents(asset_key):
                 if parent_key in asset_graph.source_asset_keys:
@@ -358,7 +355,8 @@ class CachingInstanceQueryer:
         """
         if record.asset_key is None or record.asset_materialization is None:
             raise DagsterInvariantViolationError(
-                "Can only calculate data times for records with a materialization event and an asset_key."
+                "Can only calculate data times for records with a materialization event and an"
+                " asset_key."
             )
         if upstream_keys is None:
             upstream_keys = asset_graph.get_non_source_roots(record.asset_key)

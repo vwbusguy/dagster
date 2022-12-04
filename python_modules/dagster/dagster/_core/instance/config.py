@@ -36,9 +36,9 @@ def dagster_instance_config(
 
     if not os.path.exists(config_yaml_path) and is_dagster_home_set():
         warnings.warn(
-            f"No dagster instance configuration file ({config_filename}) found at "
-            f"{base_dir}. Defaulting to loading and storing all metadata with {base_dir}. "
-            f"If this is the desired behavior, create an empty {config_filename} file in {base_dir}."
+            f"No dagster instance configuration file ({config_filename}) found at {base_dir}."
+            f" Defaulting to loading and storing all metadata with {base_dir}. If this is the"
+            f" desired behavior, create an empty {config_filename} file in {base_dir}."
         )
 
     dagster_config_dict = merge_dicts(load_yaml_from_globs(config_yaml_path) or {}, overrides)
@@ -82,20 +82,16 @@ def dagster_instance_config(
         or "schedule_storage" in dagster_config_dict
     ):
         raise DagsterInvalidConfigError(
-            (
-                "Found config for `storage` which is incompatible with `run_storage`, "
-                "`event_log_storage`, and `schedule_storage` config entries."
-            ),
+            "Found config for `storage` which is incompatible with `run_storage`, "
+            "`event_log_storage`, and `schedule_storage` config entries.",
             [],
             None,
         )
     elif "storage" in dagster_config_dict:
         if len(dagster_config_dict["storage"]) != 1:
             raise DagsterInvalidConfigError(
-                (
-                    f"Errors whilst loading dagster storage at {config_filename}, Expected one of:"
-                    "['postgres', 'mysql', 'sqlite', 'custom']"
-                ),
+                f"Errors whilst loading dagster storage at {config_filename}, Expected one of:"
+                "['postgres', 'mysql', 'sqlite', 'custom']",
                 [],
                 dagster_config_dict["storage"],
             )

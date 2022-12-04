@@ -239,7 +239,6 @@ def test_task_definition_registration(
 
 
 def test_reuse_task_definition(instance, ecs):
-
     image = "image"
     secrets = []
     environment = [
@@ -535,7 +534,6 @@ def test_launching_custom_task_definition(
     with instance_cm(
         {"task_definition": task_definition_arn, "container_name": container_name}
     ) as instance:
-
         run = instance.create_run_for_pipeline(
             pipeline,
             external_pipeline_origin=external_pipeline.get_external_origin(),
@@ -713,7 +711,6 @@ def test_overrides_too_long(
     pipeline,
     external_pipeline,
 ):
-
     large_container_context = {i: "boom" for i in range(10000)}
 
     mock_pipeline_code_origin = PipelinePythonOrigin(

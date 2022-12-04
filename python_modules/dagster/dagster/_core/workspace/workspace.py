@@ -39,7 +39,8 @@ class IWorkspace(ABC):
 
     @abstractmethod
     def get_repository_location(self, location_name: str) -> "RepositoryLocation":
-        """Return the RepositoryLocation for the given location name, or raise an error if there is an error loading it."""
+        """Return the RepositoryLocation for the given location name, or raise an error if there is an error loading it.
+        """
 
     @abstractmethod
     def get_workspace_snapshot(self) -> Mapping[str, WorkspaceLocationEntry]:

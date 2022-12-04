@@ -18,7 +18,6 @@ T = TypeVar("T")
 # the usual NamedTuple pattern here. See:
 # https://stackoverflow.com/questions/50530959/generic-namedtuple-in-python-3-6
 class EvaluateValueResult(Generic[T]):
-
     success: Optional[bool]
     value: Optional[T]
     errors: Optional[Sequence[EvaluationError]]

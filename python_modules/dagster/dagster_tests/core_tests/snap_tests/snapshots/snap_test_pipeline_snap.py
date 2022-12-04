@@ -7,7 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['test_basic_dep_fan_out 1'] = '''{
+snapshots[
+    "test_basic_dep_fan_out 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -1204,11 +1206,13 @@ snapshots['test_basic_dep_fan_out 1'] = '''{
     ]
   },
   "tags": {}
-}'''
+}"""
 
-snapshots['test_basic_dep_fan_out 2'] = '666d52f58ae2fe0f781cf670a77d93943c2d49f6'
+snapshots["test_basic_dep_fan_out 2"] = "666d52f58ae2fe0f781cf670a77d93943c2d49f6"
 
-snapshots['test_basic_fan_in 1'] = '''{
+snapshots[
+    "test_basic_fan_in 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -2423,11 +2427,13 @@ snapshots['test_basic_fan_in 1'] = '''{
     ]
   },
   "tags": {}
-}'''
+}"""
 
-snapshots['test_basic_fan_in 2'] = '18b8e3b005dcd27ad89a604fdd98cac11d1e61da'
+snapshots["test_basic_fan_in 2"] = "18b8e3b005dcd27ad89a604fdd98cac11d1e61da"
 
-snapshots['test_deserialize_solid_def_snaps_multi_type_config 1'] = '''{
+snapshots[
+    "test_deserialize_solid_def_snaps_multi_type_config 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -2458,9 +2464,11 @@ snapshots['test_deserialize_solid_def_snaps_multi_type_config 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_empty_pipeline_snap_props 1'] = '''{
+snapshots[
+    "test_empty_pipeline_snap_props 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -3563,11 +3571,13 @@ snapshots['test_empty_pipeline_snap_props 1'] = '''{
     ]
   },
   "tags": {}
-}'''
+}"""
 
-snapshots['test_empty_pipeline_snap_props 2'] = '26031b75270b933a1e23b3ba1d51a2f656ecfb06'
+snapshots["test_empty_pipeline_snap_props 2"] = "26031b75270b933a1e23b3ba1d51a2f656ecfb06"
 
-snapshots['test_empty_pipeline_snap_snapshot 1'] = '''{
+snapshots[
+    "test_empty_pipeline_snap_snapshot 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -4670,9 +4680,11 @@ snapshots['test_empty_pipeline_snap_snapshot 1'] = '''{
     ]
   },
   "tags": {}
-}'''
+}"""
 
-snapshots['test_multi_type_config_array_dict_fields[Permissive] 1'] = '''{
+snapshots[
+    "test_multi_type_config_array_dict_fields[Permissive] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": "List of Array.Permissive.1f37a068c7c51aba23e9c41475c78eebc4e58471",
   "enum_values": null,
@@ -4686,9 +4698,11 @@ snapshots['test_multi_type_config_array_dict_fields[Permissive] 1'] = '''{
   "type_param_keys": [
     "Permissive.1f37a068c7c51aba23e9c41475c78eebc4e58471"
   ]
-}'''
+}"""
 
-snapshots['test_multi_type_config_array_dict_fields[Selector] 1'] = '''{
+snapshots[
+    "test_multi_type_config_array_dict_fields[Selector] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": "List of Array.Selector.1f37a068c7c51aba23e9c41475c78eebc4e58471",
   "enum_values": null,
@@ -4702,9 +4716,11 @@ snapshots['test_multi_type_config_array_dict_fields[Selector] 1'] = '''{
   "type_param_keys": [
     "Selector.1f37a068c7c51aba23e9c41475c78eebc4e58471"
   ]
-}'''
+}"""
 
-snapshots['test_multi_type_config_array_dict_fields[Shape] 1'] = '''{
+snapshots[
+    "test_multi_type_config_array_dict_fields[Shape] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": "List of Array.Shape.1f37a068c7c51aba23e9c41475c78eebc4e58471",
   "enum_values": null,
@@ -4718,9 +4734,11 @@ snapshots['test_multi_type_config_array_dict_fields[Shape] 1'] = '''{
   "type_param_keys": [
     "Shape.1f37a068c7c51aba23e9c41475c78eebc4e58471"
   ]
-}'''
+}"""
 
-snapshots['test_multi_type_config_array_map 1'] = '''{
+snapshots[
+    "test_multi_type_config_array_map 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": "List of Array.Map.String.Int",
   "enum_values": null,
@@ -4734,9 +4752,11 @@ snapshots['test_multi_type_config_array_map 1'] = '''{
   "type_param_keys": [
     "Map.String.Int"
   ]
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types0] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types0] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4758,9 +4778,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types0] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types1] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types1] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4782,9 +4804,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types1] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types2] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types2] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4806,9 +4830,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types2] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types3] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types3] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4830,9 +4856,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types3] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types4] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types4] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4854,9 +4882,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types4] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_multi_type_config_nested_dicts[nested_dict_types5] 1'] = '''{
+snapshots[
+    "test_multi_type_config_nested_dicts[nested_dict_types5] 1"
+] = """{
   "__class__": "ConfigTypeSnap",
   "description": null,
   "enum_values": null,
@@ -4878,9 +4908,11 @@ snapshots['test_multi_type_config_nested_dicts[nested_dict_types5] 1'] = '''{
   },
   "scalar_kind": null,
   "type_param_keys": null
-}'''
+}"""
 
-snapshots['test_pipeline_snap_all_props 1'] = '''{
+snapshots[
+    "test_pipeline_snap_all_props 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -6008,11 +6040,13 @@ snapshots['test_pipeline_snap_all_props 1'] = '''{
   "tags": {
     "key": "value"
   }
-}'''
+}"""
 
-snapshots['test_pipeline_snap_all_props 2'] = '8aad694a845a5d0035d8760486baebf08203fa77'
+snapshots["test_pipeline_snap_all_props 2"] = "8aad694a845a5d0035d8760486baebf08203fa77"
 
-snapshots['test_two_invocations_deps_snap 1'] = '''{
+snapshots[
+    "test_two_invocations_deps_snap 1"
+] = """{
   "__class__": "PipelineSnapshot",
   "config_schema_snapshot": {
     "__class__": "ConfigSchemaSnapshot",
@@ -7132,6 +7166,6 @@ snapshots['test_two_invocations_deps_snap 1'] = '''{
     ]
   },
   "tags": {}
-}'''
+}"""
 
-snapshots['test_two_invocations_deps_snap 2'] = 'da892b8903c24cfe8eeef1e91be8c2c4a1a0cecd'
+snapshots["test_two_invocations_deps_snap 2"] = "da892b8903c24cfe8eeef1e91be8c2c4a1a0cecd"

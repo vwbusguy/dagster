@@ -94,7 +94,6 @@ class AssetReconciliationScenario(NamedTuple):
             with pendulum.test(
                 pendulum.now() + self.evaluation_delta
             ) if self.evaluation_delta else contextlib.nullcontext():
-
                 run_requests, cursor = reconcile(
                     repository_def=repo,
                     instance=instance,

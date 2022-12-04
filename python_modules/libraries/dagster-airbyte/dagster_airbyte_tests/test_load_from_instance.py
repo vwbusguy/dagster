@@ -30,7 +30,6 @@ def test_load_from_instance(
     filter_connection,
     connection_to_asset_key_fn,
 ):
-
     load_calls = []
 
     @io_manager

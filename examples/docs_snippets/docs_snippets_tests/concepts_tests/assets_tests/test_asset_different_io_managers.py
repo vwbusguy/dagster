@@ -2,6 +2,5 @@ from docs_snippets.concepts.assets.asset_different_io_managers import my_reposit
 
 
 def test():
-    assert (
-        len(my_repository._assets_defs_by_key) == 2  # pylint: disable=protected-access
-    )
+    # pylint: disable=protected-access
+    assert len(my_repository._assets_defs_by_key) == 2

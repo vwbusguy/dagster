@@ -599,7 +599,9 @@ def test_incorrect_resource_init_error():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match="expects only a single positional required argument. Got required extra params _b, _c",
+        match=(
+            "expects only a single positional required argument. Got required extra params _b, _c"
+        ),
     ):
 
         @resource
@@ -638,7 +640,6 @@ def test_resource_init_failure():
         DagsterResourceFunctionError,
         match="Error executing resource_fn on ResourceDefinition failing_resource",
     ):
-
         execute_plan(
             execution_plan,
             InMemoryPipeline(the_job),
@@ -1030,7 +1031,10 @@ def test_resource_needs_resource():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="Resource with key 'bar_resource' required by resource with key 'foo_resource', but not provided.",
+        match=(
+            "Resource with key 'bar_resource' required by resource with key 'foo_resource', but not"
+            " provided."
+        ),
     ):
 
         @job(
@@ -1171,8 +1175,10 @@ def test_context_manager_resource():
 
     with pytest.raises(
         DagsterInvariantViolationError,
-        match="At least one provided resource is a generator, but attempting to access resources "
-        "outside of context manager scope.",
+        match=(
+            "At least one provided resource is a generator, but attempting to access resources "
+            "outside of context manager scope."
+        ),
     ):
         basic(build_op_context(resources={"cm": cm_resource}))
 

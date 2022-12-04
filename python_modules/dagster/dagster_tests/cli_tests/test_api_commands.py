@@ -399,7 +399,6 @@ def test_execute_step_non_compressed():
 
 
 def test_execute_step_1():
-
     with instance_for_test(
         overrides={
             "compute_logs": {
@@ -537,7 +536,8 @@ def test_execute_step_verify_step_framework_error(mock_verify_step):
             log_entry = logs[0]
             assert (
                 log_entry.message
-                == "An exception was thrown during step execution that is likely a framework error, rather than an error in user code."
+                == "An exception was thrown during step execution that is likely a framework error,"
+                " rather than an error in user code."
             )
             assert log_entry.step_key == "fake_step"
 

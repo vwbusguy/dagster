@@ -142,7 +142,6 @@ class CeleryK8sJobExecutor(Executor):
         repo_location_name=None,
         job_wait_timeout=None,
     ):
-
         if load_incluster_config:
             check.invariant(
                 kubeconfig_file is None,

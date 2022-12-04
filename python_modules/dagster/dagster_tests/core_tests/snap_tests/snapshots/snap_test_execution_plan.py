@@ -7,7 +7,9 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['test_create_execution_plan_with_dep 1'] = '''{
+snapshots[
+    "test_create_execution_plan_with_dep 1"
+] = """{
   "__class__": "ExecutionPlanSnapshot",
   "artifacts_persisted": true,
   "executor_name": "multi_or_in_process_executor",
@@ -139,9 +141,11 @@ snapshots['test_create_execution_plan_with_dep 1'] = '''{
       "tags": {}
     }
   ]
-}'''
+}"""
 
-snapshots['test_create_noop_execution_plan 1'] = '''{
+snapshots[
+    "test_create_noop_execution_plan 1"
+] = """{
   "__class__": "ExecutionPlanSnapshot",
   "artifacts_persisted": true,
   "executor_name": "multi_or_in_process_executor",
@@ -202,9 +206,11 @@ snapshots['test_create_noop_execution_plan 1'] = '''{
       "tags": {}
     }
   ]
-}'''
+}"""
 
-snapshots['test_create_noop_execution_plan_with_tags 1'] = '''{
+snapshots[
+    "test_create_noop_execution_plan_with_tags 1"
+] = """{
   "__class__": "ExecutionPlanSnapshot",
   "artifacts_persisted": true,
   "executor_name": "multi_or_in_process_executor",
@@ -279,9 +285,11 @@ snapshots['test_create_noop_execution_plan_with_tags 1'] = '''{
       }
     }
   ]
-}'''
+}"""
 
-snapshots['test_create_with_composite 1'] = '''{
+snapshots[
+    "test_create_with_composite 1"
+] = """{
   "__class__": "ExecutionPlanSnapshot",
   "artifacts_persisted": true,
   "executor_name": "multi_or_in_process_executor",
@@ -657,4 +665,4 @@ snapshots['test_create_with_composite 1'] = '''{
       "tags": {}
     }
   ]
-}'''
+}"""

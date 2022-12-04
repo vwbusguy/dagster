@@ -151,7 +151,6 @@ class SqliteEventLogStorage(SqlEventLogStorage, ConfigurableClass):
 
         while True:
             try:
-
                 with engine.connect() as connection:
                     db_revision, head_revision = check_alembic_revision(alembic_config, connection)
 
@@ -235,7 +234,8 @@ class SqliteEventLogStorage(SqlEventLogStorage, ConfigurableClass):
         if event.is_dagster_event and event.dagster_event.asset_key:
             check.invariant(
                 event.dagster_event_type in ASSET_EVENTS,
-                "Can only store asset materializations, materialization_planned, and observations in index database",
+                "Can only store asset materializations, materialization_planned, and observations"
+                " in index database",
             )
 
             event_id = None

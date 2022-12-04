@@ -16,13 +16,11 @@ def mock_pendulum_timezone(override_timezone):
         with pendulum.tz.test_local_timezone(  # pylint: disable=no-member
             pendulum.tz.timezone(override_timezone)  # pylint: disable=no-member
         ):
-
             yield
     else:
         with pendulum.tz.LocalTimezone.test(  # pylint: disable=no-member
             pendulum.Timezone.load(override_timezone)  # pylint: disable=no-member
         ):
-
             yield
 
 

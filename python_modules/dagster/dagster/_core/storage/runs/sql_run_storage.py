@@ -175,7 +175,6 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
             kwargs["end_time"] = now.timestamp()
 
         with self.connect() as conn:
-
             conn.execute(
                 RunsTable.update()  # pylint: disable=no-value-for-parameter
                 .where(RunsTable.c.run_id == run_id)
@@ -576,7 +575,8 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
         root_run = self.get_run_by_id(root_run_id)
         if not root_run:
             raise DagsterRunNotFoundError(
-                f"Run id {root_run_id} set as root run id for run {run_id} was not found in instance.",
+                f"Run id {root_run_id} set as root run id for run {run_id} was not found in"
+                " instance.",
                 invalid_run_id=root_run_id,
             )
 
@@ -993,7 +993,6 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
 
     def add_daemon_heartbeat(self, daemon_heartbeat: DaemonHeartbeat):
         with self.connect() as conn:
-
             # insert, or update if already present
             try:
                 conn.execute(
@@ -1016,7 +1015,6 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
                 )
 
     def get_daemon_heartbeats(self) -> Mapping[str, DaemonHeartbeat]:
-
         with self.connect() as conn:
             rows = conn.execute(db.select(DaemonHeartbeatsTable.columns))
             heartbeats = []

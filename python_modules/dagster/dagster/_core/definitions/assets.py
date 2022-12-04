@@ -398,7 +398,8 @@ class AssetsDefinition(ResourceAddable):
             for output_name, asset_keys in internal_asset_deps.items():
                 check.invariant(
                     output_name in keys_by_output_name,
-                    f"output_name {output_name} specified in internal_asset_deps does not exist in the decorated function",
+                    f"output_name {output_name} specified in internal_asset_deps does not exist in"
+                    " the decorated function",
                 )
                 transformed_internal_asset_deps[keys_by_output_name[output_name]] = asset_keys
 
@@ -1016,8 +1017,8 @@ def _validate_graph_def(graph_def: "GraphDefinition", prefix: Optional[Sequence[
 
     check.invariant(
         not unmapped_leaf_nodes,
-        f"All leaf nodes within graph '{graph_def.name}' must generate outputs which are mapped to "
-        "outputs of the graph, and produce assets. The following leaf node(s) are non-asset producing "
-        f"ops: {unmapped_leaf_nodes}. This behavior is not currently supported because these ops "
-        "are not required for the creation of the associated asset(s).",
+        f"All leaf nodes within graph '{graph_def.name}' must generate outputs which are mapped to"
+        " outputs of the graph, and produce assets. The following leaf node(s) are non-asset"
+        f" producing ops: {unmapped_leaf_nodes}. This behavior is not currently supported because"
+        " these ops are not required for the creation of the associated asset(s).",
     )

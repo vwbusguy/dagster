@@ -242,7 +242,6 @@ class AirbyteConnection:
             Union[AirbyteDestinationNamespace, str]
         ] = AirbyteDestinationNamespace.SAME_AS_SOURCE,
     ):
-
         """
         Args:
             name (str): The display name of the connection.
@@ -316,7 +315,6 @@ class InitializedAirbyteConnection:
         init_sources: Mapping[str, InitializedAirbyteSource],
         init_dests: Mapping[str, InitializedAirbyteDestination],
     ):
-
         source = next(
             (
                 source.source

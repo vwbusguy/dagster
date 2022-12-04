@@ -73,13 +73,15 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
         elif task_definition and "env" in task_definition:
             check.invariant(
                 len(task_definition) == 1,
-                "If `task_definition` is set to a dictionary with `env`, `env` must be the only key.",
+                "If `task_definition` is set to a dictionary with `env`, `env` must be the only"
+                " key.",
             )
             env_var = task_definition["env"]
             self.task_definition = os.getenv(env_var)
             if not self.task_definition:
                 raise Exception(
-                    f"You have attempted to fetch the environment variable {env_var} which is not set."
+                    f"You have attempted to fetch the environment variable {env_var} which is not"
+                    " set."
                 )
         else:
             self.task_definition_dict = task_definition
@@ -166,16 +168,20 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
                         "env": Field(
                             str,
                             is_required=False,
-                            description="Backwards-compatibility for when task_definition was a StringSource."
-                            "Can be used to source the task_definition scalar from an environment variable.",
+                            description=(
+                                "Backwards-compatibility for when task_definition was a"
+                                " StringSource.Can be used to source the task_definition scalar"
+                                " from an environment variable."
+                            ),
                         ),
                     },
                 ),
                 is_required=False,
                 description=(
-                    "Either the short name of an existing task definition to use when launching new tasks, "
-                    "or a dictionary configuration to use when creating a task definition for the run."
-                    "If neither is provided, the task definition will be created based on the current task's task definition."
+                    "Either the short name of an existing task definition to use when launching new"
+                    " tasks, or a dictionary configuration to use when creating a task definition"
+                    " for the run.If neither is provided, the task definition will be created based"
+                    " on the current task's task definition."
                 ),
             ),
             "container_name": Field(
@@ -240,10 +246,12 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
                     }
                 ),
                 is_required=False,
-                description="Additional arguments to include while running the task. See "
-                "https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecs.html#ECS.Client.run_task "
-                "for the available parameters. The overrides and taskDefinition arguments will always "
-                "be set by the run launcher.",
+                description=(
+                    "Additional arguments to include while running the task. See"
+                    " https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecs.html#ECS.Client.run_task"
+                    " for the available parameters. The overrides and taskDefinition arguments will"
+                    " always be set by the run launcher."
+                ),
             ),
             **SHARED_ECS_SCHEMA,
         }
@@ -277,7 +285,6 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
         return Tags(arn, cluster, cpu, memory)
 
     def launch_run(self, context: LaunchRunContext) -> None:
-
         """
         Launch a run in an ECS task.
         """
@@ -549,7 +556,6 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
         return True
 
     def check_run_worker_health(self, run: DagsterRun):
-
         tags = self._get_run_tags(run.run_id)
 
         if not (tags.arn and tags.cluster):
@@ -564,7 +570,6 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
         if t.get("lastStatus") in RUNNING_STATUSES:
             return CheckRunHealthResult(WorkerStatus.RUNNING)
         elif t.get("lastStatus") in STOPPED_STATUSES:
-
             failed_containers = []
             for c in t.get("containers"):
                 if c.get("exitCode") != 0:
@@ -576,9 +581,10 @@ class EcsRunLauncher(RunLauncher, ConfigurableClass):
                     container_str = "Container"
                 return CheckRunHealthResult(
                     WorkerStatus.FAILED,
-                    f"ECS task failed. Stop code: {t.get('stopCode')}. Stop reason: {t.get('stoppedReason')}. "
-                    f"{container_str} {[c.get('name') for c in failed_containers]} failed. "
-                    f"Check the logs for task {t.get('taskArn')} for details.",
+                    f"ECS task failed. Stop code: {t.get('stopCode')}. Stop reason:"
+                    f" {t.get('stoppedReason')}."
+                    f" {container_str} {[c.get('name') for c in failed_containers]} failed. Check"
+                    f" the logs for task {t.get('taskArn')} for details.",
                 )
 
             return CheckRunHealthResult(WorkerStatus.SUCCESS)

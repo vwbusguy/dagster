@@ -920,7 +920,6 @@ def test_add_bulk_actions_columns():
     src_dir = file_relative_path(__file__, "snapshot_0_14_16_bulk_actions_columns/sqlite")
 
     with copy_directory(src_dir) as test_dir:
-
         db_path = os.path.join(test_dir, "history", "runs.db")
         assert {"id", "key", "status", "timestamp", "body"} == set(
             get_sqlite3_columns(db_path, "bulk_actions")

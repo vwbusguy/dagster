@@ -14,7 +14,8 @@ def get_meta_path_insertion_index() -> int:
         if isinstance(finder, type) and issubclass(finder, PathFinder):
             return i
     raise Exception(
-        "Could not find the built-in PathFinder in sys.meta_path-- cannot insert the AliasedModuleFinder"
+        "Could not find the built-in PathFinder in sys.meta_path-- cannot insert the"
+        " AliasedModuleFinder"
     )
 
 

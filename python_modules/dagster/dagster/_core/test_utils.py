@@ -520,7 +520,8 @@ def create_test_daemon_workspace_context(
     workspace_load_target: WorkspaceLoadTarget,
     instance: DagsterInstance,
 ):
-    """Creates a DynamicWorkspace suitable for passing into a DagsterDaemon loop when running tests."""
+    """Creates a DynamicWorkspace suitable for passing into a DagsterDaemon loop when running tests.
+    """
     configure_loggers()
     with create_daemon_grpc_server_registry(instance) as grpc_server_registry:
         with WorkspaceProcessContext(

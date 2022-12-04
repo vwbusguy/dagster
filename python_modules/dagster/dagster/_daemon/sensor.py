@@ -277,7 +277,6 @@ def execute_sensor_iteration(
     log_verbose_checks: bool = True,
     debug_crash_flags=None,
 ):
-
     instance = workspace_process_context.instance
 
     if not sensor_state_lock:
@@ -310,7 +309,8 @@ def execute_sensor_iteration(
                         sensors[selector_id] = sensor
         elif location_entry.load_error and log_verbose_checks:
             logger.warning(
-                f"Could not load location {location_entry.origin.location_name} to check for sensors due to the following error: {location_entry.load_error}"
+                f"Could not load location {location_entry.origin.location_name} to check for"
+                f" sensors due to the following error: {location_entry.load_error}"
             )
 
     if log_verbose_checks:
@@ -492,7 +492,8 @@ def _process_tick_generator(
     except Exception:
         error_info = serializable_error_info_from_exc_info(sys.exc_info())
         logger.error(
-            f"Sensor daemon caught an error for sensor {external_sensor.name} : {error_info.to_string()}"
+            f"Sensor daemon caught an error for sensor {external_sensor.name} :"
+            f" {error_info.to_string()}"
         )
 
     yield error_info
@@ -567,7 +568,8 @@ def _evaluate_sensor(
                 origin_run_id = check.not_none(pipeline_run_reaction.pipeline_run).run_id
                 if pipeline_run_reaction.error:
                     context.logger.error(
-                        f"Got a reaction request for run {origin_run_id} but execution errorred: {pipeline_run_reaction.error}"
+                        f"Got a reaction request for run {origin_run_id} but execution errorred:"
+                        f" {pipeline_run_reaction.error}"
                     )
                     context.update_state(
                         TickStatus.FAILURE,
@@ -669,7 +671,7 @@ def _evaluate_sensor(
         except Exception:
             error_info = serializable_error_info_from_exc_info(sys.exc_info())
             context.logger.error(
-                f"Run {run.run_id} created successfully but failed to launch: " f"{str(error_info)}"
+                f"Run {run.run_id} created successfully but failed to launch: {str(error_info)}"
             )
         yield error_info
 
@@ -762,7 +764,6 @@ def _get_or_create_sensor_run(
     target_data: ExternalTargetData,
     existing_runs_by_key: Mapping[str, DagsterRun],
 ):
-
     if not run_request.run_key:
         return _create_sensor_run(
             instance, repo_location, external_sensor, external_pipeline, run_request, target_data

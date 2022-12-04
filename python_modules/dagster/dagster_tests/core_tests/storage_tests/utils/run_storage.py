@@ -847,7 +847,6 @@ class TestRunStorage:
             assert not storage.has_run(run_with_snapshot_id)
 
     def test_single_write_with_missing_snapshot(self, storage):
-
         run_with_snapshot_id = "lkasjdflkjasdf"
         pipeline_def = GraphDefinition(name="some_pipeline", node_defs=[]).to_job()
 
@@ -878,7 +877,6 @@ class TestRunStorage:
         assert not storage.has_execution_plan_snapshot("nope")
 
         if self.can_delete_runs():
-
             storage.wipe()
 
             assert not storage.has_execution_plan_snapshot(snapshot_id)

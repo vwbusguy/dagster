@@ -19,7 +19,6 @@ from .utils import (
 
 
 def get_dbt_cloud_resource(**kwargs):
-
     return dbt_cloud_resource(
         build_init_resource_context(
             config={"auth_token": "some_auth_token", "account_id": SAMPLE_ACCOUNT_ID, **kwargs}
@@ -28,7 +27,6 @@ def get_dbt_cloud_resource(**kwargs):
 
 
 def test_get_job():
-
     dc_resource = get_dbt_cloud_resource()
 
     with responses.RequestsMock() as rsps:
@@ -72,7 +70,6 @@ def test_get_runs(job_id, include_related, query_string):
 
 
 def test_get_run():
-
     dc_resource = get_dbt_cloud_resource()
 
     with responses.RequestsMock() as rsps:
@@ -85,7 +82,6 @@ def test_get_run():
 
 
 def test_list_run_artifacts():
-
     dc_resource = get_dbt_cloud_resource()
 
     with responses.RequestsMock() as rsps:
@@ -117,7 +113,6 @@ def test_get_run_results():
 
 @pytest.mark.parametrize("max_retries,n_flakes", [(0, 0), (1, 2), (5, 7), (7, 5), (4, 4)])
 def test_request_flake(max_retries, n_flakes):
-
     dc_resource = get_dbt_cloud_resource(request_max_retries=max_retries)
 
     def _mock_interaction():
@@ -137,7 +132,6 @@ def test_request_flake(max_retries, n_flakes):
 
 
 def test_no_disable_schedule():
-
     dc_resource = get_dbt_cloud_resource(disable_schedule_on_trigger=False)
     with responses.RequestsMock() as rsps:
         # endpoint for launching run

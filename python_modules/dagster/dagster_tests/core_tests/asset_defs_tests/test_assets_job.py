@@ -291,7 +291,10 @@ def test_missing_io_manager():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match=r"io manager with key 'special_io_manager' required by SourceAsset with key \[\"source1\"\] was not provided.",
+        match=(
+            r"io manager with key 'special_io_manager' required by SourceAsset with key"
+            r" \[\"source1\"\] was not provided."
+        ),
     ):
         build_assets_job(
             "a",
@@ -1815,7 +1818,10 @@ def test_transitive_io_manager_dep_not_provided():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match="resource with key 'foo' required by resource with key 'my_source_asset__io_manager' was not provided.",
+        match=(
+            "resource with key 'foo' required by resource with key 'my_source_asset__io_manager'"
+            " was not provided."
+        ),
     ):
         build_assets_job(name="test", assets=[my_derived_asset], source_assets=[my_source_asset])
 
@@ -1847,9 +1853,11 @@ def test_resolve_dependency_fail_across_groups():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match="is not produced by any of the provided asset ops and is not one of the provided sources",
+        match=(
+            "is not produced by any of the provided asset ops and is not one of the provided"
+            " sources"
+        ),
     ):
-
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=ExperimentalWarning)
 
@@ -1874,7 +1882,10 @@ def test_resolve_dependency_multi_asset_different_groups():
 
     with pytest.raises(
         DagsterInvalidDefinitionError,
-        match="is not produced by any of the provided asset ops and is not one of the provided sources",
+        match=(
+            "is not produced by any of the provided asset ops and is not one of the provided"
+            " sources"
+        ),
     ):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=ExperimentalWarning)

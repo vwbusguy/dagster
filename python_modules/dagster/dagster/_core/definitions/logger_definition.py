@@ -186,7 +186,8 @@ def build_init_logger_context(
 
     check.invariant(
         not (pipeline_def and job_def),
-        "In build_init_logger_context, you may only specify one of the pipeline_def and job_def parameters, not both.",
+        "In build_init_logger_context, you may only specify one of the pipeline_def and job_def"
+        " parameters, not both.",
     )
 
     return UnboundInitLoggerContext(

@@ -84,7 +84,8 @@ class DagsterDaemon(AbstractContextManager, ABC, Generic[TContext]):
                             self._errors.appendleft((result, pendulum.now("UTC")))
                     except StopIteration:
                         self._logger.error(
-                            "Daemon loop finished without raising an error - daemon loops should run forever until they are interrupted."
+                            "Daemon loop finished without raising an error - daemon loops should"
+                            " run forever until they are interrupted."
                         )
                         break
                     except Exception:

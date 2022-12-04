@@ -274,11 +274,13 @@ class InputContext:
         if self._asset_partitions_def is None:
             if self.asset_key:
                 raise DagsterInvariantViolationError(
-                    f"Attempting to access partitions def for asset {self.asset_key}, but it is not partitioned"
+                    f"Attempting to access partitions def for asset {self.asset_key}, but it is not"
+                    " partitioned"
                 )
             else:
                 raise DagsterInvariantViolationError(
-                    "Attempting to access partitions def for asset, but input does not correspond to an asset"
+                    "Attempting to access partitions def for asset, but input does not correspond"
+                    " to an asset"
                 )
 
         return self._asset_partitions_def
@@ -416,7 +418,7 @@ class InputContext:
         """
         if self.upstream_output is None:
             raise DagsterInvariantViolationError(
-                "InputContext.upstream_output not defined. " "Cannot compute an identifier"
+                "InputContext.upstream_output not defined. Cannot compute an identifier"
             )
 
         return self.upstream_output.get_identifier()

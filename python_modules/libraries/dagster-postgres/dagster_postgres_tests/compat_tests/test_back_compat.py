@@ -548,7 +548,6 @@ def test_jobs_selector_id_migration(hostname, conn_string):
                 target_fd.write(template)
 
         with DagsterInstance.from_config(tempdir) as instance:
-
             # runs the required data migrations
             instance.upgrade()
 
@@ -605,7 +604,6 @@ def test_add_bulk_actions_columns(hostname, conn_string):
     )
 
     with tempfile.TemporaryDirectory() as tempdir:
-
         with open(
             file_relative_path(__file__, "dagster.yaml"), "r", encoding="utf8"
         ) as template_fd:
@@ -623,7 +621,6 @@ def test_add_bulk_actions_columns(hostname, conn_string):
 
 
 def test_add_kvs_table(hostname, conn_string):
-
     _reconstruct_from_file(
         hostname,
         conn_string,
@@ -635,7 +632,6 @@ def test_add_kvs_table(hostname, conn_string):
     )
 
     with tempfile.TemporaryDirectory() as tempdir:
-
         with open(
             file_relative_path(__file__, "dagster.yaml"), "r", encoding="utf8"
         ) as template_fd:
@@ -712,7 +708,6 @@ def test_add_cached_status_data_column(hostname, conn_string):
     )
 
     with tempfile.TemporaryDirectory() as tempdir:
-
         with open(
             file_relative_path(__file__, "dagster.yaml"), "r", encoding="utf8"
         ) as template_fd:

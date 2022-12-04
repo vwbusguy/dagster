@@ -155,7 +155,6 @@ def _run_in_subprocess(
     subprocess_status_handler,
     run_event_handler,
 ):
-
     start_termination_thread(termination_event)
     try:
         execute_run_args = deserialize_as(serialized_execute_run_args, ExecuteExternalPipelineArgs)
@@ -170,7 +169,8 @@ def _run_in_subprocess(
 
             if not pipeline_run:
                 raise DagsterRunNotFoundError(
-                    "gRPC server could not load run {run_id} in order to execute it. Make sure that the gRPC server has access to your run storage.".format(
+                    "gRPC server could not load run {run_id} in order to execute it. Make sure that"
+                    " the gRPC server has access to your run storage.".format(
                         run_id=execute_run_args.pipeline_run_id
                     ),
                     invalid_run_id=execute_run_args.pipeline_run_id,
@@ -282,8 +282,9 @@ def get_external_schedule_execution(
         try:
             with user_code_error_boundary(
                 ScheduleExecutionError,
-                lambda: "Error occurred during the execution function for schedule "
-                "{schedule_name}".format(schedule_name=schedule_def.name),
+                lambda: "Error occurred during the execution function for schedule {schedule_name}".format(
+                    schedule_name=schedule_def.name
+                ),
             ):
                 return schedule_def.evaluate_tick(schedule_context)
         except Exception:
@@ -318,8 +319,9 @@ def get_external_sensor_execution(
         try:
             with user_code_error_boundary(
                 SensorExecutionError,
-                lambda: "Error occurred during the execution of evaluation_fn for sensor "
-                "{sensor_name}".format(sensor_name=sensor_def.name),
+                lambda: "Error occurred during the execution of evaluation_fn for sensor {sensor_name}".format(
+                    sensor_name=sensor_def.name
+                ),
             ):
                 return sensor_def.evaluate_tick(sensor_context)
         except Exception:
@@ -333,14 +335,12 @@ def get_partition_config(
     partition_set_name: str,
     partition_name: str,
 ):
-
     partition_set_def = repo_def.get_partition_set_def(partition_set_name)
     partition = partition_set_def.get_partition(partition_name)
     try:
         with user_code_error_boundary(
             PartitionExecutionError,
-            lambda: "Error occurred during the evaluation of the `run_config_for_partition` "
-            "function for partition set {partition_set_name}".format(
+            lambda: "Error occurred during the evaluation of the `run_config_for_partition` function for partition set {partition_set_name}".format(
                 partition_set_name=partition_set_def.name
             ),
         ):
@@ -367,8 +367,7 @@ def get_partition_names(
     try:
         with user_code_error_boundary(
             PartitionExecutionError,
-            lambda: f"Error occurred during the execution of the partition generation function for "
-            f"{_get_target_for_partition_execution_error(partition_set_def)}",
+            lambda: f"Error occurred during the execution of the partition generation function for {_get_target_for_partition_execution_error(partition_set_def)}",
         ):
             return ExternalPartitionNamesData(
                 partition_names=partition_set_def.get_partition_names()
@@ -389,8 +388,7 @@ def get_partition_tags(
     try:
         with user_code_error_boundary(
             PartitionExecutionError,
-            lambda: "Error occurred during the evaluation of the `tags_for_partition` function for "
-            f"{_get_target_for_partition_execution_error(partition_set_def)}",
+            lambda: f"Error occurred during the evaluation of the `tags_for_partition` function for {_get_target_for_partition_execution_error(partition_set_def)}",
         ):
             tags = partition_set_def.tags_for_partition(partition)
             return ExternalPartitionTagsData(name=partition.name, tags=tags)
@@ -439,8 +437,7 @@ def get_partition_set_execution_param_data(
     try:
         with user_code_error_boundary(
             PartitionExecutionError,
-            lambda: "Error occurred during the partition generation for "
-            f"{_get_target_for_partition_execution_error(partition_set_def)}",
+            lambda: f"Error occurred during the partition generation for {_get_target_for_partition_execution_error(partition_set_def)}",
         ):
             all_partitions = partition_set_def.get_partitions()
         partitions = [
@@ -451,9 +448,8 @@ def get_partition_set_execution_param_data(
         for partition in partitions:
 
             def _error_message_fn(partition_name):
-                return lambda: (
-                    "Error occurred during the partition config and tag generation for "
-                    f"'{partition_name}' in {_get_target_for_partition_execution_error(partition_set_def)}"
+                return (
+                    lambda: f"Error occurred during the partition config and tag generation for '{partition_name}' in {_get_target_for_partition_execution_error(partition_set_def)}"
                 )
 
             with user_code_error_boundary(
@@ -483,7 +479,8 @@ def get_notebook_data(notebook_path):
 
     if not notebook_path.endswith(".ipynb"):
         raise Exception(
-            "unexpected file extension for notebooks. Please provide a path that ends with '.ipynb'."
+            "unexpected file extension for notebooks. Please provide a path that ends with"
+            " '.ipynb'."
         )
 
     with open(os.path.abspath(notebook_path), "rb") as f:

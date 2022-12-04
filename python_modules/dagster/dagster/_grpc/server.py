@@ -1008,12 +1008,14 @@ def wait_for_grpc_server(server_process, client, subprocess_args, timeout=60):
 
         if timeout > 0 and (time.time() - start_time > timeout):
             raise Exception(
-                f"Timed out waiting for gRPC server to start after {timeout}s with arguments: \"{' '.join(subprocess_args)}\". Most recent connection error: {str(last_error)}"
+                f"Timed out waiting for gRPC server to start after {timeout}s with arguments:"
+                f" \"{' '.join(subprocess_args)}\". Most recent connection error: {str(last_error)}"
             )
 
         if server_process.poll() != None:
             raise Exception(
-                f"gRPC server exited with return code {server_process.returncode} while starting up with the command: \"{' '.join(subprocess_args)}\""
+                f"gRPC server exited with return code {server_process.returncode} while starting up"
+                f" with the command: \"{' '.join(subprocess_args)}\""
             )
 
         sleep(0.1)
