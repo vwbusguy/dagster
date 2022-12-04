@@ -1,5 +1,6 @@
-from dagster import AssetKey
 from docs_snippets.concepts.assets.subset_graph_backed_asset import my_repo
+
+from dagster import AssetKey
 
 
 def test_subset_graph_backed_asset():

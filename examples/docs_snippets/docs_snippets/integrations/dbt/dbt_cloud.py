@@ -38,7 +38,7 @@ def scope_load_assets_from_dbt_cloud_job():
 def scope_schedule_dbt_cloud_assets():
     dbt_cloud_assets = []
     # start_schedule_dbt_cloud_assets
-    from dagster import ScheduleDefinition, define_asset_job, repository, AssetSelection
+    from dagster import AssetSelection, ScheduleDefinition, define_asset_job, repository
 
     # Materialize all assets in the repository
     run_everything_job = define_asset_job("run_everything_job", AssetSelection.all())

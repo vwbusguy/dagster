@@ -14,10 +14,18 @@ from typing import Union
 
 import pandas as pd
 from pandas import DataFrame as PandasDF
-from pyspark.sql import DataFrame as SparkDF
-from pyspark.sql import SparkSession
+from pyspark.sql import (
+    DataFrame as SparkDF,
+    SparkSession,
+)
 
-from dagster import AssetKey, IOManager, IOManagerDefinition, _check as check
+from dagster import (
+    AssetKey,
+    IOManager,
+    IOManagerDefinition,
+    _check as check,
+)
+
 
 # io_manager_start
 class LocalFileSystemIOManager(IOManager):
@@ -79,8 +87,9 @@ class LocalFileSystemIOManager(IOManager):
 # io_manager_end
 
 # gather_assets_start
-from . import table_assets, spark_asset
 from dagster import load_assets_from_modules, with_resources
+
+from . import spark_asset, table_assets
 
 spark_weather_assets = with_resources(
     load_assets_from_modules(modules=[table_assets, spark_asset]),

@@ -136,7 +136,7 @@ def test_empty_container_context(empty_container_context):
     assert empty_container_context.labels == {}
     assert empty_container_context.namespace is None
     assert empty_container_context.resources == {}
-    assert empty_container_context.scheduler_name == None
+    assert empty_container_context.scheduler_name is None
 
 
 def test_invalid_config():

@@ -1,1 +1,1 @@
-from .repository import assets_modern_data_stack
+from .repository import assets_modern_data_stack as assets_modern_data_stack

@@ -2,8 +2,8 @@ import pandas as pd
 from feature_graph_backed_assets import assets
 
 from dagster import (
-    AssetSelection,
     AssetsDefinition,
+    AssetSelection,
     GraphOut,
     define_asset_job,
     graph,
@@ -22,7 +22,7 @@ def get_us_flights(passenger_flights):
     ]
 
     # Filter out flights that were rebooked due to cancellations
-    us_flights = us_flights[us_flights["rebooked_due_to_cancellation"] == False]
+    us_flights = us_flights[us_flights["rebooked_due_to_cancellation"] == False]  # noqa: E712
     return us_flights
 
 

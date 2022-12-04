@@ -1,7 +1,7 @@
 # isort: skip_file
 # pylint: disable=reimported
 # start_executor_on_job
-from dagster import multiprocess_executor, job, graph
+from dagster import graph, job, multiprocess_executor
 
 # Providing an executor using the job decorator
 @job(executor_def=multiprocess_executor)
@@ -21,7 +21,7 @@ other_job = the_graph.to_job(executor_def=multiprocess_executor)
 # end_executor_on_job
 
 # start_executor_on_repo
-from dagster import multiprocess_executor, define_asset_job, asset, repository
+from dagster import asset, define_asset_job, multiprocess_executor, repository
 
 
 @asset

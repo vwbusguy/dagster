@@ -5,8 +5,11 @@ import boto3
 from botocore.errorfactory import ClientError
 
 import dagster._seven as seven
-from dagster import Field, StringSource
-from dagster import _check as check
+from dagster import (
+    Field,
+    StringSource,
+    _check as check,
+)
 from dagster._config.config_type import Noneable
 from dagster._core.storage.cloud_storage_compute_log_manager import (
     CloudStorageComputeLogManager,

@@ -1,6 +1,5 @@
 from unittest import mock
 
-from dagster import build_sensor_context, job, op, repository
 from docs_snippets.concepts.partitions_schedules_sensors.sensors.sensor_alert import (
     email_on_run_failure,
     my_slack_on_run_failure,
@@ -17,6 +16,8 @@ from docs_snippets.concepts.partitions_schedules_sensors.sensors.sensors import 
     test_sensor,
     uses_db_connection,
 )
+
+from dagster import build_sensor_context, job, op, repository
 
 
 @op(config_schema={"fail": bool})

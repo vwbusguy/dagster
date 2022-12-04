@@ -11,6 +11,7 @@ from pandas import DataFrame
 
 from dagster import AssetKey, IOManager, IOManagerDefinition
 
+
 # io_manager_start
 class LocalFileSystemIOManager(IOManager):
     """Translates between Pandas DataFrames and CSVs on the local filesystem."""
@@ -35,8 +36,9 @@ class LocalFileSystemIOManager(IOManager):
 # gather_assets_start
 # imports the module called "assets" from the package containing the current module
 # the "assets" module contains the asset definitions
-from . import table_assets
 from dagster import load_assets_from_modules, with_resources
+
+from . import table_assets
 
 weather_assets = with_resources(
     load_assets_from_modules(modules=[table_assets]),

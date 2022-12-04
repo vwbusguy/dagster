@@ -2,7 +2,7 @@
 import json
 import logging
 
-from dagster import Field, logger, job, op
+from dagster import Field, job, logger, op
 
 # start_custom_logger_marker_0
 
@@ -71,7 +71,7 @@ def test_init_json_console_logger_with_context():
 # end_custom_logger_testing_context
 
 # start_default_logger_repo
-from dagster import repository, define_asset_job, asset
+from dagster import asset, define_asset_job, repository
 
 
 @asset

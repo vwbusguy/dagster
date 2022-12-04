@@ -38,7 +38,6 @@ from .utils import check_valid_name
 
 if TYPE_CHECKING:
     from dagster._core.instance import DagsterInstance
-    from dagster._core.storage.event_log.base import EventLogRecord
 
 
 class AssetReconciliationCursor(NamedTuple):

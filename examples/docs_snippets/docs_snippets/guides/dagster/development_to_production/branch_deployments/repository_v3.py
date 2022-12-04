@@ -3,14 +3,8 @@ import os
 from dagster import graph, repository, with_resources
 
 from .clone_and_drop_db import drop_database_clone
-from .repository_v2 import (
-    clone_prod,
-    comments,
-    get_current_env,
-    items,
-    resource_defs,
-    stories,
-)
+from .repository_v2 import clone_prod, comments, get_current_env, items, resource_defs, stories
+
 
 # start_drop_db
 

@@ -262,7 +262,7 @@ class PackageSpec:
     @property
     def skip_reason(self) -> Optional[str]:
         # Memoize so we don't log twice
-        if self._should_skip == False:
+        if self._should_skip is False:
             return None
 
         if self._skip_reason:

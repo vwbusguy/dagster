@@ -12,7 +12,7 @@ from dagster._core.instance import DagsterInstance
 from dagster._core.storage.pipeline_run import DagsterRun, DagsterRunStatus
 from dagster._core.storage.tags import RESUME_RETRY_TAG
 from dagster._core.utils import make_new_run_id
-from dagster._utils import merge_dicts
+from dagster._utils.merger import merge_dicts
 
 from ...schema.errors import GrapheneNoModeProvidedError
 from ..external import ensure_valid_config, get_external_execution_plan_or_raise

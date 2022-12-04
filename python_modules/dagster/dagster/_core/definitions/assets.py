@@ -23,12 +23,12 @@ from dagster._core.definitions.metadata import MetadataUserInput
 from dagster._core.definitions.partition import PartitionsDefinition
 from dagster._core.definitions.utils import DEFAULT_GROUP_NAME, validate_group_name
 from dagster._core.errors import DagsterInvalidInvocationError
-from dagster._utils import merge_dicts
 from dagster._utils.backcompat import (
     ExperimentalWarning,
     deprecation_warning,
     experimental_arg_warning,
 )
+from dagster._utils.merger import merge_dicts
 
 from .dependency import NodeHandle
 from .events import AssetKey, CoercibleToAssetKeyPrefix

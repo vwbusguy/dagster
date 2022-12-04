@@ -9,8 +9,8 @@ import pytest
 from dagster import (
     AssetIn,
     AssetKey,
-    AssetSelection,
     AssetsDefinition,
+    AssetSelection,
     DagsterInstance,
     DailyPartitionsDefinition,
     Field,

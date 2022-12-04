@@ -2,9 +2,16 @@ from os import path
 
 import pytest
 
-from dagster import DagsterInstance, ExecutorRequirement
-from dagster import _check as check
-from dagster import execute_job, job, multiprocess_executor, op, reconstructable
+from dagster import (
+    DagsterInstance,
+    ExecutorRequirement,
+    _check as check,
+    execute_job,
+    job,
+    multiprocess_executor,
+    op,
+    reconstructable,
+)
 from dagster._core.definitions.executor_definition import executor
 from dagster._core.errors import (
     DagsterInvalidConfigError,

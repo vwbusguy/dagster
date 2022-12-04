@@ -1,13 +1,4 @@
-from dagster import (
-    AssetsDefinition,
-    GraphOut,
-    Out,
-    Output,
-    define_asset_job,
-    graph,
-    op,
-    repository,
-)
+from dagster import AssetsDefinition, GraphOut, Out, Output, define_asset_job, graph, op, repository
 
 
 # start_graph_backed_asset_foo

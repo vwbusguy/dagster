@@ -1,5 +1,4 @@
 import pytest
-
 from docs_snippets.concepts.assets.graph_backed_asset import my_repo
 
 

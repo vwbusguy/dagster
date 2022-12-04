@@ -1,1 +1,1 @@
-from .repository import assets_pandas_pyspark
+from .repository import assets_pandas_pyspark as assets_pandas_pyspark

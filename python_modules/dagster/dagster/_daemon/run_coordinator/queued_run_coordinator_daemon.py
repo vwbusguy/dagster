@@ -2,8 +2,11 @@ import sys
 from collections import defaultdict
 from typing import Dict, Tuple
 
-from dagster import DagsterEvent, DagsterEventType
-from dagster import _check as check
+from dagster import (
+    DagsterEvent,
+    DagsterEventType,
+    _check as check,
+)
 from dagster._core.instance import DagsterInstance
 from dagster._core.run_coordinator.queued_run_coordinator import QueuedRunCoordinator
 from dagster._core.storage.pipeline_run import (

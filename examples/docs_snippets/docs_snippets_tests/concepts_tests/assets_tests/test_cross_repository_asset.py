@@ -1,7 +1,4 @@
-from docs_snippets.concepts.assets.cross_repository_asset import (
-    repository_a,
-    repository_b,
-)
+from docs_snippets.concepts.assets.cross_repository_asset import repository_a, repository_b
 
 
 def test_repository_asset_groups():

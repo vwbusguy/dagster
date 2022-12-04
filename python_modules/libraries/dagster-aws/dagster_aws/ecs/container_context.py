@@ -1,13 +1,19 @@
 from typing import TYPE_CHECKING, Any, Mapping, NamedTuple, Optional, Sequence, cast
 
-from dagster import Array, Field, Noneable, Shape, StringSource
-from dagster import _check as check
+from dagster import (
+    Array,
+    Field,
+    Noneable,
+    Shape,
+    StringSource,
+    _check as check,
+)
 from dagster._config import process_config
 from dagster._core.container_context import process_shared_container_context_config
 from dagster._core.errors import DagsterInvalidConfigError
 from dagster._core.storage.pipeline_run import DagsterRun
 from dagster._core.utils import parse_env_var
-from dagster._utils import merge_dicts
+from dagster._utils.merger import merge_dicts
 
 from ..secretsmanager import get_tagged_secrets
 

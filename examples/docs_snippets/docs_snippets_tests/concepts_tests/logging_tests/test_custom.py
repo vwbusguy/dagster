@@ -1,6 +1,4 @@
 import yaml
-
-from dagster._utils import file_relative_path
 from docs_snippets.concepts.logging.custom_logger import (
     demo_job,
     json_console_logger,
@@ -8,6 +6,8 @@ from docs_snippets.concepts.logging.custom_logger import (
     test_init_json_console_logger_with_context,
     the_repo,
 )
+
+from dagster._utils import file_relative_path
 
 
 def test_json_logger():

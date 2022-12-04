@@ -4,8 +4,13 @@ import pytest
 import yaml
 from dagster_tests.api_tests.utils import get_bar_workspace
 
-from dagster import _check as check
-from dagster import execute_job, job, op, reconstructable
+from dagster import (
+    _check as check,
+    execute_job,
+    job,
+    op,
+    reconstructable,
+)
 from dagster._check import CheckError
 from dagster._config import Field
 from dagster._core.errors import (

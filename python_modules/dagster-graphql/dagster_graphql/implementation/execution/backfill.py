@@ -91,7 +91,7 @@ def create_and_launch_partition_backfill(graphene_info, backfill_params):
                     backfill_job=backfill,
                     partition_names=chunk,
                 )
-                if run_id != None
+                if run_id is not None
             )
         return GrapheneLaunchBackfillSuccess(
             backfill_id=backfill_id, launched_run_ids=submitted_run_ids

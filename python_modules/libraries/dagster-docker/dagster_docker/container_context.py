@@ -1,12 +1,17 @@
 from typing import TYPE_CHECKING, Any, Mapping, NamedTuple, Optional, Sequence, cast
 
-from dagster import Array, Field, Permissive, StringSource
-from dagster import _check as check
+from dagster import (
+    Array,
+    Field,
+    Permissive,
+    StringSource,
+    _check as check,
+)
 from dagster._config import process_config
 from dagster._core.container_context import process_shared_container_context_config
 from dagster._core.errors import DagsterInvalidConfigError
 from dagster._core.storage.pipeline_run import DagsterRun
-from dagster._utils import merge_dicts
+from dagster._utils.merger import merge_dicts
 
 if TYPE_CHECKING:
     from . import DockerRunLauncher
@@ -91,7 +96,7 @@ class DockerContainerContext(
         # `container_kwargs` field does a shallow merge so that different kwargs can be combined
         # or replaced without replacing the full set of arguments.
         return DockerContainerContext(
-            registry=other.registry if other.registry != None else self.registry,
+            registry=other.registry if other.registry is not None else self.registry,
             env_vars=[*self.env_vars, *other.env_vars],
             networks=[*self.networks, *other.networks],
             container_kwargs=merge_dicts(other.container_kwargs, self.container_kwargs),

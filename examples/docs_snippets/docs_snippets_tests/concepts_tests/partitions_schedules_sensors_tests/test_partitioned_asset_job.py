@@ -1,6 +1,4 @@
-from docs_snippets.concepts.partitions_schedules_sensors.partitioned_asset_job import (
-    repo,
-)
+from docs_snippets.concepts.partitions_schedules_sensors.partitioned_asset_job import repo
 
 
 def test():
