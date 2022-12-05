@@ -200,7 +200,7 @@ Default loggers can be specified on a <PyObject object="repository" decorator />
 Note that if you explicitly specify loggers on a job, they will override those provided to `default_logger_defs`.
 
 ```python file=/concepts/logging/custom_logger.py startafter=start_default_logger_repo endbefore=end_default_logger_repo
-from dagster import repository, define_asset_job, asset
+from dagster import asset, define_asset_job, repository
 
 
 @asset

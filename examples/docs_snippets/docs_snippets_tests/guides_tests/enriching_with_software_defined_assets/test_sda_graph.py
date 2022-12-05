@@ -1,4 +1,6 @@
-from docs_snippets.guides.dagster.enriching_with_software_defined_assets.sda_graph import repo
+from docs_snippets.guides.dagster.enriching_with_software_defined_assets.sda_graph import (
+    repo,
+)
 
 
 def test_sda_graph():

@@ -1,4 +1,10 @@
-from dagster import AssetSelection, HourlyPartitionsDefinition, asset, define_asset_job, repository
+from dagster import (
+    AssetSelection,
+    HourlyPartitionsDefinition,
+    asset,
+    define_asset_job,
+    repository,
+)
 
 hourly_partitions_def = HourlyPartitionsDefinition(start_date="2022-05-31-00:00")
 
