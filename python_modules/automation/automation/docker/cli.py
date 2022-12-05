@@ -129,7 +129,6 @@ def push_dockerhub(name: str, dagster_version: str, set_latest: bool):
     """Used for pushing k8s images to Docker Hub. Must be logged in to Docker Hub for this to
     succeed.
     """
-
     tags = [
         f"dagster/{name}:{dagster_version}",
     ]
@@ -150,7 +149,6 @@ def push_ecr(name: str, dagster_version: str, set_latest: bool):
 
         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/dagster
     """
-
     tags = [
         f"{AWS_ECR_REGISTRY}/{name}:{dagster_version}",
     ]

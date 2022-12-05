@@ -23,7 +23,6 @@ from dagster._serdes import ConfigurableClass
 
 def type_repr(config_type: ConfigType) -> str:
     """Generate a human-readable name for a given dagster ConfigType"""
-
     # Use given name if possible
     if config_type.given_name:
         return config_type.given_name

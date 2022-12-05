@@ -345,7 +345,6 @@ def execute_pipeline_iterator(
     Returns:
       Iterator[DagsterEvent]: The stream of events resulting from pipeline execution.
     """
-
     with ephemeral_instance_if_missing(instance) as execute_instance:
         pipeline, repository_load_data = _pipeline_with_repository_load_data(pipeline)
 
@@ -536,7 +535,6 @@ def execute_job(
     Returns:
       :py:class:`JobExecutionResult`: The result of job execution.
     """
-
     check.inst_param(job, "job", ReconstructablePipeline)
     check.inst_param(instance, "instance", DagsterInstance)
     check.opt_sequence_param(asset_selection, "asset_selection", of_type=AssetKey)
@@ -630,7 +628,6 @@ def execute_pipeline(
 
     For the asynchronous version, see :py:func:`execute_pipeline_iterator`.
     """
-
     with ephemeral_instance_if_missing(instance) as execute_instance:
         return _logged_execute_pipeline(
             pipeline,
@@ -748,7 +745,6 @@ def reexecute_pipeline(
 
     For the asynchronous version, see :py:func:`reexecute_pipeline_iterator`.
     """
-
     check.opt_sequence_param(step_selection, "step_selection", of_type=str)
 
     check.str_param(parent_run_id, "parent_run_id")
@@ -864,7 +860,6 @@ def reexecute_pipeline_iterator(
     Returns:
       Iterator[DagsterEvent]: The stream of events resulting from pipeline reexecution.
     """
-
     check.opt_sequence_param(step_selection, "step_selection", of_type=str)
 
     check.str_param(parent_run_id, "parent_run_id")
@@ -1082,7 +1077,6 @@ def pipeline_execution_iterator(
         pipeline_context (PlanOrchestrationContext):
         execution_plan (ExecutionPlan):
     """
-
     # TODO: restart event?
     if not pipeline_context.resume_from_failure:
         yield DagsterEvent.pipeline_start(pipeline_context)

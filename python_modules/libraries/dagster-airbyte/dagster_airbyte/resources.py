@@ -125,7 +125,6 @@ class AirbyteResource:
         Returns:
             Optional[Dict[str, Any]]: Parsed json data from the response to this request
         """
-
         headers = {"accept": "application/json"}
 
         num_retries = 0

@@ -60,7 +60,6 @@ class ExecuteInProcessResult(ExecutionResult):
     @property
     def all_events(self) -> Sequence[DagsterEvent]:
         """List[DagsterEvent]: All dagster events emitted during execution."""
-
         return self._event_list
 
     @public  # type: ignore

@@ -1055,7 +1055,6 @@ class UnresolvedMappedStepInput(NamedTuple):
 
     def get_step_output_handle_deps_with_placeholders(self) -> Sequence[StepOutputHandle]:
         """Return StepOutputHandles with placeholders, unresolved step keys and None mapping keys"""
-
         return [self.source.get_step_output_handle_dep_with_placeholder()]
 
 
@@ -1083,7 +1082,6 @@ class UnresolvedCollectStepInput(NamedTuple):
 
     def get_step_output_handle_deps_with_placeholders(self) -> Sequence[StepOutputHandle]:
         """Return StepOutputHandles with placeholders, unresolved step keys and None mapping keys"""
-
         return [self.source.get_step_output_handle_dep_with_placeholder()]
 
 

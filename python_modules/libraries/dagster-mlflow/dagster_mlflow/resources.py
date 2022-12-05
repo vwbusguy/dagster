@@ -155,7 +155,6 @@ class MlFlow(metaclass=MlflowMeta):
         """
         Catches the Mlflow exception if a run is already active.
         """
-
         try:
             run = mlflow.start_run(**kwargs)
             self.log.info(

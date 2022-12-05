@@ -267,7 +267,6 @@ class NamedTupleSerializer(Serializer):
             whitelist_map: current map of whitelisted serdes objects
             descent_path: the path to the current node from the root
         """
-
         raise NotImplementedError()
 
 
@@ -562,7 +561,6 @@ def register_serdes_tuple_fallbacks(
     Manually provide remappings for named tuples.
     Used to manage loading previously types that no longer exist.
     """
-
     for class_name, klass in fallback_map.items():
         serializer = cast(
             Type[NamedTupleSerializer],
@@ -586,7 +584,6 @@ def register_serdes_enum_fallbacks(
     Manually provide remappings for named tuples.
     Used to manage loading previously types that no longer exist.
     """
-
     serializer: Type[EnumSerializer] = DefaultEnumSerializer
     for class_name, klass in fallback_map.items():
         if not klass or not issubclass(klass, Enum):

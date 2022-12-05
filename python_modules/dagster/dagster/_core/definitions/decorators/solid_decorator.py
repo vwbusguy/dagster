@@ -329,7 +329,6 @@ def resolve_checked_solid_fn_inputs(
         exclude_nothing (bool): True if Nothing type inputs should be excluded from compute_fn
             arguments.
     """
-
     if exclude_nothing:
         explicit_names = set(
             inp.name

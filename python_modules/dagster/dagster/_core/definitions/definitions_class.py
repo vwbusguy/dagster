@@ -66,7 +66,6 @@ class Definitions:
 
         (2) The resources dictionary takes raw python objects, not just resource definitions.
         """
-
         if assets:
             check.iterable_param(
                 assets, "assets", (AssetsDefinition, SourceAsset, CacheableAssetsDefinition)

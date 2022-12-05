@@ -193,7 +193,6 @@ def make_slack_on_run_failure_sensor(
 
 
     """
-
     slack_client = WebClient(token=slack_token)
 
     if job_selection:
@@ -294,7 +293,6 @@ def make_slack_on_freshness_policy_status_change_sensor(
 
 
     """
-
     slack_client = WebClient(token=slack_token)
 
     @freshness_policy_sensor(

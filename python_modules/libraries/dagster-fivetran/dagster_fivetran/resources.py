@@ -80,7 +80,6 @@ class FivetranResource:
         Returns:
             Dict[str, Any]: Parsed json data from the response to this request
         """
-
         headers = {
             "User-Agent": f"dagster-fivetran/{__version__}",
             "Content-Type": "application/json;version=2",

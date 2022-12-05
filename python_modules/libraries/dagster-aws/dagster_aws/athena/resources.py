@@ -199,7 +199,6 @@ class FakeAthenaResource(AthenaResource):
 
 def athena_config():
     """Athena configuration."""
-
     return {
         "workgroup": Field(
             str,

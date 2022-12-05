@@ -66,7 +66,6 @@ def _execute_command_in_child_process(event_queue: Queue, command: ChildProcessC
     """Wraps the execution of a ChildProcessCommand.
 
     Handles errors and communicates across a queue with the parent process."""
-
     check.inst_param(command, "command", ChildProcessCommand)
 
     with capture_interrupts():
@@ -143,7 +142,6 @@ def execute_child_process_command(
     Warning: if the child process is in an infinite loop, this will
     also infinitely loop.
     """
-
     check.inst_param(command, "command", ChildProcessCommand)
 
     event_queue = multiprocessing_ctx.Queue()

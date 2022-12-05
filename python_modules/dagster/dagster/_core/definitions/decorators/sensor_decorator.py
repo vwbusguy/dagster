@@ -148,7 +148,6 @@ def asset_sensor(
                     },
                 )
     """
-
     check.opt_str_param(name, "name")
 
     def inner(fn: AssetMaterializationFunction) -> AssetSensorDefinition:
@@ -234,7 +233,6 @@ def multi_asset_sensor(
         default_status (DefaultSensorStatus): Whether the sensor starts as running or not. The default
             status can be overridden from Dagit or via the GraphQL API.
     """
-
     check.opt_str_param(name, "name")
 
     def inner(fn: MultiAssetMaterializationFunction) -> MultiAssetSensorDefinition:

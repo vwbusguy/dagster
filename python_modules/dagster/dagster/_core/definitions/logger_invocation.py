@@ -9,7 +9,6 @@ from .logger_definition import LoggerDefinition
 
 def logger_invocation_result(logger_def: LoggerDefinition, init_context: UnboundInitLoggerContext):
     """Using the provided context, call the underlying `logger_fn` and return created logger."""
-
     logger_config = _resolve_bound_config(init_context.logger_config, logger_def)
 
     bound_context = InitLoggerContext(

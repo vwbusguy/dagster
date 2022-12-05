@@ -170,7 +170,6 @@ def generate_events(
 
     Information parsed from a :py:class:`~DbtOutput` object.
     """
-
     for result in dbt_output.result["results"]:
         for event in result_to_events(
             result,

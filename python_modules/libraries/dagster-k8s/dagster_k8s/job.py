@@ -317,7 +317,6 @@ class DagsterK8sJobConfig(
     @classmethod
     def config_type_run_launcher(cls):
         """Configuration intended to be set on the Dagster instance for the run launcher."""
-
         return merge_dicts(
             DagsterK8sJobConfig.config_type_job(),
             {
@@ -388,7 +387,6 @@ class DagsterK8sJobConfig(
         each op in its own k8s job, or a run launcher that create a k8s job for the run worker).
         Shares most of the schema with the container_context, but for back-compat reasons,
         'namespace' is called 'job_namespace'."""
-
         return merge_dicts(
             {
                 "job_image": Field(

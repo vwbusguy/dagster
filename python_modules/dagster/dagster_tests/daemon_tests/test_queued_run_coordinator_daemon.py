@@ -529,7 +529,6 @@ def test_locations_not_created(instance, monkeypatch, workspace_context, daemon,
     """
     Verifies that no repository location is created when runs are dequeued
     """
-
     create_run(
         instance,
         pipeline_handle,

@@ -241,7 +241,6 @@ def find_stale_candidates(
         - The latest observed storage_id across all relevant assets. Can be used to avoid scanning
             the same events the next time this function is called.
     """
-
     stale_candidates: Set[AssetKeyPartitionKey] = set()
     latest_storage_id = None
 
@@ -574,7 +573,6 @@ def determine_asset_partitions_to_reconcile_for_freshness(
 
     Attempts to minimize the total number of asset executions.
     """
-
     # look within a 12-hour time window to combine future runs together
     current_time = pendulum.now(tz=pendulum.UTC)
     plan_window_start = current_time

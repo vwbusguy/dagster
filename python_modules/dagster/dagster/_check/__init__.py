@@ -1487,7 +1487,6 @@ def opt_tuple_param(
 ) -> Tuple[Any, ...]:
     """Ensures argument obj is a tuple or None; in the latter case, instantiates an empty tuple
     and returns it."""
-
     if obj is not None and not isinstance(obj, tuple):  # type: ignore
         raise _param_type_mismatch_exception(obj, tuple, param_name, additional_message)
 
