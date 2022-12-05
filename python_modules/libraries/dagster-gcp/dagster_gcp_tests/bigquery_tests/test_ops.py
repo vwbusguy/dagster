@@ -28,7 +28,8 @@ from dagster._legacy import InputDefinition, OutputDefinition
 
 def dataset_exists(name):
     """Check if dataset exists - ensures we have properly cleaned up after tests and haven't leaked
-    any datasets"""
+    any datasets
+    """
     client = bigquery.Client()
     dataset_ref = client.dataset(name)
 

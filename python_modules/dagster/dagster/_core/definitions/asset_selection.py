@@ -119,7 +119,8 @@ class AssetSelection(ABC):
         assets within the original asset selection.
 
         A sink asset is an asset that has no downstream dependencies within the asset selection.
-        The sink asset can have downstream dependencies outside of the asset selection."""
+        The sink asset can have downstream dependencies outside of the asset selection.
+        """
         return SinkAssetSelection(self)
 
     @public  # type: ignore
@@ -129,7 +130,8 @@ class AssetSelection(ABC):
         assets within the original asset selection.
 
         A source asset is an asset that has no upstream dependencies within the asset selection.
-        The source asset can have downstream dependencies outside of the asset selection."""
+        The source asset can have downstream dependencies outside of the asset selection.
+        """
         return SourceAssetSelection(self)
 
     def __or__(self, other: "AssetSelection") -> "OrAssetSelection":
