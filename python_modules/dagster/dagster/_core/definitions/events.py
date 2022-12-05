@@ -813,7 +813,6 @@ class RetryRequested(Exception):
             to the up_for_retry state
 
     Example:
-
         .. code-block:: python
 
             @op

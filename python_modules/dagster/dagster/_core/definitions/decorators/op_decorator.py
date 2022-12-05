@@ -163,7 +163,6 @@ def op(
         retry_policy (Optional[RetryPolicy]): The retry policy for this op.
 
     Examples:
-
         .. code-block:: python
 
             @op

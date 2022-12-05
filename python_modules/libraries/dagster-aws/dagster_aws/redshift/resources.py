@@ -336,7 +336,6 @@ def redshift_resource(context):
     cluster.
 
     Example:
-
         .. code-block:: python
 
             from dagster import build_op_context, op

@@ -124,7 +124,6 @@ def build_fivetran_assets(
             If left blank, assets will have a key of `AssetKey([schema_name, table_name])`.
 
     Examples:
-
     .. code-block:: python
 
         from dagster import AssetKey, repository, with_resources

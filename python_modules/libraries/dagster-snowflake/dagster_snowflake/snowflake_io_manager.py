@@ -28,7 +28,6 @@ def build_snowflake_io_manager(type_handlers: Sequence[DbTypeHandler]) -> IOMana
         IOManagerDefinition
 
     Examples:
-
         .. code-block:: python
 
             from dagster_snowflake import build_snowflake_io_manager

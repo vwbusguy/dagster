@@ -597,7 +597,6 @@ class OutputContext:
             event (Union[AssetMaterialization, Materialization, AssetObservation]): The event to log.
 
         Examples:
-
         .. code-block:: python
 
             from dagster import IOManager, AssetMaterialization
@@ -672,7 +671,6 @@ class OutputContext:
             metadata (Mapping[str, RawMetadataValue]): A metadata dictionary to log
 
         Examples:
-
         .. code-block:: python
 
             from dagster import IOManager
@@ -830,7 +828,6 @@ def build_output_context(
         partition_key: Optional[str]: String value representing partition key to execute with.
 
     Examples:
-
         .. code-block:: python
 
             build_output_context()

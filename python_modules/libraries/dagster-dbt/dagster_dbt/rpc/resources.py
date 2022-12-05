@@ -595,7 +595,6 @@ def dbt_rpc_resource(context) -> DbtRpcResource:
     Examples:
 
     Examples:
-
     .. code-block:: python
 
         from dagster_dbt import dbt_rpc_resource
@@ -630,7 +629,6 @@ def dbt_rpc_sync_resource(
     <https://docs.dagster.io/concepts/configuration/configured>`_ method.
 
     Examples:
-
     .. code-block:: python
 
         from dagster_dbt import dbt_rpc_sync_resource

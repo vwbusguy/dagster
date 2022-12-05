@@ -234,7 +234,6 @@ def solid(
 
 
     Examples:
-
         .. code-block:: python
 
             @solid
@@ -461,7 +460,6 @@ def lambda_solid(
             :class:`OutputDefinition() <OutputDefinition>`.
 
     Examples:
-
     .. code-block:: python
 
         @lambda_solid

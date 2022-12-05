@@ -256,7 +256,6 @@ class Field:
             A human-readable description of this config field.
 
     Examples:
-
     .. code-block:: python
 
         @op(

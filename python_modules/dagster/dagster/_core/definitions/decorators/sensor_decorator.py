@@ -127,7 +127,6 @@ def asset_sensor(
 
 
     Example:
-
         .. code-block:: python
 
             from dagster import AssetKey, EventLogEntry, SensorEvaluationContext, asset_sensor

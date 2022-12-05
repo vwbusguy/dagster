@@ -237,7 +237,6 @@ def define_asset_job(
         UnresolvedAssetJobDefinition: The job, which can be placed inside a repository.
 
     Examples:
-
         .. code-block:: python
 
             # A job that targets all assets in the repository:

@@ -104,6 +104,7 @@ def materialize_to_memory(
         partition_key: (Optional[str])
             The string partition key that specifies the run config to execute. Can only be used
             to select run config for assets with partitioned config.
+
     Returns:
         ExecuteInProcessResult: The result of the execution.
     """

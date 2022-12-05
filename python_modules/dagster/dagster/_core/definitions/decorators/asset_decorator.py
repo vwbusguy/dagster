@@ -160,7 +160,6 @@ def asset(
             output when given the same inputs.
 
     Examples:
-
         .. code-block:: python
 
             @asset

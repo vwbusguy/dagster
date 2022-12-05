@@ -434,7 +434,6 @@ class GraphQLContextVariant:
     with MarkedMembers that produce its members.
 
     Args:
-
     marked_instance_mgr (MarkedManager): The manager_fn
     within it must be a contextmanager that takes zero arguments and yields
     a DagsterInstance
@@ -721,7 +720,6 @@ def graphql_context_variants_fixture(context_variants):
 def make_graphql_context_test_suite(context_variants):
     """
     Arguments:
-
         context_variants (List[GraphQLContextVariant]): List of runs to run per test in this class.
 
         This is the base class factory for test suites in the dagster-graphql test.
@@ -738,7 +736,6 @@ def make_graphql_context_test_suite(context_variants):
         for more details.
 
     Example:
-
     class TestAThing(
         make_graphql_context_test_suite(
             context_variants=[GraphQLContextVariant.in_memory_in_process_start()]

@@ -69,7 +69,6 @@ class AssetGroup:
             use when re-materializing assets in this group.
 
     Examples:
-
         .. code-block:: python
 
             from dagster import AssetGroup, asset, AssetIn, AssetKey, SourceAsset, resource
@@ -173,7 +172,6 @@ class AssetGroup:
             description (Optional[str]): A description of the job.
 
         Examples:
-
             .. code-block:: python
 
                 from dagster import AssetGroup
