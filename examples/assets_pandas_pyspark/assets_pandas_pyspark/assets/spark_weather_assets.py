@@ -1,6 +1,6 @@
-"""isort:skip_file
+# isort: skip_file.
 
-Defines a group of the weather assets.
+"""Defines a group of the weather assets.
 
 Data is stored in Parquet files using the "Hadoop-style" layout in which each table corresponds to a
 directory, and each file within the directory contains some of the rows.

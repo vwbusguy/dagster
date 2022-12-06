@@ -158,15 +158,15 @@ class AssetGraph(
         return self.get_partitions_def(asset_key) is not None
 
     def have_same_partitioning(self, asset_key1: AssetKey, asset_key2: AssetKey) -> bool:
-        """Returns whether the given assets have the same partitions definition"""
+        """Returns whether the given assets have the same partitions definition."""
         return self.get_partitions_def(asset_key1) == self.get_partitions_def(asset_key2)
 
     def get_children(self, asset_key: AssetKey) -> AbstractSet[AssetKey]:
-        """Returns all assets that depend on the given asset"""
+        """Returns all assets that depend on the given asset."""
         return self.asset_dep_graph["downstream"][asset_key]
 
     def get_parents(self, asset_key: AssetKey) -> AbstractSet[AssetKey]:
-        """Returns all assets that the given asset depends on"""
+        """Returns all assets that the given asset depends on."""
         return self.asset_dep_graph["upstream"][asset_key]
 
     def get_children_partitions(
@@ -288,7 +288,7 @@ class AssetGraph(
         return list(parent_partition_key_subset.get_partition_keys())
 
     def has_non_source_parents(self, asset_key: AssetKey) -> bool:
-        """Determines if an asset has any parents which are not source assets"""
+        """Determines if an asset has any parents which are not source assets."""
         if asset_key in self.source_asset_keys:
             return False
         return bool(self.get_parents(asset_key) - self.source_asset_keys)

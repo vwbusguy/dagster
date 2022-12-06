@@ -61,7 +61,7 @@ class StubbedEcsError(Exception):
 class StubbedEcs:
     """
     A class that stubs ECS responses using botocore's Stubber:
-    https://botocore.amazonaws.com/v1/documentation/api/latest/reference/stubber.html
+    https://botocore.amazonaws.com/v1/documentation/api/latest/reference/stubber.html.
 
     Stubs are minimally sufficient for testing existing Dagster ECS behavior;
     consequently, not all endpoints are stubbed and not all stubbed endpoints
@@ -156,7 +156,7 @@ class StubbedEcs:
     @stubbed
     def list_account_settings(self, **kwargs):
         """
-        Only taskLongArnFormat has a default value
+        Only taskLongArnFormat has a default value.
         """
         if kwargs.get("effectiveSettings"):
             account_settings = {
@@ -218,7 +218,7 @@ class StubbedEcs:
     def list_tasks(self, **kwargs):
         """
         Only filtering by family and cluster is stubbed.
-        TODO: Pagination
+        TODO: Pagination.
         """
         cluster = self._cluster(kwargs.get("cluster"))
         family = kwargs.get("family")
@@ -442,7 +442,7 @@ class StubbedEcs:
     @stubbed
     def tag_resource(self, **kwargs):
         """
-        Only task tagging is stubbed; other resources won't work
+        Only task tagging is stubbed; other resources won't work.
         """
         tags = kwargs.get("tags")
         arn = kwargs.get("resourceArn")

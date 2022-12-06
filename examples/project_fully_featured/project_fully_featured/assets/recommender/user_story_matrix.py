@@ -9,7 +9,7 @@ from dagster import Output, asset
 
 @dataclass
 class IndexedCooMatrix:
-    """A matrix with indexes for the rows and columns"""
+    """A matrix with indexes for the rows and columns."""
 
     matrix: coo_matrix
 

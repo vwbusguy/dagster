@@ -1,6 +1,5 @@
-"""isort:skip_file
-
-Defines a group of weather assets.
+# isort: skip_file
+"""Defines a group of weather assets.
 
 Data is locally stored in csv files on the local filesystem.
 """

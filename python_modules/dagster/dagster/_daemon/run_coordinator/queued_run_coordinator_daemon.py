@@ -23,7 +23,7 @@ from dagster._utils.error import serializable_error_info_from_exc_info
 
 class _TagConcurrencyLimitsCounter:
     """
-    Helper object that keeps track of when the tag concurrency limits are met
+    Helper object that keeps track of when the tag concurrency limits are met.
     """
 
     _key_limits: Dict[str, int]
@@ -63,7 +63,7 @@ class _TagConcurrencyLimitsCounter:
 
     def is_run_blocked(self, run):
         """
-        True if there are in progress runs which are blocking this run based on tag limits
+        True if there are in progress runs which are blocking this run based on tag limits.
         """
         for key, value in run.tags.items():
             if key in self._key_limits and self._key_counts[key] >= self._key_limits[key]:
@@ -86,7 +86,7 @@ class _TagConcurrencyLimitsCounter:
 
     def update_counters_with_launched_run(self, run):
         """
-        Add a new in progress run to the counters
+        Add a new in progress run to the counters.
         """
         for key, value in run.tags.items():
             if key in self._key_limits:

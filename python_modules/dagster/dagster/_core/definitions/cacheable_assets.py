@@ -33,7 +33,7 @@ class AssetsDefinitionCacheableData(
     )
 ):
     """Data representing cacheable metadata about assets, which can be used to generate
-    AssetsDefinition objects in other processes
+    AssetsDefinition objects in other processes.
     """
 
     def __new__(
@@ -113,7 +113,7 @@ class CacheableAssetsDefinition(ResourceAddable, ABC):
     def build_definitions(
         self, data: Sequence[AssetsDefinitionCacheableData]
     ) -> Sequence[AssetsDefinition]:
-        """For a given set of AssetsDefinitionMetadata, return a list of AssetsDefinitions"""
+        """For a given set of AssetsDefinitionMetadata, return a list of AssetsDefinitions."""
         raise NotImplementedError()
 
     def with_resources(

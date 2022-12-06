@@ -14,7 +14,7 @@ from dagster._legacy import lambda_solid, pipeline
 
 def get_repo():
     """
-    This is a repo that changes name very time it's loaded
+    This is a repo that changes name very time it's loaded.
     """
 
     @lambda_solid

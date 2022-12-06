@@ -182,7 +182,7 @@ class AssetReconciliationCursor(NamedTuple):
 
 
 class ToposortedPriorityQueue:
-    """Queue that returns parents before their children"""
+    """Queue that returns parents before their children."""
 
     @functools.total_ordering
     class QueueItem(NamedTuple):

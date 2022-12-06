@@ -106,7 +106,7 @@ class ExecutorDefinition(NamedConfigurableDefinition):
     @public  # type: ignore
     @property
     def name(self) -> str:
-        """Name of the executor"""
+        """Name of the executor."""
         return self._name
 
     @public  # type: ignore

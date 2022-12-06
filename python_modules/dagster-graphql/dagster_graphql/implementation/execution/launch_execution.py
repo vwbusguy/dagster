@@ -72,7 +72,7 @@ def launch_reexecution_from_parent_run(
     graphene_info: HasContext, parent_run_id: str, strategy: str
 ) -> GrapheneLaunchRunSuccess:
     """
-    Launch a re-execution by referencing the parent run id
+    Launch a re-execution by referencing the parent run id.
     """
     from ...schema.pipelines.pipeline import GrapheneRun
 

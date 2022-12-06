@@ -8,7 +8,7 @@ from dagster_airflow.links.dagster_link import LINK_FMT, DagsterLink
 
 
 class DagsterOperator(BaseOperator):
-    """DagsterOperator
+    """DagsterOperator.
 
     Uses the dagster graphql api to run and monitor dagster jobs on remote dagster infrastructure
 
@@ -125,7 +125,7 @@ class DagsterOperator(BaseOperator):
 
 
 class DagsterCloudOperator(DagsterOperator):
-    """DagsterCloudOperator
+    """DagsterCloudOperator.
 
     Uses the dagster cloud graphql api to run and monitor dagster jobs on dagster cloud
 

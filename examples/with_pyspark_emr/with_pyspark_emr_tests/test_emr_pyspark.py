@@ -1,4 +1,4 @@
-"""Launching in EMR is prohibitively time consuming, so we just verify that the plan compiles"""
+"""Launching in EMR is prohibitively time consuming, so we just verify that the plan compiles."""
 import os
 
 from with_pyspark_emr.repository import make_and_filter_data_emr, make_and_filter_data_local

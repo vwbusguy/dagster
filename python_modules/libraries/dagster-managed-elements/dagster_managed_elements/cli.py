@@ -16,6 +16,7 @@ from dagster._utils.backcompat import ExperimentalWarning
 def _deepgetattr(obj, attr: str):
     """
     Recursive getattr that allows for nested attributes.
+
     https://stackoverflow.com/a/14324459
     """
     return functools.reduce(getattr, attr.split("."), obj)
