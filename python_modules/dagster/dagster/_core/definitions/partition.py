@@ -14,6 +14,7 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
+    Set,
     TypeVar,
     Union,
     cast,
@@ -247,7 +248,7 @@ class PartitionsDefinition(ABC, Generic[T]):
         ]
 
     def empty_subset(self) -> "PartitionsSubset":
-        return DefaultPartitionsSubset(self, [])
+        return DefaultPartitionsSubset(self, set())
 
     def deserialize_subset(self, serialized: str) -> "PartitionsSubset":
         return DefaultPartitionsSubset.from_serialized(self, serialized)
@@ -1023,6 +1024,10 @@ class PartitionsSubset(ABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def get_partition_keys(self, current_time: Optional[datetime] = None) -> Iterable[str]:
+        raise NotImplementedError()
+
+    @abstractmethod
     def with_partition_keys(self, partition_keys: Iterable[str]) -> "PartitionsSubset":
         raise NotImplementedError()
 
@@ -1030,9 +1035,17 @@ class PartitionsSubset(ABC):
     def serialize(self) -> str:
         raise NotImplementedError()
 
+    def __eq__(self, other):
+        return (
+            isinstance(other, PartitionsSubset)
+            and self.get_partition_keys_not_in_subset == other.get_partition_keys_not_in_subset
+            and self.get_partition_keys == other.get_partition_keys
+        )
+
 
 class DefaultPartitionsSubset(PartitionsSubset):
-    def __init__(self, partitions_def: PartitionsDefinition, subset=None):
+    def __init__(self, partitions_def: PartitionsDefinition, subset: Optional[Set[str]] = None):
+        check.opt_set_param(subset, "subset")
         self._partitions_def = partitions_def
         self._subset = subset or set()
 
@@ -1041,11 +1054,22 @@ class DefaultPartitionsSubset(PartitionsSubset):
     ) -> Iterable[str]:
         return set(self._partitions_def.get_partition_keys()) - self._subset
 
+    def get_partition_keys(self, current_time: Optional[datetime] = None) -> Iterable[str]:
+        return self._subset
+
     def with_partition_keys(self, partition_keys: Iterable[str]) -> "DefaultPartitionsSubset":
         return DefaultPartitionsSubset(self._partitions_def, self._subset | set(partition_keys))
 
     def serialize(self) -> str:
         return json.dumps(list(self._subset))
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, DefaultPartitionsSubset)
+            and self._partitions_def == other._partitions_def
+            and self._subset == other._subset
+            and self._subset == other._subset
+        )
 
     @staticmethod
     def from_serialized(

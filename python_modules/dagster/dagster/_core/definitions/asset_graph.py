@@ -1,4 +1,3 @@
-import warnings
 from collections import defaultdict, deque
 from typing import (
     TYPE_CHECKING,
@@ -26,7 +25,6 @@ from .partition import PartitionsDefinition
 from .partition_key_range import PartitionKeyRange
 from .partition_mapping import PartitionMapping, infer_partition_mapping
 from .source_asset import SourceAsset
-from .time_window_partitions import TimeWindowPartitionsDefinition
 
 if TYPE_CHECKING:
     from dagster._core.host_representation.external_data import ExternalAssetNode
@@ -224,27 +222,15 @@ class AssetGraph(
             )
 
         partition_mapping = self.get_partition_mapping(child_asset_key, parent_asset_key)
-        downstream_partition_key_range = (
-            partition_mapping.get_downstream_partitions_for_partition_range(
+        downstream_partition_key_subset = (
+            partition_mapping.get_downstream_partitions_for_partition_subset(
                 PartitionKeyRange(parent_partition_key, parent_partition_key),
                 downstream_partitions_def=child_partitions_def,
                 upstream_partitions_def=parent_partitions_def,
             )
         )
 
-        partition_keys = child_partitions_def.get_partition_keys()
-        if (
-            downstream_partition_key_range.start not in partition_keys
-            or downstream_partition_key_range.end not in partition_keys
-        ):
-            error_msg = f"""Mapped partition key {parent_partition_key} to downstream partition key range
-            [{downstream_partition_key_range.start}...{downstream_partition_key_range.end}] which
-            is not a valid range in the downstream partitions definition."""
-            if not isinstance(child_partitions_def, TimeWindowPartitionsDefinition):
-                raise DagsterInvalidInvocationError(error_msg)
-            else:
-                warnings.warn(error_msg)
-        return child_partitions_def.get_partition_keys_in_range(downstream_partition_key_range)
+        return list(downstream_partition_key_subset.get_partition_keys())
 
     def get_parents_partitions(
         self, asset_key: AssetKey, partition_key: Optional[str] = None
@@ -292,27 +278,14 @@ class AssetGraph(
             )
 
         partition_mapping = self.get_partition_mapping(child_asset_key, parent_asset_key)
-        upstream_partition_key_range = (
-            partition_mapping.get_upstream_partitions_for_partition_range(
+        upstream_partition_key_subset = (
+            partition_mapping.get_upstream_partitions_for_partition_subset(
                 PartitionKeyRange(partition_key, partition_key) if partition_key else None,
                 downstream_partitions_def=child_partitions_def,
                 upstream_partitions_def=parent_partitions_def,
             )
         )
-        partition_keys = parent_partitions_def.get_partition_keys()
-        if (
-            upstream_partition_key_range.start not in partition_keys
-            or upstream_partition_key_range.end not in partition_keys
-        ):
-            error_msg = f"""Mapped partition key {partition_key} to upstream partition key range
-            [{upstream_partition_key_range.start}...{upstream_partition_key_range.end}] which
-            is not a valid range in the upstream partitions definition."""
-            if not isinstance(child_partitions_def, TimeWindowPartitionsDefinition):
-                raise DagsterInvalidInvocationError(error_msg)
-            else:
-                warnings.warn(error_msg)
-
-        return parent_partitions_def.get_partition_keys_in_range(upstream_partition_key_range)
+        return list(upstream_partition_key_subset.get_partition_keys())
 
     def has_non_source_parents(self, asset_key: AssetKey) -> bool:
         """Determines if an asset has any parents which are not source assets"""
