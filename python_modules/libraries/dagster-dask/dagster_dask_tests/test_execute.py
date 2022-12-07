@@ -27,12 +27,12 @@ from dagster._legacy import (
     execute_pipeline,
     execute_pipeline_iterator,
     pipeline,
-    solid,
+    op,
 )
 from dagster._utils import send_interrupt
 
 
-@solid
+@op
 def simple(_):
     return 1
 
@@ -94,7 +94,7 @@ def test_composite_execute():
         assert result.success
 
 
-@solid(input_defs=[InputDefinition("df", dagster_pd.DataFrame)])
+@op(input_defs=[InputDefinition("df", dagster_pd.DataFrame)])
 def pandas_solid(_, df):  # pylint: disable=unused-argument
     pass
 
@@ -133,7 +133,7 @@ def test_pandas_dask():
         assert result.success
 
 
-@solid(input_defs=[InputDefinition("df", DataFrame)])
+@op(input_defs=[InputDefinition("df", DataFrame)])
 def dask_solid(_, df):  # pylint: disable=unused-argument
     pass
 
@@ -188,7 +188,7 @@ def test_execute_on_dask_local_without_io_manager():
             assert result.result_for_node("simple").output_value() == 1
 
 
-@solid(input_defs=[InputDefinition("df", DataFrame)])
+@op(input_defs=[InputDefinition("df", DataFrame)])
 def sleepy_dask_solid(_, df):  # pylint: disable=unused-argument
     start_time = time.time()
     while True:
@@ -276,7 +276,7 @@ def test_existing_scheduler():
     asyncio.get_event_loop().run_until_complete(_run_test())
 
 
-@solid
+@op
 def foo_solid():
     return "foo"
 

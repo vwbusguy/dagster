@@ -1,10 +1,10 @@
 from dagster_dask.executor import get_dask_resource_requirements
 
-from dagster._legacy import solid
+from dagster._legacy import op
 
 
 def test_resource_tags():
-    @solid(tags={"dagster-dask/resource_requirements": {"GPU": 1, "MEMORY": 10e9}})
+    @op(tags={"dagster-dask/resource_requirements": {"GPU": 1, "MEMORY": 10e9}})
     def boop(_):
         pass
 

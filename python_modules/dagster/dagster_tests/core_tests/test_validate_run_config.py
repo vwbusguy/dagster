@@ -2,11 +2,11 @@ import pytest
 
 from dagster import validate_run_config
 from dagster._core.errors import DagsterInvalidConfigError
-from dagster._legacy import pipeline, solid
+from dagster._legacy import pipeline, op
 
 
 def test_validate_run_config():
-    @solid
+    @op
     def basic():
         pass
 
@@ -16,7 +16,7 @@ def test_validate_run_config():
 
     validate_run_config(basic_pipeline)
 
-    @solid(config_schema={"foo": str})
+    @op(config_schema={"foo": str})
     def requires_config(_):
         pass
 

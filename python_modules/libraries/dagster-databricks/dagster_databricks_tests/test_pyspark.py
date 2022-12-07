@@ -24,7 +24,7 @@ from dagster._legacy import (
     OutputDefinition,
     execute_pipeline,
     pipeline,
-    solid,
+    op,
 )
 from dagster._utils.merger import deep_merge_dicts
 
@@ -72,7 +72,7 @@ BASE_DATABRICKS_PYSPARK_STEP_LAUNCHER_CONFIG: Dict[str, object] = {
 }
 
 
-@solid(
+@op(
     output_defs=[OutputDefinition(DataFrame)],
     required_resource_keys={"pyspark_step_launcher", "pyspark"},
 )
@@ -86,7 +86,7 @@ def make_df_solid(context):
     return context.resources.pyspark.spark_session.createDataFrame(rows, schema)
 
 
-@solid(
+@op(
     name="blah",
     description="this is a test",
     config_schema={"foo": str, "bar": int},
@@ -144,7 +144,7 @@ def define_pyspark_pipe():
     return pyspark_pipe
 
 
-@solid(
+@op(
     required_resource_keys={"pyspark_step_launcher", "pyspark"},
 )
 def do_nothing_solid(_):

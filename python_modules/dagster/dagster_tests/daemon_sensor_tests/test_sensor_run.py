@@ -57,7 +57,7 @@ from dagster._core.test_utils import (
 )
 from dagster._daemon import get_default_daemon_logger
 from dagster._daemon.sensor import execute_sensor_iteration, execute_sensor_iteration_loop
-from dagster._legacy import pipeline, solid
+from dagster._legacy import pipeline, op
 from dagster._seven.compat.pendulum import create_pendulum_time, to_timezone
 
 from .conftest import workspace_load_target
@@ -81,7 +81,7 @@ def c(a):
 asset_job = define_asset_job("abc", selection=AssetSelection.keys("c", "b").upstream())
 
 
-@solid
+@op
 def the_solid(_):
     return 1
 
@@ -99,7 +99,7 @@ def the_graph():
 the_job = the_graph.to_job()
 
 
-@solid(config_schema=Field(Any))
+@op(config_schema=Field(Any))
 def config_solid(_):
     return 1
 
@@ -114,7 +114,7 @@ def config_graph():
     config_solid()
 
 
-@solid
+@op
 def foo_solid():
     yield AssetMaterialization(asset_key=AssetKey("foo"))
     yield Output(1)
@@ -125,7 +125,7 @@ def foo_pipeline():
     foo_solid()
 
 
-@solid
+@op
 def foo_observation_solid():
     yield AssetObservation(asset_key=AssetKey("foo"), metadata={"text": "FOO"})
     yield Output(5)
@@ -136,7 +136,7 @@ def foo_observation_pipeline():
     foo_observation_solid()
 
 
-@solid
+@op
 def hanging_solid():
     start_time = time.time()
     while True:
@@ -150,7 +150,7 @@ def hanging_pipeline():
     hanging_solid()
 
 
-@solid
+@op
 def failure_solid():
     raise Exception("womp womp")
 

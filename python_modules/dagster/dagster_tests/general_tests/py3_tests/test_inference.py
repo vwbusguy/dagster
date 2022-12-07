@@ -14,11 +14,17 @@ from dagster import (
 from dagster._core.definitions.decorators.graph_decorator import graph
 from dagster._core.definitions.inference import infer_input_props, infer_output_props
 from dagster._core.types.dagster_type import DagsterTypeKind
-from dagster._legacy import InputDefinition, execute_pipeline, execute_solid, pipeline, solid
+from dagster._legacy import (
+    InputDefinition,
+    execute_pipeline,
+    execute_solid,
+    op,
+    pipeline,
+)
 
 
 def test_infer_solid_description_from_docstring():
-    @solid
+    @op
     def my_solid(_):
         """Here is some docstring"""
 
@@ -26,7 +32,7 @@ def test_infer_solid_description_from_docstring():
 
 
 def test_infer_solid_description_no_docstring():
-    @solid
+    @op
     def my_solid(_):
         pass
 
@@ -34,7 +40,7 @@ def test_infer_solid_description_no_docstring():
 
 
 def test_docstring_does_not_override():
-    @solid(description="abc")
+    @op(description="abc")
     def my_solid(_):
         """Here is some docstring"""
 
@@ -42,11 +48,11 @@ def test_docstring_does_not_override():
 
 
 def test_single_typed_input():
-    @solid
+    @op
     def add_one_infer(_context, num: int):
         return num + 1
 
-    @solid(input_defs=[InputDefinition("num", Int)])
+    @op(input_defs=[InputDefinition("num", Int)])
     def add_one_ex(_context, num):
         return num + 1
 
@@ -60,7 +66,7 @@ def test_single_typed_input():
 
 
 def test_precedence():
-    @solid(input_defs=[InputDefinition("num", Int)])
+    @op(input_defs=[InputDefinition("num", Int)])
     def add_one(_context, num: Any):
         return num + 1
 
@@ -68,7 +74,7 @@ def test_precedence():
 
 
 def test_double_typed_input():
-    @solid
+    @op
     def subtract(_context, num_one: int, num_two: int):
         return num_one + num_two
 
@@ -82,7 +88,7 @@ def test_double_typed_input():
 
 
 def test_single_typed_input_and_output():
-    @solid
+    @op
     def add_one(_context, num: int) -> int:
         return num + 1
 
@@ -96,7 +102,7 @@ def test_single_typed_input_and_output():
 
 
 def test_single_typed_input_and_output_lambda():
-    @solid
+    @op
     def add_one(num: int) -> int:
         return num + 1
 
@@ -110,7 +116,7 @@ def test_single_typed_input_and_output_lambda():
 
 
 def test_wrapped_input_and_output_lambda():
-    @solid
+    @op
     def add_one(nums: List[int]) -> Optional[List[int]]:
         return [num + 1 for num in nums]
 
@@ -130,7 +136,7 @@ def test_kitchen_sink():
     class Custom:
         pass
 
-    @solid
+    @op
     def sink(
         n: int,
         f: float,
@@ -169,11 +175,11 @@ def test_kitchen_sink():
 
 
 def test_composites():
-    @solid
+    @op
     def emit_one() -> int:
         return 1
 
-    @solid
+    @op
     def subtract(n1: int, n2: int) -> int:
         return n1 - n2
 
@@ -185,7 +191,7 @@ def test_composites():
 
 
 def test_emit_dict():
-    @solid
+    @op
     def emit_dict() -> dict:
         return {"foo": "bar"}
 
@@ -195,7 +201,7 @@ def test_emit_dict():
 
 
 def test_dict_input():
-    @solid
+    @op
     def intake_dict(inp: dict) -> str:
         return inp["foo"]
 
@@ -204,7 +210,7 @@ def test_dict_input():
 
 
 def test_emit_dagster_dict():
-    @solid
+    @op
     def emit_dagster_dict() -> Dict:
         return {"foo": "bar"}
 
@@ -214,7 +220,7 @@ def test_emit_dagster_dict():
 
 
 def test_dict_dagster_input():
-    @solid
+    @op
     def intake_dagster_dict(inp: Dict) -> str:
         return inp["foo"]
 
@@ -223,7 +229,7 @@ def test_dict_dagster_input():
 
 
 def test_python_tuple_input():
-    @solid
+    @op
     def intake_tuple(inp: tuple) -> int:
         return inp[1]
 
@@ -231,7 +237,7 @@ def test_python_tuple_input():
 
 
 def test_python_tuple_output():
-    @solid
+    @op
     def emit_tuple() -> tuple:
         return (4, 5)
 
@@ -239,7 +245,7 @@ def test_python_tuple_output():
 
 
 def test_nested_kitchen_sink():
-    @solid
+    @op
     def no_execute() -> Optional[List[Tuple[List[int], str, Dict[str, Optional[List[str]]]]]]:
         pass
 
@@ -257,7 +263,7 @@ def test_nested_kitchen_sink():
 def test_infer_input_description_from_docstring_failure():
     # docstring is invalid because has a dash instead of a colon to delimit the argument type and
     # description
-    @solid
+    @op
     def my_solid(_arg1):
         """
         Args:
@@ -268,7 +274,7 @@ def test_infer_input_description_from_docstring_failure():
 
 
 def test_infer_input_description_from_docstring_rest():
-    @solid
+    @op
     def rest(_context, hello: str, optional: int = 5):
         """
         :param str hello: hello world param
@@ -290,7 +296,7 @@ def test_infer_input_description_from_docstring_rest():
 
 
 def test_infer_descriptions_from_docstring_numpy():
-    @solid
+    @op
     def good_numpy(_context, hello: str, optional: int = 5):
         """
         Test
@@ -320,7 +326,7 @@ def test_infer_descriptions_from_docstring_numpy():
 
 
 def test_infer_descriptions_from_docstring_google():
-    @solid
+    @op
     def good_google(_context, hello: str, optional: int = 5):
         """
         Test
@@ -349,7 +355,7 @@ def test_infer_descriptions_from_docstring_google():
 def test_infer_output_description_from_docstring_failure():
     # docstring is invalid because has a dash instead of a colon to delimit the return type and
     # description
-    @solid
+    @op
     def google() -> int:
         """
         Returns:
@@ -361,7 +367,7 @@ def test_infer_output_description_from_docstring_failure():
 
 
 def test_infer_output_description_from_docstring_numpy():
-    @solid
+    @op
     def numpy(_context) -> int:
         """
 
@@ -378,7 +384,7 @@ def test_infer_output_description_from_docstring_numpy():
 
 
 def test_infer_output_description_from_docstring_rest():
-    @solid
+    @op
     def rest(_context) -> int:
         """
         :return int: a number
@@ -391,7 +397,7 @@ def test_infer_output_description_from_docstring_rest():
 
 
 def test_infer_output_description_from_docstring_google():
-    @solid
+    @op
     def google(_context) -> int:
         """
         Returns:
@@ -418,7 +424,7 @@ def test_unregistered_type_annotation_output():
     class MyClass:
         pass
 
-    @solid
+    @op
     def my_solid(_) -> MyClass:
         return MyClass()
 
@@ -436,11 +442,11 @@ def test_unregistered_type_annotation_input():
     class MyClass:
         pass
 
-    @solid
+    @op
     def solid1(_):
         return MyClass()
 
-    @solid
+    @op
     def solid2(_, _input1: MyClass):
         pass
 
@@ -478,11 +484,11 @@ def test_use_auto_type_twice():
     class MyClass:
         pass
 
-    @solid
+    @op
     def my_solid(_) -> MyClass:
         return MyClass()
 
-    @solid
+    @op
     def my_solid_2(_) -> MyClass:
         return MyClass()
 
@@ -498,7 +504,7 @@ def test_register_after_solid_definition():
     class MyClass:
         pass
 
-    @solid
+    @op
     def _my_solid(_) -> MyClass:
         return MyClass()
 
@@ -514,11 +520,11 @@ def test_same_name_different_modules():
 
     from dagster_tests.general_tests.py3_tests.other_module import MyClass as OtherModuleMyClass
 
-    @solid
+    @op
     def my_solid(_) -> MyClass:
         return MyClass()
 
-    @solid
+    @op
     def my_solid_2(_) -> OtherModuleMyClass:
         return OtherModuleMyClass()
 
@@ -534,11 +540,11 @@ def test_fan_in():
     class MyClass:
         pass
 
-    @solid
+    @op
     def upstream_solid(_):
         return MyClass()
 
-    @solid
+    @op
     def downstream_solid(_, _input: List[MyClass]):
         pass
 
@@ -556,11 +562,11 @@ def test_composites_user_defined_type():
     class MyClass:
         pass
 
-    @solid
+    @op
     def emit_one() -> MyClass:
         return MyClass()
 
-    @solid
+    @op
     def subtract(_n1: MyClass, _n2: MyClass) -> MyClass:
         return MyClass()
 

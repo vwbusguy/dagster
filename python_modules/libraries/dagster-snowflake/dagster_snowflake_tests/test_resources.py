@@ -3,14 +3,14 @@ from unittest import mock
 from dagster_snowflake import snowflake_resource
 
 from dagster._core.test_utils import environ
-from dagster._legacy import ModeDefinition, execute_solid, solid
+from dagster._legacy import ModeDefinition, execute_solid, op
 
 from .utils import create_mock_connector
 
 
 @mock.patch("snowflake.connector.connect", new_callable=create_mock_connector)
 def test_snowflake_resource(snowflake_connect):
-    @solid(required_resource_keys={"snowflake"})
+    @op(required_resource_keys={"snowflake"})
     def snowflake_solid(context):
         assert context.resources.snowflake
         with context.resources.snowflake.get_connection() as _:
@@ -47,7 +47,7 @@ def test_snowflake_resource(snowflake_connect):
 
 @mock.patch("snowflake.connector.connect", new_callable=create_mock_connector)
 def test_snowflake_resource_from_envvars(snowflake_connect):
-    @solid(required_resource_keys={"snowflake"})
+    @op(required_resource_keys={"snowflake"})
     def snowflake_solid(context):
         assert context.resources.snowflake
         with context.resources.snowflake.get_connection() as _:

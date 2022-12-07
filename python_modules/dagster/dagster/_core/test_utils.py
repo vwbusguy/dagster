@@ -30,7 +30,7 @@ from dagster._core.storage.pipeline_run import DagsterRun, DagsterRunStatus, Run
 from dagster._core.workspace.context import WorkspaceProcessContext
 from dagster._core.workspace.load_target import WorkspaceLoadTarget
 from dagster._daemon.controller import create_daemon_grpc_server_registry
-from dagster._legacy import ModeDefinition, pipeline, solid
+from dagster._legacy import ModeDefinition, pipeline, op
 from dagster._serdes import ConfigurableClass
 from dagster._seven.compat.pendulum import create_pendulum_time, mock_pendulum_timezone
 from dagster._utils import Counter, merge_dicts, traced, traced_counter
@@ -71,7 +71,7 @@ def nesting_graph_pipeline(depth, num_children, *args, **kwargs):
     Total number of solids will be num_children ^ depth
     """
 
-    @solid
+    @op
     def leaf_node(_):
         return 1
 

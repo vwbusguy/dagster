@@ -9,7 +9,7 @@ from dagster_ssh.resources import SSHResource, key_from_str
 from dagster_ssh.resources import ssh_resource as sshresource
 
 from dagster import Field
-from dagster._legacy import ModeDefinition, execute_solid, solid
+from dagster._legacy import ModeDefinition, execute_solid, op
 from dagster._seven import get_system_temp_directory
 
 
@@ -212,7 +212,7 @@ def test_ssh_sftp(sftpserver):
     tmp_path = get_system_temp_directory()
     readme_file = os.path.join(tmp_path, "readme.txt")
 
-    @solid(
+    @op(
         config_schema={
             "local_filepath": Field(str, is_required=True, description="local file path to get"),
             "remote_filepath": Field(str, is_required=True, description="remote file path to get"),

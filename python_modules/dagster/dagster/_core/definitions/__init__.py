@@ -117,7 +117,7 @@ from .decorators import (
     repository,
     schedule,
     sensor,
-    solid,
+    op,
     success_hook,
     weekly_schedule,
 )

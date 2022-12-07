@@ -3,7 +3,7 @@ import time
 from dagster_prometheus import prometheus_resource
 from prometheus_client import Counter, Enum, Gauge, Histogram, Info, Summary
 
-from dagster._legacy import ModeDefinition, execute_solid, solid
+from dagster._legacy import ModeDefinition, execute_solid, op
 
 EPS = 0.001
 ENV = {"resources": {"prometheus": {"config": {"gateway": "localhost:9091"}}}}
@@ -11,7 +11,7 @@ MODE = ModeDefinition(resource_defs={"prometheus": prometheus_resource})
 
 
 def test_prometheus_counter():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         c = Counter(
             "some_counter_seconds",
@@ -29,7 +29,7 @@ def test_prometheus_counter():
 
 
 def test_prometheus_gauge():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         g = Gauge(
             "job_last_success_unixtime",
@@ -46,7 +46,7 @@ def test_prometheus_gauge():
 
 
 def test_prometheus_summary():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         s = Summary(
             "request_latency_seconds",
@@ -77,7 +77,7 @@ def test_prometheus_summary():
 
 
 def test_prometheus_histogram():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         h = Histogram(
             "pipeline_runtime_seconds",
@@ -94,7 +94,7 @@ def test_prometheus_histogram():
 
 
 def test_prometheus_info():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         i = Info(
             "my_build_version",
@@ -113,7 +113,7 @@ def test_prometheus_info():
 
 
 def test_prometheus_enum():
-    @solid(required_resource_keys={"prometheus"})
+    @op(required_resource_keys={"prometheus"})
     def prometheus_solid(context):
         e = Enum(
             "my_task_state",

@@ -6,10 +6,10 @@ from dagit.debug import dagit_debug_command
 
 from dagster._cli.debug import export_command
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import execute_pipeline, pipeline, solid
+from dagster._legacy import execute_pipeline, op, pipeline
 
 
-@solid
+@op
 def emit_one():
     return 1
 

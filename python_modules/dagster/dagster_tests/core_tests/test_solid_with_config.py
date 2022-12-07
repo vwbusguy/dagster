@@ -3,13 +3,13 @@ import pytest
 from dagster import DagsterInvalidConfigError, Field, String, root_input_manager
 from dagster._core.definitions.config import ConfigMapping
 from dagster._core.definitions.decorators.graph_decorator import graph
-from dagster._legacy import InputDefinition, ModeDefinition, execute_pipeline, pipeline, solid
+from dagster._legacy import InputDefinition, ModeDefinition, execute_pipeline, pipeline, op
 
 
 def test_basic_solid_with_config():
     did_get = {}
 
-    @solid(
+    @op(
         name="solid_with_context",
         input_defs=[],
         output_defs=[],
@@ -35,7 +35,7 @@ def test_config_arg_mismatch():
     def _t_fn(*_args):
         raise Exception("should not reach")
 
-    @solid(
+    @op(
         name="solid_with_context",
         input_defs=[],
         output_defs=[],
@@ -56,7 +56,7 @@ def test_config_arg_mismatch():
 
 
 def test_solid_not_found():
-    @solid(name="find_me_solid", input_defs=[], output_defs=[])
+    @op(name="find_me_solid", input_defs=[], output_defs=[])
     def find_me_solid(_):
         raise Exception("should not reach")
 
@@ -69,11 +69,11 @@ def test_solid_not_found():
 
 
 def test_extra_config_ignored_default_input():
-    @solid(config_schema={"some_config": str})
+    @op(config_schema={"some_config": str})
     def solid1(_):
         return "public.table_1"
 
-    @solid
+    @op
     def solid2(_, input_table="public.table_1"):
         return input_table
 
@@ -97,11 +97,11 @@ def test_extra_config_ignored_default_input():
 
 
 def test_extra_config_ignored_no_default_input():
-    @solid(config_schema={"some_config": str})
+    @op(config_schema={"some_config": str})
     def op1(_):
         return "public.table_1"
 
-    @solid
+    @op
     def op2(_, input_table):
         return input_table
 
@@ -137,7 +137,7 @@ def test_extra_config_ignored_no_default_input():
 
 
 def test_extra_config_ignored_graphs():
-    @solid(config_schema={"some_config": str})
+    @op(config_schema={"some_config": str})
     def solid1(_):
         return "public.table_1"
 
@@ -150,7 +150,7 @@ def test_extra_config_ignored_graphs():
     def graph1():
         return solid1()
 
-    @solid
+    @op
     def solid2(_, input_table="public.table"):
         return input_table
 
@@ -171,11 +171,11 @@ def test_extra_config_ignored_graphs():
 
 
 def test_extra_config_input_bug():
-    @solid
+    @op
     def root(_):
         return "public.table_1"
 
-    @solid(config_schema={"some_config": str})
+    @op(config_schema={"some_config": str})
     def takes_input(_, input_table):
         return input_table
 
@@ -205,11 +205,11 @@ def test_extra_config_input_bug():
 
 
 def test_extra_config_unsatisfied_input():
-    @solid
+    @op
     def start(_, x):
         return x
 
-    @solid
+    @op
     def end(_, x=1):
         return x
 
@@ -235,11 +235,11 @@ def test_extra_config_unsatisfied_input_io_man():
     def config_io_man(context):
         return context.config
 
-    @solid(input_defs=[InputDefinition("x", root_manager_key="my_loader")])
+    @op(input_defs=[InputDefinition("x", root_manager_key="my_loader")])
     def start(_, x):
         return x
 
-    @solid
+    @op
     def end(_, x=1):
         return x
 
@@ -266,7 +266,7 @@ def test_extra_config_unsatisfied_input_io_man():
 
 
 def test_config_with_no_schema():
-    @solid
+    @op
     def my_solid(context):
         assert context.solid_config == 5
 

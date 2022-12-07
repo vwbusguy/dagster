@@ -17,13 +17,13 @@ from dagster._legacy import (
     PipelineDefinition,
     execute_pipeline,
     execute_solid,
+    op,
     pipeline,
-    solid,
 )
 
 
 def create_root_success_solid(name):
-    @solid(name=name)
+    @op(name=name)
     def root_solid(_context):
         passed_rows = []
         passed_rows.append({name: "compute_called"})
@@ -33,7 +33,7 @@ def create_root_success_solid(name):
 
 
 def create_root_fn_failure_solid(name):
-    @solid(name=name)
+    @op(name=name)
     def failed_solid(_):
         raise Exception("Compute failed")
 
@@ -68,12 +68,12 @@ def test_failure_midstream():
     solid_a = create_root_success_solid("solid_a")
     solid_b = create_root_success_solid("solid_b")
 
-    @solid
+    @op
     def solid_c(_, a, b):
         check.failed("user error")
         return [a, b, {"C": "compute_called"}]
 
-    @solid
+    @op
     def solid_d(_, c):
         return [c, {"D": "compute_called"}]
 
@@ -108,23 +108,23 @@ def test_failure_propagation():
 
     solid_a = create_root_success_solid("solid_a")
 
-    @solid
+    @op
     def solid_b(_, in_):
         return in_
 
-    @solid
+    @op
     def solid_c(_, in_):
         return in_
 
-    @solid
+    @op
     def solid_d(_, _in):
         check.failed("user error")
 
-    @solid
+    @op
     def solid_e(_, in_):
         return in_
 
-    @solid
+    @op
     def solid_f(_, in_, _in2):
         return in_
 
@@ -163,7 +163,7 @@ def test_do_not_yield_result():
 
 
 def test_yield_non_result():
-    @solid
+    @op
     def yield_wrong_thing(_):
         yield "foo"
 
@@ -195,15 +195,15 @@ def test_user_error_propogation():
     class UserError(Exception):
         pass
 
-    @solid
+    @op
     def throws_user_error():
         raise UserError(err_msg)
 
-    @solid
+    @op
     def return_one():
         return 1
 
-    @solid(input_defs=[InputDefinition("num")])
+    @op(input_defs=[InputDefinition("num")])
     def add_one(num):
         return num + 1
 
@@ -220,7 +220,7 @@ def test_user_error_propogation():
 
 
 def test_explicit_failure():
-    @solid
+    @op
     def throws_failure():
         raise DagsterTypeCheckDidNotPass(
             description="Always fails.",

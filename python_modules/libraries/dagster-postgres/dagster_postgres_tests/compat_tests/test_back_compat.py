@@ -23,7 +23,7 @@ from dagster._core.instance import DagsterInstance
 from dagster._core.storage.event_log.migration import ASSET_KEY_INDEX_COLS
 from dagster._core.storage.pipeline_run import RunsFilter
 from dagster._core.storage.tags import PARTITION_NAME_TAG, PARTITION_SET_TAG
-from dagster._legacy import execute_pipeline, pipeline, solid
+from dagster._legacy import execute_pipeline, pipeline, op
 from dagster._utils import file_relative_path
 
 
@@ -60,7 +60,7 @@ def test_0_7_6_postgres_pre_add_pipeline_snapshot(hostname, conn_string):
 
         instance = DagsterInstance.from_config(tempdir)
 
-        @solid
+        @op
         def noop_solid(_):
             pass
 
@@ -117,7 +117,7 @@ def test_0_9_22_postgres_pre_asset_partition(hostname, conn_string):
 
         instance = DagsterInstance.from_config(tempdir)
 
-        @solid
+        @op
         def asset_solid(_):
             yield AssetMaterialization(
                 asset_key=AssetKey(["path", "to", "asset"]), partition="partition_1"
@@ -156,7 +156,7 @@ def test_0_9_22_postgres_pre_run_partition(hostname, conn_string):
 
         instance = DagsterInstance.from_config(tempdir)
 
-        @solid
+        @op
         def simple_solid(_):
             return 1
 
@@ -279,7 +279,7 @@ def test_0_12_0_add_mode_column(hostname, conn_string):
         # migration-required column.
         assert len(instance.get_runs()) == 1
 
-        @solid
+        @op
         def basic():
             pass
 
@@ -314,7 +314,7 @@ def test_0_12_0_extract_asset_index_cols(hostname, conn_string):
         file_relative_path(__file__, "snapshot_0_12_0_pre_asset_index_cols/postgres/pg_dump.txt"),
     )
 
-    @solid
+    @op
     def asset_solid(_):
         yield AssetMaterialization(asset_key=AssetKey(["a"]), partition="partition_1")
         yield Output(1)

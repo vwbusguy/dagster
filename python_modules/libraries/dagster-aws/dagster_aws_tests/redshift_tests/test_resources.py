@@ -7,7 +7,7 @@ import psycopg2
 import pytest
 from dagster_aws.redshift import FakeRedshiftResource, fake_redshift_resource, redshift_resource
 
-from dagster._legacy import ModeDefinition, execute_solid, solid
+from dagster._legacy import ModeDefinition, execute_solid, op
 
 REDSHIFT_ENV = {
     "resources": {
@@ -37,13 +37,13 @@ def mock_execute_query_conn(*_args, **_kwargs):
     return m
 
 
-@solid(required_resource_keys={"redshift"})
+@op(required_resource_keys={"redshift"})
 def single_redshift_solid(context):
     assert context.resources.redshift
     return context.resources.redshift.execute_query("SELECT 1", fetch_results=True)
 
 
-@solid(required_resource_keys={"redshift"})
+@op(required_resource_keys={"redshift"})
 def multi_redshift_solid(context):
     assert context.resources.redshift
     return context.resources.redshift.execute_queries(
@@ -155,7 +155,7 @@ def test_live_redshift(s3_bucket):
     client = boto3.client("s3")
     client.put_object(Body=REDSHIFT_LOAD_FILE_CONTENTS, Bucket=s3_bucket, Key=file_key)
 
-    @solid(required_resource_keys={"redshift"})
+    @op(required_resource_keys={"redshift"})
     def query(context):
         assert context.resources.redshift
 

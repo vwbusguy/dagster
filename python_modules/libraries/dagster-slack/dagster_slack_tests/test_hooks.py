@@ -2,7 +2,7 @@ from dagster_slack import slack_resource
 from dagster_slack.hooks import slack_on_failure, slack_on_success
 from mock import patch
 
-from dagster._legacy import ModeDefinition, execute_pipeline, pipeline, solid
+from dagster._legacy import ModeDefinition, execute_pipeline, pipeline, op
 
 
 class SomeUserException(Exception):
@@ -11,11 +11,11 @@ class SomeUserException(Exception):
 
 @patch("slack_sdk.WebClient.api_call")
 def test_failure_hook_on_solid_instance(mock_api_call):
-    @solid
+    @op
     def pass_solid(_):
         pass
 
-    @solid
+    @op
     def fail_solid(_):
         raise SomeUserException()
 
@@ -41,11 +41,11 @@ def test_failure_hook_on_solid_instance(mock_api_call):
 
 @patch("slack_sdk.WebClient.api_call")
 def test_failure_hook_decorator(mock_api_call):
-    @solid
+    @op
     def pass_solid(_):
         pass
 
-    @solid
+    @op
     def fail_solid(_):
         raise SomeUserException()
 
@@ -72,11 +72,11 @@ def test_success_hook_on_solid_instance(mock_api_call):
     def my_message_fn(_):
         return "Some custom text"
 
-    @solid
+    @op
     def pass_solid(_):
         pass
 
-    @solid
+    @op
     def fail_solid(_):
         raise SomeUserException()
 
@@ -100,11 +100,11 @@ def test_success_hook_on_solid_instance(mock_api_call):
 
 @patch("slack_sdk.WebClient.api_call")
 def test_success_hook_decorator(mock_api_call):
-    @solid
+    @op
     def pass_solid(_):
         pass
 
-    @solid
+    @op
     def fail_solid(_):
         raise SomeUserException()
 

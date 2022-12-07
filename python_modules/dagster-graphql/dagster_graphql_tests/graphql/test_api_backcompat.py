@@ -5,7 +5,7 @@ from dagster_graphql.test.utils import define_out_of_process_context, execute_da
 from dagster import repository
 from dagster._core.storage.pipeline_run import DagsterRunStatus
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import PresetDefinition, pipeline, solid
+from dagster._legacy import PresetDefinition, pipeline, op
 
 RUNS_QUERY = """
 query RunsQuery {
@@ -181,11 +181,11 @@ mutation ExecutePipeline(
 
 
 def get_repo():
-    @solid
+    @op
     def my_solid():
         pass
 
-    @solid
+    @op
     def loop():
         while True:
             time.sleep(0.1)

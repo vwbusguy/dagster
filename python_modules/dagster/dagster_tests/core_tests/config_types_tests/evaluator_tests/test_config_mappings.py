@@ -13,17 +13,17 @@ from dagster import (
     graph,
 )
 from dagster._core.definitions.config import ConfigMapping
-from dagster._legacy import InputDefinition, execute_pipeline, pipeline, solid
+from dagster._legacy import InputDefinition, execute_pipeline, op, pipeline, op
 
 
 # have to use "pipe" solid since "result_for_solid" doesnt work with composite mappings
 # no longer true? refactor these tests?
-@solid(input_defs=[InputDefinition("input_str")])
+@op(input_defs=[InputDefinition("input_str")])
 def pipe(input_str):
     return input_str
 
 
-@solid(config_schema=Field(String, is_required=False))
+@op(config_schema=Field(String, is_required=False))
 def scalar_config_solid(context):
     yield Output(context.solid_config)
 
@@ -250,7 +250,7 @@ def test_config_mapper_throws_nested():
 
 
 def test_composite_config_field():
-    @solid(config_schema={"inner": Field(String)})
+    @op(config_schema={"inner": Field(String)})
     def inner_solid(context):
         return context.solid_config["inner"]
 
@@ -273,7 +273,7 @@ def test_composite_config_field():
 
 
 def test_nested_composite_config_field():
-    @solid(config_schema={"inner": Field(String)})
+    @op(config_schema={"inner": Field(String)})
     def inner_solid(context):
         return context.solid_config["inner"]
 
@@ -307,7 +307,7 @@ def test_nested_composite_config_field():
 
 
 def test_nested_with_inputs():
-    @solid(
+    @op(
         input_defs=[InputDefinition("some_input", String)],
         config_schema={"basic_key": Field(String)},
     )
@@ -354,7 +354,7 @@ def test_nested_with_inputs():
 
 
 def test_wrap_none_config_and_inputs():
-    @solid(
+    @op(
         config_schema={
             "config_field_a": Field(String),
             "config_field_b": Field(String),
@@ -471,7 +471,7 @@ def test_wrap_none_config_and_inputs():
 
 
 def test_wrap_all_config_no_inputs():
-    @solid(
+    @op(
         config_schema={
             "config_field_a": Field(String),
             "config_field_b": Field(String),
@@ -592,7 +592,7 @@ def test_wrap_all_config_no_inputs():
 
 
 def test_wrap_all_config_one_input():
-    @solid(
+    @op(
         config_schema={
             "config_field_a": Field(String),
             "config_field_b": Field(String),
@@ -702,7 +702,7 @@ def test_wrap_all_config_one_input():
 
 
 def test_wrap_all_config_and_inputs():
-    @solid(
+    @op(
         config_schema={
             "config_field_a": Field(String),
             "config_field_b": Field(String),
@@ -847,7 +847,7 @@ def test_nested_empty_config():
 
 
 def test_nested_empty_config_input():
-    @solid
+    @op
     def number(num):
         return num
 

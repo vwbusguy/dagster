@@ -153,12 +153,12 @@ class _Solid:
 
 
 @overload
-def solid(name: Callable[..., Any]) -> OpDefinition:
+def op(name: Callable[..., Any]) -> OpDefinition:
     ...
 
 
 @overload
-def solid(
+def op(
     name: Optional[str] = ...,
     description: Optional[str] = ...,
     input_defs: Optional[Sequence[InputDefinition]] = ...,
@@ -172,7 +172,7 @@ def solid(
     ...
 
 
-def solid(
+def op(
     name: Optional[Union[Callable[..., Any], str]] = None,
     description: Optional[str] = None,
     input_defs: Optional[Sequence[InputDefinition]] = None,

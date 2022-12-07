@@ -11,12 +11,12 @@ from dagster._core.utility_solids import (
     define_stub_solid,
     input_set,
 )
-from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, solid
+from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, op
 from dagster._utils.test import execute_solid
 
 
 def test_single_solid_in_isolation():
-    @solid
+    @op
     def solid_one():
         return 1
 
@@ -26,7 +26,7 @@ def test_single_solid_in_isolation():
 
 
 def test_single_solid_with_single():
-    @solid(input_defs=[InputDefinition(name="num")])
+    @op(input_defs=[InputDefinition(name="num")])
     def add_one_solid(num):
         return num + 1
 
@@ -37,7 +37,7 @@ def test_single_solid_with_single():
 
 
 def test_single_solid_with_multiple_inputs():
-    @solid(input_defs=[InputDefinition(name="num_one"), InputDefinition("num_two")])
+    @op(input_defs=[InputDefinition(name="num_one"), InputDefinition("num_two")])
     def add_solid(num_one, num_two):
         return num_one + num_two
 
@@ -54,7 +54,7 @@ def test_single_solid_with_multiple_inputs():
 def test_single_solid_with_config():
     ran = {}
 
-    @solid(config_schema=Int)
+    @op(config_schema=Int)
     def check_config_for_two(context):
         assert context.solid_config == 2
         ran["check_config_for_two"] = True
@@ -75,7 +75,7 @@ def test_single_solid_with_context_config():
 
     ran = {"count": 0}
 
-    @solid(required_resource_keys={"num"})
+    @op(required_resource_keys={"num"})
     def check_context_config_for_two(context):
         assert context.resources.num == 2
         ran["count"] += 1
@@ -102,7 +102,7 @@ def test_single_solid_error():
     class SomeError(Exception):
         pass
 
-    @solid
+    @op
     def throw_error():
         raise SomeError()
 
@@ -113,7 +113,7 @@ def test_single_solid_error():
 
 
 def test_single_solid_type_checking_output_error():
-    @solid(output_defs=[OutputDefinition(Int)])
+    @op(output_defs=[OutputDefinition(Int)])
     def return_string():
         return "ksjdfkjd"
 
@@ -125,7 +125,7 @@ def test_failing_solid_in_isolation():
     class ThisException(Exception):
         pass
 
-    @solid
+    @op
     def throw_an_error():
         raise ThisException("nope")
 
@@ -136,7 +136,7 @@ def test_failing_solid_in_isolation():
 
 
 def test_graphs():
-    @solid
+    @op
     def hello():
         return "hello"
 
@@ -227,7 +227,7 @@ def test_execute_nested_graphs():
 
 
 def test_single_solid_with_bad_inputs():
-    @solid(input_defs=[InputDefinition("num_one", int), InputDefinition("num_two", int)])
+    @op(input_defs=[InputDefinition("num_one", int), InputDefinition("num_two", int)])
     def add_solid(num_one, num_two):
         return num_one + num_two
 

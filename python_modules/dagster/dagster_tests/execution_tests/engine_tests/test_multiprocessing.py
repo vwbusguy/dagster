@@ -26,8 +26,9 @@ from dagster._legacy import (
     OutputDefinition,
     PresetDefinition,
     execute_pipeline,
+    op,
     pipeline,
-    solid,
+    op,
 )
 from dagster._utils import safe_tempfile_path, segfault
 
@@ -117,19 +118,19 @@ def test_forkserver_preload():
 
 
 def define_diamond_pipeline():
-    @solid
+    @op
     def return_two():
         return 2
 
-    @solid(input_defs=[InputDefinition("num")])
+    @op(input_defs=[InputDefinition("num")])
     def add_three(num):
         return num + 3
 
-    @solid(input_defs=[InputDefinition("num")])
+    @op(input_defs=[InputDefinition("num")])
     def mult_three(num):
         return num * 3
 
-    @solid(input_defs=[InputDefinition("left"), InputDefinition("right")])
+    @op(input_defs=[InputDefinition("left"), InputDefinition("right")])
     def adder(left, right):
         return left + right
 
@@ -154,11 +155,11 @@ def define_diamond_pipeline():
 
 
 def define_in_mem_pipeline():
-    @solid
+    @op
     def return_two():
         return 2
 
-    @solid(input_defs=[InputDefinition("num")])
+    @op(input_defs=[InputDefinition("num")])
     def add_three(num):
         return num + 3
 
@@ -170,11 +171,11 @@ def define_in_mem_pipeline():
 
 
 def define_error_pipeline():
-    @solid
+    @op
     def should_never_execute(_x):
         assert False  # this should never execute
 
-    @solid
+    @op
     def throw_error():
         raise Exception("bad programmer")
 
@@ -263,7 +264,7 @@ def test_solid_selection():
 
 
 def define_subdag_pipeline():
-    @solid(config_schema=Field(String))
+    @op(config_schema=Field(String))
     def waiter(context):
         done = False
         while not done:
@@ -271,7 +272,7 @@ def define_subdag_pipeline():
             if os.path.isfile(context.solid_config):
                 return
 
-    @solid(
+    @op(
         input_defs=[InputDefinition("after", Nothing)],
         config_schema=Field(String),
     )
@@ -280,7 +281,7 @@ def define_subdag_pipeline():
             fd.write("1")
         return
 
-    @solid(
+    @op(
         input_defs=[InputDefinition("after", Nothing)],
         output_defs=[OutputDefinition(Nothing)],
     )
@@ -350,7 +351,7 @@ def test_ephemeral_event_log():
         assert result.result_for_node("adder").output_value() == 11
 
 
-@solid(
+@op(
     output_defs=[
         OutputDefinition(name="option_1", is_required=False),
         OutputDefinition(name="option_2", is_required=False),
@@ -360,7 +361,7 @@ def either_or(_context):
     yield Output(1, "option_1")
 
 
-@solid
+@op
 def echo(x):
     return x
 
@@ -391,7 +392,7 @@ def test_optional_outputs():
         assert len([event for event in multi_result.step_event_list if event.is_step_skipped]) == 2
 
 
-@solid
+@op
 def throw():
     raise Failure(
         description="it Failure",
@@ -427,7 +428,7 @@ def test_failure_multiprocessing():
         assert failure_data.user_failure_data.metadata_entries[0].entry_data.text == "text"
 
 
-@solid
+@op
 def sys_exit(context):
     context.log.info("Informational message")
     print("Crashy output to stdout")  # pylint: disable=print-call
@@ -482,7 +483,7 @@ def test_crash_multiprocessing():
 
 
 # segfault test
-@solid
+@op
 def segfault_solid(context):
     context.log.info("Informational message")
     print("Crashy output to stdout")  # pylint: disable=print-call

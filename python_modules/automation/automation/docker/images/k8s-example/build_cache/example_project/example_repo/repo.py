@@ -11,16 +11,16 @@ from dagster._legacy import (
     PresetDefinition,
     default_executors,
     pipeline,
-    solid,
+    op,
 )
 
 
-@solid(input_defs=[InputDefinition("word", str)], config_schema={"factor": int})
+@op(input_defs=[InputDefinition("word", str)], config_schema={"factor": int})
 def multiply_the_word(context, word):
     return word * context.solid_config["factor"]
 
 
-@solid(input_defs=[InputDefinition("word")])
+@op(input_defs=[InputDefinition("word")])
 def count_letters(_context, word):
     return dict(Counter(word))
 

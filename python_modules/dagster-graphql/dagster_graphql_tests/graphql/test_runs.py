@@ -17,7 +17,7 @@ from dagster._core.execution.api import execute_run
 from dagster._core.storage.pipeline_run import DagsterRunStatus
 from dagster._core.storage.tags import PARENT_RUN_ID_TAG, ROOT_RUN_ID_TAG
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import execute_pipeline, pipeline, solid
+from dagster._legacy import execute_pipeline, op, pipeline
 from dagster._utils import Counter, traced_counter
 
 RUNS_QUERY = """
@@ -349,11 +349,11 @@ class TestGetRuns(ExecutingGraphQLContextTestMatrix):
 
 
 def get_repo_at_time_1():
-    @solid
+    @op
     def solid_A():
         pass
 
-    @solid
+    @op
     def solid_B():
         pass
 
@@ -374,11 +374,11 @@ def get_repo_at_time_1():
 
 
 def get_repo_at_time_2():
-    @solid
+    @op
     def solid_A():
         pass
 
-    @solid
+    @op
     def solid_B_prime():
         pass
 

@@ -16,12 +16,12 @@ from dagster._legacy import (
     execute_pipeline,
     execute_solid,
     pipeline,
-    solid,
+    op,
 )
 
 
 def test_multiple_outputs():
-    @solid(
+    @op(
         name="multiple_outputs",
         input_defs=[],
         output_defs=[
@@ -52,7 +52,7 @@ def test_multiple_outputs():
 
 
 def test_wrong_multiple_output():
-    @solid(
+    @op(
         name="multiple_outputs",
         input_defs=[],
         output_defs=[OutputDefinition(name="output_one")],
@@ -71,7 +71,7 @@ def test_wrong_multiple_output():
 def test_multiple_outputs_of_same_name_disallowed():
     # make this illegal until it is supported
 
-    @solid(
+    @op(
         name="multiple_outputs",
         input_defs=[],
         output_defs=[OutputDefinition(name="output_one")],
@@ -89,7 +89,7 @@ def test_multiple_outputs_of_same_name_disallowed():
 
 
 def define_multi_out():
-    @solid(
+    @op(
         name="multiple_outputs",
         input_defs=[],
         output_defs=[
@@ -100,7 +100,7 @@ def define_multi_out():
     def multiple_outputs(_):
         yield Output(output_name="output_one", value="foo")
 
-    @solid(
+    @op(
         name="downstream_one",
         input_defs=[InputDefinition("some_input")],
         output_defs=[],
@@ -108,7 +108,7 @@ def define_multi_out():
     def downstream_one(_, some_input):
         del some_input
 
-    @solid
+    @op
     def downstream_two(_, some_input):
         del some_input
         raise Exception("do not call me")
@@ -186,7 +186,7 @@ def test_multiple_outputs_only_emit_one_multiproc():
 
 
 def test_missing_non_optional_output_fails():
-    @solid(
+    @op(
         name="multiple_outputs",
         input_defs=[],
         output_defs=[
@@ -206,7 +206,7 @@ def test_missing_non_optional_output_fails():
 
 
 def test_warning_for_conditional_output(capsys):
-    @solid(
+    @op(
         config_schema={"return": bool},
         output_defs=[OutputDefinition(Any, is_required=False)],
     )

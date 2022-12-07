@@ -6,7 +6,7 @@ from dagster_pyspark import lazy_pyspark_resource, pyspark_resource
 from pyspark.sql import Row, SparkSession
 
 from dagster import file_relative_path
-from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, execute_solid, solid
+from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, execute_solid, op
 from dagster._utils import dict_without_keys
 from dagster._utils.test import get_temp_dir
 
@@ -38,7 +38,7 @@ def create_pyspark_df():
 def test_dataframe_outputs(file_type, read, other, resource):
     df = create_pyspark_df()
 
-    @solid(output_defs=[OutputDefinition(dagster_type=DagsterPySparkDataFrame, name="df")])
+    @op(output_defs=[OutputDefinition(dagster_type=DagsterPySparkDataFrame, name="df")])
     def return_df(_):
         return df
 
@@ -89,7 +89,7 @@ def test_dataframe_outputs(file_type, read, other, resource):
 
 @pytest.mark.parametrize(dataframe_parametrize_argnames, dataframe_parametrize_argvalues)
 def test_dataframe_inputs(file_type, read, other, resource):
-    @solid(
+    @op(
         input_defs=[InputDefinition(dagster_type=DagsterPySparkDataFrame, name="input_df")],
     )
     def return_df(_, input_df):
