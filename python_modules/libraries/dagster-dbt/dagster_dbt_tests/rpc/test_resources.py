@@ -9,7 +9,7 @@ from dagster_dbt import (
     local_dbt_rpc_resource,
 )
 
-from dagster._legacy import ModeDefinition, execute_solid, op
+from dagster._legacy import ModeDefinition, execute_solid
 
 
 def test_url(client):

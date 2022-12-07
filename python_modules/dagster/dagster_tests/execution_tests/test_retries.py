@@ -35,7 +35,6 @@ from dagster._legacy import (
     execute_pipeline_iterator,
     pipeline,
     reexecute_pipeline,
-    op,
 )
 
 executors = pytest.mark.parametrize(

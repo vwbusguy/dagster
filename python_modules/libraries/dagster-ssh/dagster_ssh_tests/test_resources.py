@@ -9,7 +9,7 @@ from dagster_ssh.resources import SSHResource, key_from_str
 from dagster_ssh.resources import ssh_resource as sshresource
 
 from dagster import Field
-from dagster._legacy import ModeDefinition, execute_solid, op
+from dagster._legacy import ModeDefinition, execute_solid
 from dagster._seven import get_system_temp_directory
 
 

@@ -42,7 +42,6 @@ from dagster._legacy import (
     PresetDefinition,
     execute_pipeline,
     pipeline,
-    op,
 )
 from dagster._utils import file_relative_path, merge_dicts
 from dagster.version import __version__

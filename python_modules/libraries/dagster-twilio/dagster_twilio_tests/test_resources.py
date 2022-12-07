@@ -4,7 +4,7 @@ import pytest
 from dagster_twilio import twilio_resource
 from twilio.base.exceptions import TwilioRestException
 
-from dagster._legacy import ModeDefinition, execute_solid, op
+from dagster._legacy import ModeDefinition, execute_solid
 
 
 def test_twilio_resource():

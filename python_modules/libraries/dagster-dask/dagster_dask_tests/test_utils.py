@@ -2,7 +2,7 @@ import dask.dataframe as dd
 from dagster_dask import DataFrame
 
 from dagster import file_relative_path
-from dagster._legacy import InputDefinition, execute_solid, op
+from dagster._legacy import InputDefinition, execute_solid
 
 
 @op(input_defs=[InputDefinition(dagster_type=DataFrame, name="input_df")])

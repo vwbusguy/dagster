@@ -57,7 +57,7 @@ from dagster._core.test_utils import (
 )
 from dagster._daemon import get_default_daemon_logger
 from dagster._daemon.sensor import execute_sensor_iteration, execute_sensor_iteration_loop
-from dagster._legacy import pipeline, op
+from dagster._legacy import pipeline
 from dagster._seven.compat.pendulum import create_pendulum_time, to_timezone
 
 from .conftest import workspace_load_target

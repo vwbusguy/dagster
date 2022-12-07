@@ -6,7 +6,7 @@ from dask.distributed import Client
 from dagster import Dict, Output
 from dagster._core.execution.results import PipelineExecutionResult
 from dagster._core.test_utils import instance_for_test
-from dagster._legacy import ModeDefinition, OutputDefinition, execute_pipeline, pipeline, op
+from dagster._legacy import ModeDefinition, OutputDefinition, execute_pipeline, pipeline
 
 
 @op(

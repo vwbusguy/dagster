@@ -1,7 +1,7 @@
 from dagster import Nothing
 from dagster import _check as check
 from dagster import op
-from dagster._legacy import InputDefinition, op
+from dagster._legacy import InputDefinition
 
 
 def _core_create_snowflake_command(dagster_decorator, decorator_name, sql, parameters=None):

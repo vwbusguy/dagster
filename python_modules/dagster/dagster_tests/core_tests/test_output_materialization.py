@@ -10,6 +10,7 @@ from dagster import (
     Output,
     String,
     dagster_type_materializer,
+    op,
 )
 from dagster._core.errors import DagsterInvariantViolationError
 from dagster._core.execution.plan.step import StepKind
@@ -20,7 +21,6 @@ from dagster._legacy import (
     OutputDefinition,
     PipelineDefinition,
     execute_pipeline,
-    op,
 )
 from dagster._utils.test import get_temp_file_name, get_temp_file_names
 

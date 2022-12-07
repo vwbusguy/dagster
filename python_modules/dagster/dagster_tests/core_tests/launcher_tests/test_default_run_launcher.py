@@ -27,7 +27,7 @@ from dagster._core.test_utils import (
 )
 from dagster._grpc.client import DagsterGrpcClient
 from dagster._grpc.types import CancelExecutionRequest
-from dagster._legacy import ModeDefinition, pipeline, op
+from dagster._legacy import ModeDefinition, pipeline
 
 default_mode_def = ModeDefinition(resource_defs={"io_manager": fs_io_manager})
 from dagster._core.workspace.context import WorkspaceProcessContext

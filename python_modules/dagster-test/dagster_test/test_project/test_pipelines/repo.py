@@ -38,7 +38,6 @@ from dagster._legacy import (
     OutputDefinition,
     default_executors,
     pipeline,
-    op,
 )
 from dagster._utils import merge_dicts, segfault
 from dagster._utils.yaml_utils import merge_yamls

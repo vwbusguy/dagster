@@ -42,7 +42,6 @@ from dagster._legacy import (
     build_solid_context,
     execute_solid,
     pipeline,
-    op,
 )
 
 

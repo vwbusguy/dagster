@@ -27,7 +27,6 @@ from dagster._legacy import (
     execute_pipeline,
     execute_pipeline_iterator,
     pipeline,
-    op,
 )
 from dagster._utils import send_interrupt
 
