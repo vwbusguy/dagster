@@ -26,7 +26,7 @@ from dagster._legacy import (
     OutputDefinition,
     PresetDefinition,
     execute_pipeline,
-    lambda_solid,
+    solid,
     pipeline,
     solid,
 )
@@ -118,19 +118,19 @@ def test_forkserver_preload():
 
 
 def define_diamond_pipeline():
-    @lambda_solid
+    @solid
     def return_two():
         return 2
 
-    @lambda_solid(input_defs=[InputDefinition("num")])
+    @solid(input_defs=[InputDefinition("num")])
     def add_three(num):
         return num + 3
 
-    @lambda_solid(input_defs=[InputDefinition("num")])
+    @solid(input_defs=[InputDefinition("num")])
     def mult_three(num):
         return num * 3
 
-    @lambda_solid(input_defs=[InputDefinition("left"), InputDefinition("right")])
+    @solid(input_defs=[InputDefinition("left"), InputDefinition("right")])
     def adder(left, right):
         return left + right
 
@@ -155,11 +155,11 @@ def define_diamond_pipeline():
 
 
 def define_in_mem_pipeline():
-    @lambda_solid
+    @solid
     def return_two():
         return 2
 
-    @lambda_solid(input_defs=[InputDefinition("num")])
+    @solid(input_defs=[InputDefinition("num")])
     def add_three(num):
         return num + 3
 
@@ -171,11 +171,11 @@ def define_in_mem_pipeline():
 
 
 def define_error_pipeline():
-    @lambda_solid
+    @solid
     def should_never_execute(_x):
         assert False  # this should never execute
 
-    @lambda_solid
+    @solid
     def throw_error():
         raise Exception("bad programmer")
 
@@ -281,7 +281,7 @@ def define_subdag_pipeline():
             fd.write("1")
         return
 
-    @lambda_solid(
+    @solid(
         input_defs=[InputDefinition("after", Nothing)],
         output_def=OutputDefinition(Nothing),
     )
@@ -361,7 +361,7 @@ def either_or(_context):
     yield Output(1, "option_1")
 
 
-@lambda_solid
+@solid
 def echo(x):
     return x
 
@@ -392,7 +392,7 @@ def test_optional_outputs():
         assert len([event for event in multi_result.step_event_list if event.is_step_skipped]) == 2
 
 
-@lambda_solid
+@solid
 def throw():
     raise Failure(
         description="it Failure",

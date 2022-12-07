@@ -102,7 +102,7 @@ from dagster._legacy import (
     build_assets_job,
     daily_schedule,
     hourly_schedule,
-    lambda_solid,
+    solid,
     monthly_schedule,
     pipeline,
     solid,
@@ -170,7 +170,7 @@ def get_main_external_repo(instance):
         yield location.get_repository(main_repo_name())
 
 
-@lambda_solid(
+@solid(
     input_defs=[InputDefinition("num", PoorMansDataFrame)],
     output_def=OutputDefinition(PoorMansDataFrame),
 )
@@ -181,7 +181,7 @@ def sum_solid(num):
     return sum_df
 
 
-@lambda_solid(
+@solid(
     input_defs=[InputDefinition("sum_df", PoorMansDataFrame)],
     output_def=OutputDefinition(PoorMansDataFrame),
 )
@@ -474,7 +474,7 @@ def csv_hello_world_df_input():
 
 @pipeline(mode_defs=[default_mode_def_for_test])
 def no_config_pipeline():
-    @lambda_solid
+    @solid
     def return_hello():
         return "Hello"
 
@@ -483,11 +483,11 @@ def no_config_pipeline():
 
 @pipeline
 def no_config_chain_pipeline():
-    @lambda_solid
+    @solid
     def return_foo():
         return "foo"
 
-    @lambda_solid
+    @solid
     def return_hello_world(_):
         return "Hello World"
 
@@ -496,19 +496,19 @@ def no_config_chain_pipeline():
 
 @pipeline
 def scalar_output_pipeline():
-    @lambda_solid(output_def=OutputDefinition(String))
+    @solid(output_def=OutputDefinition(String))
     def return_str():
         return "foo"
 
-    @lambda_solid(output_def=OutputDefinition(Int))
+    @solid(output_def=OutputDefinition(Int))
     def return_int():
         return 34234
 
-    @lambda_solid(output_def=OutputDefinition(Bool))
+    @solid(output_def=OutputDefinition(Bool))
     def return_bool():
         return True
 
-    @lambda_solid(output_def=OutputDefinition(Any))
+    @solid(output_def=OutputDefinition(Any))
     def return_any():
         return "dkjfkdjfe"
 
@@ -538,7 +538,7 @@ def pipeline_with_enum_config():
 
 @pipeline
 def naughty_programmer_pipeline():
-    @lambda_solid
+    @solid
     def throw_a_thing():
         try:
             try:
@@ -687,11 +687,11 @@ def multi_mode_with_loggers():
 
 @pipeline
 def composites_pipeline():
-    @lambda_solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
+    @solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
     def add_one(num):
         return num + 1
 
-    @lambda_solid(input_defs=[InputDefinition("num")])
+    @solid(input_defs=[InputDefinition("num")])
     def div_two(num):
         return num / 2
 
@@ -929,7 +929,7 @@ def retry_multi_output_pipeline():
 
 @pipeline(tags={"foo": "bar"}, mode_defs=[default_mode_def_for_test])
 def tagged_pipeline():
-    @lambda_solid
+    @solid
     def simple_solid():
         return "Hello"
 
@@ -955,7 +955,7 @@ def disable_gc(_context):
     ]
 )
 def retry_multi_input_early_terminate_pipeline():
-    @lambda_solid(output_def=OutputDefinition(Int))
+    @solid(output_def=OutputDefinition(Int))
     def return_one():
         return 1
 
@@ -983,7 +983,7 @@ def retry_multi_input_early_terminate_pipeline():
                 time.sleep(0.1)
         return one
 
-    @lambda_solid(
+    @solid(
         input_defs=[
             InputDefinition("input_one", Int),
             InputDefinition("input_two", Int),
@@ -1345,11 +1345,11 @@ def define_sensors():
 
 @pipeline(mode_defs=[default_mode_def_for_test])
 def chained_failure_pipeline():
-    @lambda_solid
+    @solid
     def always_succeed():
         return "hello"
 
-    @lambda_solid
+    @solid
     def conditionally_fail(_):
         if os.path.isfile(
             os.path.join(
@@ -1361,7 +1361,7 @@ def chained_failure_pipeline():
 
         return "hello"
 
-    @lambda_solid
+    @solid
     def after_failure(_):
         return "world"
 

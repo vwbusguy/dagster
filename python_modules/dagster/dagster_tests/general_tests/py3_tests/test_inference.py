@@ -18,7 +18,7 @@ from dagster._legacy import (
     InputDefinition,
     execute_pipeline,
     execute_solid,
-    lambda_solid,
+    solid,
     pipeline,
     solid,
 )
@@ -88,18 +88,6 @@ def test_double_typed_input():
     assert subtract.input_defs[1].dagster_type.unique_name == "Int"
 
 
-def test_one_arg_typed_lambda_solid():
-    @lambda_solid
-    def one_arg(num: int):
-        return num
-
-    assert one_arg
-    assert len(one_arg.input_defs) == 1
-    assert one_arg.input_defs[0].name == "num"
-    assert one_arg.input_defs[0].dagster_type.unique_name == "Int"
-    assert len(one_arg.output_defs) == 1
-
-
 def test_single_typed_input_and_output():
     @solid
     def add_one(_context, num: int) -> int:
@@ -115,7 +103,7 @@ def test_single_typed_input_and_output():
 
 
 def test_single_typed_input_and_output_lambda():
-    @lambda_solid
+    @solid
     def add_one(num: int) -> int:
         return num + 1
 
@@ -129,7 +117,7 @@ def test_single_typed_input_and_output_lambda():
 
 
 def test_wrapped_input_and_output_lambda():
-    @lambda_solid
+    @solid
     def add_one(nums: List[int]) -> Optional[List[int]]:
         return [num + 1 for num in nums]
 
@@ -149,7 +137,7 @@ def test_kitchen_sink():
     class Custom:
         pass
 
-    @lambda_solid
+    @solid
     def sink(
         n: int,
         f: float,
@@ -188,11 +176,11 @@ def test_kitchen_sink():
 
 
 def test_composites():
-    @lambda_solid
+    @solid
     def emit_one() -> int:
         return 1
 
-    @lambda_solid
+    @solid
     def subtract(n1: int, n2: int) -> int:
         return n1 - n2
 
@@ -204,7 +192,7 @@ def test_composites():
 
 
 def test_emit_dict():
-    @lambda_solid
+    @solid
     def emit_dict() -> dict:
         return {"foo": "bar"}
 
@@ -214,7 +202,7 @@ def test_emit_dict():
 
 
 def test_dict_input():
-    @lambda_solid
+    @solid
     def intake_dict(inp: dict) -> str:
         return inp["foo"]
 
@@ -223,7 +211,7 @@ def test_dict_input():
 
 
 def test_emit_dagster_dict():
-    @lambda_solid
+    @solid
     def emit_dagster_dict() -> Dict:
         return {"foo": "bar"}
 
@@ -233,7 +221,7 @@ def test_emit_dagster_dict():
 
 
 def test_dict_dagster_input():
-    @lambda_solid
+    @solid
     def intake_dagster_dict(inp: Dict) -> str:
         return inp["foo"]
 
@@ -242,7 +230,7 @@ def test_dict_dagster_input():
 
 
 def test_python_tuple_input():
-    @lambda_solid
+    @solid
     def intake_tuple(inp: tuple) -> int:
         return inp[1]
 
@@ -250,7 +238,7 @@ def test_python_tuple_input():
 
 
 def test_python_tuple_output():
-    @lambda_solid
+    @solid
     def emit_tuple() -> tuple:
         return (4, 5)
 
@@ -258,7 +246,7 @@ def test_python_tuple_output():
 
 
 def test_nested_kitchen_sink():
-    @lambda_solid
+    @solid
     def no_execute() -> Optional[List[Tuple[List[int], str, Dict[str, Optional[List[str]]]]]]:
         pass
 
@@ -575,11 +563,11 @@ def test_composites_user_defined_type():
     class MyClass:
         pass
 
-    @lambda_solid
+    @solid
     def emit_one() -> MyClass:
         return MyClass()
 
-    @lambda_solid
+    @solid
     def subtract(_n1: MyClass, _n2: MyClass) -> MyClass:
         return MyClass()
 

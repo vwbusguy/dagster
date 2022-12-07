@@ -4,17 +4,17 @@ from dagster._legacy import (
     InputDefinition,
     OutputDefinition,
     daily_schedule,
-    lambda_solid,
+    solid,
     pipeline,
 )
 
 
-@lambda_solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
+@solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
 def add_one(num):
     return num + 1
 
 
-@lambda_solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
+@solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
 def mult_two(num):
     return num * 2
 

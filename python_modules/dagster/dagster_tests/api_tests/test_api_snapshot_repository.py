@@ -16,7 +16,7 @@ from dagster._core.host_representation.handle import RepositoryHandle
 from dagster._core.host_representation.origin import ExternalRepositoryOrigin
 from dagster._core.test_utils import instance_for_test
 from dagster._core.types.loadable_target_origin import LoadableTargetOrigin
-from dagster._legacy import lambda_solid, pipeline
+from dagster._legacy import solid, pipeline
 from dagster._serdes.serdes import deserialize_as
 
 from .utils import get_bar_repo_repository_location
@@ -50,7 +50,7 @@ def test_streaming_external_repositories_error(instance):
             )
 
 
-@lambda_solid
+@solid
 def do_something():
     return 1
 
