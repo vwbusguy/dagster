@@ -17,9 +17,9 @@ from dagster._core.definitions import (
     default_executors,
     hourly_schedule,
     monthly_schedule,
+    op,
     pipeline,
     schedule_from_partitions,
-    op,
     weekly_schedule,
 )
 from dagster._core.execution.api import (

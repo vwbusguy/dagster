@@ -2,7 +2,7 @@
 
 import datetime
 
-from dagster import RunRequest, job, op, repository, sensor, In
+from dagster import In, RunRequest, job, op, repository, sensor
 from dagster._legacy import daily_schedule, pipeline
 
 
