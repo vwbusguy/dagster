@@ -2569,6 +2569,11 @@ type AssetMetadataEntry implements MetadataEntry {
   assetKey: AssetKey!
 }
 
+type NullMetadataEntry implements MetadataEntry {
+  label: String!
+  description: String
+}
+
 scalar Cursor
 
 type Partition {
