@@ -126,7 +126,7 @@ def test_dynamic():
     def dyn_desc(_) -> Iterator[DynamicOutput]:
         """
         Returns:
-            numbers.
+            numbers
         """
         yield DynamicOutput(4, "4")
 
