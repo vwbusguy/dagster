@@ -37,7 +37,7 @@ def define_inty_pipeline(using_file_system=False):
     def return_one():
         return 1
 
-    @solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))
+    @solid(input_defs=[InputDefinition("num", Int)], output_defs=[OutputDefinition(Int)])
     def add_one(num):
         return num + 1
 

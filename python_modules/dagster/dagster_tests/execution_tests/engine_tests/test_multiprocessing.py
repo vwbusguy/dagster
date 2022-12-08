@@ -282,7 +282,7 @@ def define_subdag_pipeline():
 
     @solid(
         input_defs=[InputDefinition("after", Nothing)],
-        output_def=OutputDefinition(Nothing),
+        output_defs=[OutputDefinition(Nothing)],
     )
     def noop():
         pass

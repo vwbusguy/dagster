@@ -106,7 +106,7 @@ def fails():
 
 
 @solid
-def should_never_execute(_):
+def should_never_execute(foo):  # pylint: disable=unused-argument
     assert False  # should never execute
 
 

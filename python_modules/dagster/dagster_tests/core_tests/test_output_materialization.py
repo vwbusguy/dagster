@@ -26,7 +26,7 @@ from dagster._utils.test import get_temp_file_name, get_temp_file_names
 
 
 def single_int_output_pipeline():
-    @solid(output_def=OutputDefinition(Int))
+    @solid(output_defs=[OutputDefinition(Int)])
     def return_one():
         return 1
 
@@ -34,7 +34,7 @@ def single_int_output_pipeline():
 
 
 def single_string_output_pipeline():
-    @solid(output_def=OutputDefinition(String))
+    @solid(output_defs=[OutputDefinition(String)])
     def return_foo():
         return "foo"
 
@@ -347,7 +347,7 @@ def yield_two_materializations(*_args, **_kwargs):
 def test_basic_yield_multiple_materializations():
     SomeDagsterType = create_any_type(name="SomeType", materializer=yield_two_materializations)
 
-    @solid(output_def=OutputDefinition(SomeDagsterType))
+    @solid(output_defs=[OutputDefinition(SomeDagsterType)])
     def return_one():
         return 1
 
@@ -378,7 +378,7 @@ def return_int(*_args, **_kwargs):
 def test_basic_bad_output_materialization():
     SomeDagsterType = create_any_type(name="SomeType", materializer=return_int)
 
-    @solid(output_def=OutputDefinition(SomeDagsterType))
+    @solid(output_defs=[OutputDefinition(SomeDagsterType)])
     def return_one():
         return 1
 

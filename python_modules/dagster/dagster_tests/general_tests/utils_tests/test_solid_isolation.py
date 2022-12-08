@@ -113,7 +113,7 @@ def test_single_solid_error():
 
 
 def test_single_solid_type_checking_output_error():
-    @solid(output_def=OutputDefinition(Int))
+    @solid(output_defs=[OutputDefinition(Int)])
     def return_string():
         return "ksjdfkjd"
 
