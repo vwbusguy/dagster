@@ -125,8 +125,8 @@ setup(
         "black": [
             "black[jupyter]==22.10.0",
         ],
-        "mypy": [
-            "mypy==0.991",
+        "pyright": [
+            "pyright==1.1.283",
             "types-backports",  # version will be resolved against backports
             "types-certifi",  # version will be resolved against certifi
             "types-chardet",  # chardet is a 2+-order dependency of some Dagster libs

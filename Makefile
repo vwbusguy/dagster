@@ -25,6 +25,9 @@ check_black:
 	black --check --fast \
     examples/docs_snippets
 
+pyright:
+	pyright
+
 # The `--exit-zero` for the first command means `make` will run the second
 # (docs_snippets-specific) command even if `ruff` has unfixable errors from the
 # first command.
