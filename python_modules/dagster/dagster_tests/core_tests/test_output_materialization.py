@@ -21,7 +21,6 @@ from dagster._legacy import (
     PipelineDefinition,
     execute_pipeline,
     solid,
-    solid,
 )
 from dagster._utils.test import get_temp_file_name, get_temp_file_names
 

@@ -37,7 +37,6 @@ from dagster._legacy import (
     ModeDefinition,
     OutputDefinition,
     default_executors,
-    solid,
     pipeline,
     solid,
 )

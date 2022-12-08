@@ -1,5 +1,5 @@
 from dagster import Failure, MetadataEntry
-from dagster._legacy import execute_pipeline, solid, pipeline
+from dagster._legacy import execute_pipeline, pipeline, solid
 
 
 def test_failure():

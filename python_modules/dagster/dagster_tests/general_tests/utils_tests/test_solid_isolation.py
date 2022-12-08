@@ -11,7 +11,7 @@ from dagster._core.utility_solids import (
     define_stub_solid,
     input_set,
 )
-from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, solid, solid
+from dagster._legacy import InputDefinition, ModeDefinition, OutputDefinition, solid
 from dagster._utils.test import execute_solid
 
 

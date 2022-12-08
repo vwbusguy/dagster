@@ -17,7 +17,6 @@ from dagster._legacy import (
     OutputDefinition,
     PipelineDefinition,
     execute_pipeline,
-    solid,
     pipeline,
     solid,
 )
@@ -84,7 +83,7 @@ def emit_str():
     return "one"
 
 
-@solid(output_def=OutputDefinition(Nothing))
+@solid(output_defs=[OutputDefinition(Nothing)])
 def emit_nothing():
     pass
 

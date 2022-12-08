@@ -1,5 +1,5 @@
 from dagster import Int, ScheduleDefinition, repository
-from dagster._legacy import InputDefinition, OutputDefinition, solid, pipeline, solid
+from dagster._legacy import InputDefinition, OutputDefinition, pipeline, solid
 
 
 @solid(input_defs=[InputDefinition("num", Int)], output_def=OutputDefinition(Int))

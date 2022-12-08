@@ -16,7 +16,6 @@ from dagster._core.definitions import (
     daily_schedule,
     default_executors,
     hourly_schedule,
-    solid,
     monthly_schedule,
     pipeline,
     schedule_from_partitions,

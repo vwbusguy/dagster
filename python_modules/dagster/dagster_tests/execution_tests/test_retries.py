@@ -33,7 +33,6 @@ from dagster._legacy import (
     OutputDefinition,
     execute_pipeline,
     execute_pipeline_iterator,
-    solid,
     pipeline,
     reexecute_pipeline,
     solid,

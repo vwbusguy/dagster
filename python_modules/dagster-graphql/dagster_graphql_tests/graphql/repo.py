@@ -102,7 +102,6 @@ from dagster._legacy import (
     build_assets_job,
     daily_schedule,
     hourly_schedule,
-    solid,
     monthly_schedule,
     pipeline,
     solid,
@@ -172,7 +171,7 @@ def get_main_external_repo(instance):
 
 @solid(
     input_defs=[InputDefinition("num", PoorMansDataFrame)],
-    output_def=OutputDefinition(PoorMansDataFrame),
+    output_defs=[OutputDefinition(PoorMansDataFrame)],
 )
 def sum_solid(num):
     sum_df = deepcopy(num)
@@ -183,7 +182,7 @@ def sum_solid(num):
 
 @solid(
     input_defs=[InputDefinition("sum_df", PoorMansDataFrame)],
-    output_def=OutputDefinition(PoorMansDataFrame),
+    output_defs=[OutputDefinition(PoorMansDataFrame)],
 )
 def sum_sq_solid(sum_df):
     sum_sq_df = deepcopy(sum_df)

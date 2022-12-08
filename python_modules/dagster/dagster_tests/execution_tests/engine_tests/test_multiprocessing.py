@@ -26,7 +26,6 @@ from dagster._legacy import (
     OutputDefinition,
     PresetDefinition,
     execute_pipeline,
-    solid,
     pipeline,
     solid,
 )

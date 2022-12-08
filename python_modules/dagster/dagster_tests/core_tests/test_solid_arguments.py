@@ -2,7 +2,7 @@
 import pytest
 
 from dagster._core.errors import DagsterInvalidDefinitionError
-from dagster._legacy import InputDefinition, execute_solid, solid, solid
+from dagster._legacy import InputDefinition, execute_solid, solid
 
 
 def test_solid_input_arguments():
@@ -90,6 +90,7 @@ def test_solid_input_arguments():
 
     assert "x" in _context_arguments_out_of_order_still_works.input_dict
     assert "_context" in _context_arguments_out_of_order_still_works.input_dict
+
 
 def test_execution_cases():
     @solid

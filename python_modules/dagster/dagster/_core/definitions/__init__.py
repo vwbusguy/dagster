@@ -110,7 +110,6 @@ from .decorators import (
     hook_decorator,
     hourly_schedule,
     job,
-    solid,
     monthly_schedule,
     multi_asset,
     op,

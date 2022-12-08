@@ -14,4 +14,4 @@ from .schedule_decorator import (
     weekly_schedule,
 )
 from .sensor_decorator import asset_sensor, sensor
-from .solid_decorator import solid, solid
+from .solid_decorator import solid

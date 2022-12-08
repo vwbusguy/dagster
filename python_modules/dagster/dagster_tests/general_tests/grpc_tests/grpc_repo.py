@@ -6,7 +6,6 @@ from dagster._legacy import (
     InputDefinition,
     OutputDefinition,
     PartitionSetDefinition,
-    solid,
     pipeline,
     solid,
 )

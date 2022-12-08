@@ -13,7 +13,7 @@ from dagster import (
     graph,
 )
 from dagster._core.definitions.config import ConfigMapping
-from dagster._legacy import InputDefinition, execute_pipeline, solid, pipeline, solid
+from dagster._legacy import InputDefinition, execute_pipeline, pipeline, solid
 
 
 # have to use "pipe" solid since "result_for_solid" doesnt work with composite mappings

@@ -41,7 +41,6 @@ from dagster._legacy import (
     PartitionSetDefinition,
     PresetDefinition,
     execute_pipeline,
-    solid,
     pipeline,
     solid,
 )
