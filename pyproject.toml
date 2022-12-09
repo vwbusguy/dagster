@@ -112,7 +112,6 @@ ignore = [
 
   # (stack ignores) These are here just to make intermediate steps in the stack
   # green, they will be gone when this is merged.
-  "D414",
   "D419",
   "D415",
 
