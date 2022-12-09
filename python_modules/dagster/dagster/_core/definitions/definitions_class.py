@@ -100,7 +100,8 @@ class Definitions:
     def get_job_def(self, name: str) -> JobDefinition:
         """Get a job definition by name. If you passed in a an UnresolvedAssetJobDefinition
         (return value of define_asset_job) it will be resolved to a JobDefinition when returned
-        from this function."""
+        from this function.
+        """
         check.str_param(name, "name")
         return self.get_repository_def().get_job(name)
 
@@ -117,7 +118,8 @@ class Definitions:
     ) -> Union[RepositoryDefinition, PendingRepositoryDefinition]:
         """This method is used internally to access the inner repository during the loading process
         at CLI entry points. We explicitly do not want to resolve the pending repo because the entire
-        point is to defer that resolution until later."""
+        point is to defer that resolution until later.
+        """
         return self._created_pending_or_normal_repo
 
 
