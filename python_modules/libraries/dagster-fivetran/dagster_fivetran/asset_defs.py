@@ -124,32 +124,31 @@ def build_fivetran_assets(
             If left blank, assets will have a key of `AssetKey([schema_name, table_name])`.
 
     Examples:
-    .. code-block:: python
+        .. code-block:: python
 
-        from dagster import AssetKey, repository, with_resources
+            from dagster import AssetKey, repository, with_resources
 
-        from dagster_fivetran import fivetran_resource
-        from dagster_fivetran.assets import build_fivetran_assets
+            from dagster_fivetran import fivetran_resource
+            from dagster_fivetran.assets import build_fivetran_assets
 
-        my_fivetran_resource = fivetran_resource.configured(
-            {
-                "api_key": {"env": "FIVETRAN_API_KEY"},
-                "api_secret": {"env": "FIVETRAN_API_SECRET"},
-            }
-        )
-
-        fivetran_assets = build_fivetran_assets(
-            connector_id="foobar",
-            table_names=["schema1.table1", "schema2.table2"],
-        ])
-
-        @repository
-        def repo():
-            return with_resources(
-                fivetran_assets,
-                resource_defs={"fivetran": my_fivetran_resource},
+            my_fivetran_resource = fivetran_resource.configured(
+                {
+                    "api_key": {"env": "FIVETRAN_API_KEY"},
+                    "api_secret": {"env": "FIVETRAN_API_SECRET"},
+                }
             )
 
+            fivetran_assets = build_fivetran_assets(
+                connector_id="foobar",
+                table_names=["schema1.table1", "schema2.table2"],
+            ])
+
+            @repository
+            def repo():
+                return with_resources(
+                    fivetran_assets,
+                    resource_defs={"fivetran": my_fivetran_resource},
+                )
     """
     return _build_fivetran_assets(
         connector_id=connector_id,

@@ -595,16 +595,15 @@ def dbt_rpc_resource(context) -> DbtRpcResource:
     Examples:
 
     Examples:
-    .. code-block:: python
+        .. code-block:: python
 
-        from dagster_dbt import dbt_rpc_resource
+            from dagster_dbt import dbt_rpc_resource
 
-        custom_dbt_rpc_resource = dbt_rpc_resource.configured({"host": "80.80.80.80","port": 8080,})
+            custom_dbt_rpc_resource = dbt_rpc_resource.configured({"host": "80.80.80.80","port": 8080,})
 
-        @job(resource_defs={"dbt_rpc": custom_dbt_rpc_sync_resource})
-        def dbt_rpc_job():
-            # Run ops with `required_resource_keys={"dbt_rpc", ...}`.
-
+            @job(resource_defs={"dbt_rpc": custom_dbt_rpc_sync_resource})
+            def dbt_rpc_job():
+                # Run ops with `required_resource_keys={"dbt_rpc", ...}`.
     """
     return DbtRpcResource(
         host=context.resource_config["host"], port=context.resource_config["port"]
@@ -629,16 +628,15 @@ def dbt_rpc_sync_resource(
     <https://docs.dagster.io/concepts/configuration/configured>`_ method.
 
     Examples:
-    .. code-block:: python
+        .. code-block:: python
 
-        from dagster_dbt import dbt_rpc_sync_resource
+            from dagster_dbt import dbt_rpc_sync_resource
 
-        custom_sync_dbt_rpc_resource = dbt_rpc_sync_resource.configured({"host": "80.80.80.80","port": 8080,})
+            custom_sync_dbt_rpc_resource = dbt_rpc_sync_resource.configured({"host": "80.80.80.80","port": 8080,})
 
-        @job(resource_defs={"dbt_rpc": custom_dbt_rpc_sync_resource})
-        def dbt_rpc_sync_job():
-            # Run ops with `required_resource_keys={"dbt_rpc", ...}`.
-
+            @job(resource_defs={"dbt_rpc": custom_dbt_rpc_sync_resource})
+            def dbt_rpc_sync_job():
+                # Run ops with `required_resource_keys={"dbt_rpc", ...}`.
     """
     return DbtRpcSyncResource(
         host=context.resource_config["host"],
