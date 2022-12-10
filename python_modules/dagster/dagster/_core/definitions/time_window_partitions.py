@@ -1010,6 +1010,10 @@ def weekly_partitioned_config(
     return inner
 
 
+# class TimeWindowPartitionsSubsetPartitionData(PartitionsSubsetPartitionData):
+#     ...
+
+
 class TimeWindowPartitionsSubset(PartitionsSubset):
     def __init__(
         self,

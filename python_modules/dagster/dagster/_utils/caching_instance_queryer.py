@@ -53,8 +53,13 @@ class CachingInstanceQueryer:
         # materialization record for a >= cursor, we don't need to query the instance
         self._no_materializations_after_cursor_cache: Dict[AssetKeyPartitionKey, int] = {}
 
+    @property
+    def instance(self) -> "DagsterInstance":
+        return self._instance
+
     @cached_method
     def failed_in_latest_run(self, asset_key: AssetKey) -> bool:
+        # the latest asset record is updated when the run is created
         asset_records = self._instance.get_asset_records([asset_key])
         asset_record = next(iter(asset_records), None)
 
@@ -110,12 +115,11 @@ class CachingInstanceQueryer:
         )
 
     @cached_method
-    def _get_planned_materializations_for_run_from_events(
+    def get_planned_materializations_for_run_from_events(
         self, run_id: str
     ) -> AbstractSet[AssetKey]:
         materializations_planned = self._instance.get_records_for_run(
-            run_id=run_id,
-            of_type=DagsterEventType.ASSET_MATERIALIZATION_PLANNED,
+            run_id=run_id, of_type=DagsterEventType.ASSET_MATERIALIZATION_PLANNED
         ).records
         return set(cast(AssetKey, record.asset_key) for record in materializations_planned)
 
@@ -129,7 +133,7 @@ class CachingInstanceQueryer:
             return run.asset_selection
         else:
             # must resort to querying the event log
-            return self._get_planned_materializations_for_run_from_events(run_id=run_id)
+            return self.get_planned_materializations_for_run_from_events(run_id=run_id)
 
     @cached_method
     def _get_current_materializations_for_run(self, run_id: str) -> AbstractSet[AssetKey]:

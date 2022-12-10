@@ -1032,7 +1032,7 @@ class PartitionsSubset(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_partition_keys(self, current_time: Optional[datetime] = None) -> Iterable[str]:
+    def get_partition_keys(self, current_time: Optional[datetime] = None) -> Sequence[str]:
         raise NotImplementedError()
 
     @abstractmethod

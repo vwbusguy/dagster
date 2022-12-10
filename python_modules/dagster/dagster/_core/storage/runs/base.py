@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Callable, Iterable, Mapping, Optional, Sequence, Set, Tuple, Union
 
 from dagster._core.events import DagsterEvent
-from dagster._core.execution.backfill import BulkActionStatus, PartitionBackfill
+from dagster._core.execution.backfill import BulkActionStatus, IBackfill
 from dagster._core.instance import MayHaveInstanceWeakref
 from dagster._core.snap import ExecutionPlanSnapshot, PipelineSnapshot
 from dagster._core.storage.pipeline_run import (
@@ -365,19 +365,19 @@ class RunStorage(ABC, MayHaveInstanceWeakref):
         status: Optional[BulkActionStatus] = None,
         cursor: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> Sequence[PartitionBackfill]:
+    ) -> Sequence[IBackfill]:
         """Get a list of partition backfills"""
 
     @abstractmethod
-    def get_backfill(self, backfill_id: str) -> Optional[PartitionBackfill]:
+    def get_backfill(self, backfill_id: str) -> Optional[IBackfill]:
         """Get the partition backfill of the given backfill id."""
 
     @abstractmethod
-    def add_backfill(self, partition_backfill: PartitionBackfill):
+    def add_backfill(self, partition_backfill: IBackfill):
         """Add partition backfill to run storage"""
 
     @abstractmethod
-    def update_backfill(self, partition_backfill: PartitionBackfill):
+    def update_backfill(self, partition_backfill: IBackfill):
         """Update a partition backfill in run storage"""
 
     def alembic_version(self):

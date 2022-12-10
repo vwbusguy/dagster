@@ -5,7 +5,20 @@ from abc import abstractmethod
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple, Union
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+    cast,
+)
 
 import pendulum
 import sqlalchemy as db
@@ -18,7 +31,7 @@ from dagster._core.errors import (
     DagsterSnapshotDoesNotExist,
 )
 from dagster._core.events import EVENT_TYPE_TO_PIPELINE_RUN_STATUS, DagsterEvent, DagsterEventType
-from dagster._core.execution.backfill import BulkActionStatus, PartitionBackfill
+from dagster._core.execution.backfill import BulkActionStatus, IBackfill
 from dagster._core.execution.bulk_actions import BulkActionType
 from dagster._core.host_representation.origin import ExternalPipelineOrigin
 from dagster._core.snap import (
@@ -1044,7 +1057,7 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
         status: Optional[BulkActionStatus] = None,
         cursor: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> Sequence[PartitionBackfill]:
+    ) -> Sequence[IBackfill]:
         check.opt_inst_param(status, "status", BulkActionStatus)
         query = db.select([BulkActionsTable.c.body])
         if status:
@@ -1058,21 +1071,21 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
             query = query.limit(limit)
         query = query.order_by(BulkActionsTable.c.id.desc())
         rows = self.fetchall(query)
-        return [deserialize_as(row[0], PartitionBackfill) for row in rows]
+        return [deserialize_as(row[0], IBackfill) for row in rows]
 
-    def get_backfill(self, backfill_id: str) -> Optional[PartitionBackfill]:
+    def get_backfill(self, backfill_id: str) -> Optional[IBackfill]:
         check.str_param(backfill_id, "backfill_id")
         query = db.select([BulkActionsTable.c.body]).where(BulkActionsTable.c.key == backfill_id)
         row = self.fetchone(query)
-        return deserialize_as(row[0], PartitionBackfill) if row else None
+        return deserialize_as(row[0], IBackfill) if row else None
 
-    def add_backfill(self, partition_backfill: PartitionBackfill):
-        check.inst_param(partition_backfill, "partition_backfill", PartitionBackfill)
+    def add_backfill(self, partition_backfill: IBackfill):
+        check.inst_param(partition_backfill, "partition_backfill", IBackfill)
         values = dict(
             key=partition_backfill.backfill_id,
             status=partition_backfill.status.value,
             timestamp=utc_datetime_from_timestamp(partition_backfill.backfill_timestamp),
-            body=serialize_dagster_namedtuple(partition_backfill),
+            body=serialize_dagster_namedtuple(cast(NamedTuple, partition_backfill)),
         )
 
         if self.has_bulk_actions_selector_cols():
@@ -1084,8 +1097,8 @@ class SqlRunStorage(RunStorage):  # pylint: disable=no-init
                 BulkActionsTable.insert().values(**values)  # pylint: disable=no-value-for-parameter
             )
 
-    def update_backfill(self, partition_backfill: PartitionBackfill):
-        check.inst_param(partition_backfill, "partition_backfill", PartitionBackfill)
+    def update_backfill(self, partition_backfill: IBackfill):
+        check.inst_param(partition_backfill, "partition_backfill", IBackfill)
         backfill_id = partition_backfill.backfill_id
         if not self.get_backfill(backfill_id):
             raise DagsterInvariantViolationError(

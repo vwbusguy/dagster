@@ -92,7 +92,7 @@ if TYPE_CHECKING:
     from dagster._core.definitions.run_request import InstigatorType
     from dagster._core.events import DagsterEvent, DagsterEventType
     from dagster._core.events.log import EventLogEntry
-    from dagster._core.execution.backfill import PartitionBackfill
+    from dagster._core.execution.backfill import IBackfill
     from dagster._core.execution.plan.plan import ExecutionPlan
     from dagster._core.execution.plan.resume_retry import ReexecutionStrategy
     from dagster._core.execution.stats import RunStepKeyStatsSnapshot
@@ -2154,16 +2154,16 @@ class DagsterInstance:
         return False
 
     # backfill
-    def get_backfills(self, status=None, cursor=None, limit=None) -> Sequence["PartitionBackfill"]:
+    def get_backfills(self, status=None, cursor=None, limit=None) -> Sequence["IBackfill"]:
         return self._run_storage.get_backfills(status=status, cursor=cursor, limit=limit)
 
-    def get_backfill(self, backfill_id: str) -> Optional["PartitionBackfill"]:
+    def get_backfill(self, backfill_id: str) -> Optional["IBackfill"]:
         return self._run_storage.get_backfill(backfill_id)
 
-    def add_backfill(self, partition_backfill: "PartitionBackfill") -> None:
+    def add_backfill(self, partition_backfill: "IBackfill") -> None:
         self._run_storage.add_backfill(partition_backfill)
 
-    def update_backfill(self, partition_backfill: "PartitionBackfill") -> None:
+    def update_backfill(self, partition_backfill: "IBackfill") -> None:
         self._run_storage.update_backfill(partition_backfill)
 
     @property

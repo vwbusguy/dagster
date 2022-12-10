@@ -137,6 +137,7 @@ def do_run(
             }
         },
         raise_on_error=False,
+        tags=tags,
     )
 
 
