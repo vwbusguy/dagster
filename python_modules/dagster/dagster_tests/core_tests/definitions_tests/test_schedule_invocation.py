@@ -10,7 +10,7 @@ from dagster import (
 )
 from dagster._core.definitions.schedule_definition import (
     ScheduleEvaluationContext,
-    ScheduleExecutionContext,
+    ScheduleEvaluationContext,
 )
 from dagster._core.errors import DagsterInvalidInvocationError
 from dagster._core.test_utils import instance_for_test
@@ -19,7 +19,7 @@ from dagster._legacy import daily_schedule
 
 def test_schedule_context_backcompat():
     # ScheduleExecutionContext is a literal alias of ScheduleEvaluationContext
-    assert isinstance(ScheduleEvaluationContext(None, None), ScheduleExecutionContext)
+    assert isinstance(ScheduleEvaluationContext(None, None), ScheduleEvaluationContext)
 
 
 def cron_test_schedule_factory_context():
