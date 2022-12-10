@@ -6,7 +6,7 @@ import pytest
 
 import dagster._check as check
 from dagster import job, op
-from dagster._core.instance import DagsterInstance, InstanceRef, InstanceType
+from dagster._core.instance import DagsterInstance, DagsterInstanceRef, InstanceType
 from dagster._core.launcher import DefaultRunLauncher
 from dagster._core.run_coordinator import DefaultRunCoordinator
 from dagster._core.storage.captured_log_manager import (
@@ -154,7 +154,7 @@ def broken_compute_log_manager_instance(fail_on_setup=False, fail_on_teardown=Fa
                 ),
                 run_coordinator=DefaultRunCoordinator(),
                 run_launcher=DefaultRunLauncher(),
-                ref=InstanceRef.from_dir(temp_dir),
+                ref=DagsterInstanceRef.from_dir(temp_dir),
             )
 
 
@@ -172,7 +172,7 @@ def broken_captured_log_manager_instance(fail_on_setup=False, fail_on_teardown=F
                 ),
                 run_coordinator=DefaultRunCoordinator(),
                 run_launcher=DefaultRunLauncher(),
-                ref=InstanceRef.from_dir(temp_dir),
+                ref=DagsterInstanceRef.from_dir(temp_dir),
             )
 
 

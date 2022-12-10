@@ -22,7 +22,7 @@ from dagster import (
 )
 from dagster._core.definitions.events import Failure, RetryRequested
 from dagster._core.errors import DagsterInvalidConfigError
-from dagster._core.instance import InstanceRef
+from dagster._core.instance import DagsterInstanceRef
 from dagster._utils.test import wrap_op_in_graph_and_execute
 
 
@@ -528,7 +528,7 @@ def test_input_manager_with_failure():
         fail_on_input()
 
     with tempfile.TemporaryDirectory() as tmpdir_path:
-        instance = DagsterInstance.from_ref(InstanceRef.from_dir(tmpdir_path))
+        instance = DagsterInstance.from_ref(DagsterInstanceRef.from_dir(tmpdir_path))
 
         result = simple.execute_in_process(instance=instance, raise_on_error=False)
 
@@ -579,7 +579,7 @@ def test_input_manager_with_retries():
         take_input_3(take_input_2(), take_input_1())
 
     with tempfile.TemporaryDirectory() as tmpdir_path:
-        instance = DagsterInstance.from_ref(InstanceRef.from_dir(tmpdir_path))
+        instance = DagsterInstance.from_ref(DagsterInstanceRef.from_dir(tmpdir_path))
 
         result = simple.execute_in_process(instance=instance, raise_on_error=False)
 

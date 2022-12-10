@@ -8,7 +8,7 @@ from dagster_azure.blob import AzureBlobComputeLogManager, FakeBlobServiceClient
 from dagster_tests.core_tests.storage_tests.test_captured_log_manager import TestCapturedLogManager
 
 from dagster import DagsterEventType, graph, op
-from dagster._core.instance import DagsterInstance, InstanceRef, InstanceType
+from dagster._core.instance import DagsterInstance, DagsterInstanceRef, InstanceType
 from dagster._core.launcher.sync_in_memory_run_launcher import SyncInMemoryRunLauncher
 from dagster._core.run_coordinator import DefaultRunCoordinator
 from dagster._core.storage.compute_log_manager import ComputeIOType
@@ -64,7 +64,7 @@ def test_compute_log_manager(
                 compute_log_manager=manager,
                 run_coordinator=DefaultRunCoordinator(),
                 run_launcher=SyncInMemoryRunLauncher(),
-                ref=InstanceRef.from_dir(temp_dir),
+                ref=DagsterInstanceRef.from_dir(temp_dir),
             )
             result = simple.execute_in_process(instance=instance)
             capture_events = [

@@ -6,7 +6,7 @@ import sqlalchemy as db
 import yaml
 from dagster_postgres.utils import get_conn, get_conn_string
 
-from dagster._core.instance import DagsterInstance, InstanceRef
+from dagster._core.instance import DagsterInstance, DagsterInstanceRef
 from dagster._core.test_utils import instance_for_test
 from dagster._utils.test.postgres_instance import TestPostgresInstance
 
@@ -180,7 +180,7 @@ def test_connection_leak(hostname, conn_string):
     for _ in range(num_instances):
         copies.append(
             DagsterInstance.from_ref(
-                InstanceRef.from_dir(
+                DagsterInstanceRef.from_dir(
                     tempdir.name, overrides=yaml.safe_load(full_pg_config(hostname))
                 )
             )

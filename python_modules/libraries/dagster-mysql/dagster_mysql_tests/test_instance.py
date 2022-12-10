@@ -8,7 +8,7 @@ from dagster_mysql import MySQLEventLogStorage, MySQLRunStorage, MySQLScheduleSt
 from dagster_mysql.utils import get_conn
 from sqlalchemy.pool import NullPool
 
-from dagster._core.instance import DagsterInstance, InstanceRef
+from dagster._core.instance import DagsterInstance, DagsterInstanceRef
 from dagster._core.storage.sql import create_engine, get_alembic_config, stamp_alembic_rev
 from dagster._core.test_utils import instance_for_test
 from dagster._utils import file_relative_path
@@ -78,7 +78,7 @@ def test_connection_leak(conn_string):
     for _ in range(num_instances):
         copies.append(
             DagsterInstance.from_ref(
-                InstanceRef.from_dir(
+                DagsterInstanceRef.from_dir(
                     tempdir.name, overrides=yaml.safe_load(full_mysql_config(hostname, port))
                 )
             )

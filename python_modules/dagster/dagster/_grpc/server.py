@@ -2,6 +2,7 @@ import math
 import multiprocessing
 import os
 import queue
+from subprocess import Popen
 import sys
 import threading
 import time
@@ -10,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from multiprocessing.synchronize import Event as MPEvent
 from threading import Event as ThreadingEventType
 from time import sleep
-from typing import Dict, List, Mapping, NamedTuple, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Mapping, NamedTuple, Optional, Sequence, Tuple
 
 import grpc
 from grpc_health.v1 import health, health_pb2, health_pb2_grpc
@@ -27,7 +28,7 @@ from dagster._core.host_representation.external_data import (
     external_repository_data_from_def,
 )
 from dagster._core.host_representation.origin import ExternalRepositoryOrigin
-from dagster._core.instance import DagsterInstance, InstanceRef
+from dagster._core.instance import DagsterInstance, DagsterInstanceRef
 from dagster._core.origin import DEFAULT_DAGSTER_ENTRY_POINT, get_python_environment_entry_point
 from dagster._core.types.loadable_target_origin import LoadableTargetOrigin
 from dagster._serdes import deserialize_as, serialize_dagster_namedtuple, whitelist_for_serdes
@@ -134,11 +135,11 @@ class LoadedRepositories:
             )
 
     @property
-    def loadable_repository_symbols(self):
+    def loadable_repository_symbols(self) -> Sequence[LoadableRepositorySymbol]:
         return self._loadable_repository_symbols
 
     @property
-    def code_pointers_by_repo_name(self):
+    def code_pointers_by_repo_name(self) -> Mapping[str, CodePointer]:
         return self._code_pointers_by_repo_name
 
     @property
@@ -150,7 +151,10 @@ class LoadedRepositories:
         return self._recon_repos_by_name
 
 
-def _get_code_pointer(loadable_target_origin, loadable_repository_symbol):
+def _get_code_pointer(
+    loadable_target_origin: LoadableTargetOrigin,
+    loadable_repository_symbol: LoadableRepositorySymbol,
+) -> CodePointer:
     if loadable_target_origin.python_file:
         return CodePointer.from_python_file(
             loadable_target_origin.python_file,
@@ -163,12 +167,14 @@ def _get_code_pointer(loadable_target_origin, loadable_repository_symbol):
             loadable_repository_symbol.attribute,
             loadable_target_origin.working_directory,
         )
-    else:
+    elif loadable_target_origin.module_name:
         return CodePointer.from_module(
             loadable_target_origin.module_name,
             loadable_repository_symbol.attribute,
             loadable_target_origin.working_directory,
         )
+    else:
+        check.failed("Invalid loadable target origin")
 
 
 class DagsterApiServer(DagsterApiServicer):
@@ -187,7 +193,7 @@ class DagsterApiServer(DagsterApiServicer):
         container_image: Optional[str] = None,
         container_context: Optional[dict] = None,
         inject_env_vars_from_instance: Optional[bool] = False,
-        instance_ref: Optional[InstanceRef] = None,
+        instance_ref: Optional[DagsterInstanceRef] = None,
         location_name: Optional[str] = None,
     ):
         super(DagsterApiServer, self).__init__()
@@ -214,7 +220,7 @@ class DagsterApiServer(DagsterApiServicer):
         # termination event once all current executions have finished, which will stop the server)
         self._shutdown_once_executions_finish_event = threading.Event()
 
-        self._executions: Dict[str, Tuple[multiprocessing.Process, DagsterInstance]] = {}
+        self._executions: Dict[str, Tuple[multiprocessing.Process, DagsterInstanceRef]] = {}
         self._termination_events: Dict[str, MPEvent] = {}
         self._termination_times: Dict[str, float] = {}
         self._execution_lock = threading.Lock()
@@ -269,12 +275,12 @@ class DagsterApiServer(DagsterApiServicer):
 
         self.__cleanup_thread.start()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         if self.__heartbeat_thread:
             self.__heartbeat_thread.join()
         self.__cleanup_thread.join()
 
-    def _heartbeat_thread(self, heartbeat_timeout):
+    def _heartbeat_thread(self, heartbeat_timeout: float) -> None:
         while True:
             self._shutdown_once_executions_finish_event.wait(heartbeat_timeout)
             if self._shutdown_once_executions_finish_event.is_set():
@@ -283,7 +289,7 @@ class DagsterApiServer(DagsterApiServicer):
             if self.__last_heartbeat_time < time.time() - heartbeat_timeout:
                 self._shutdown_once_executions_finish_event.set()
 
-    def _cleanup_thread(self):
+    def _cleanup_thread(self) -> None:
         while True:
             self._server_termination_event.wait(CLEANUP_TICK)
             if self._server_termination_event.is_set():
@@ -291,7 +297,7 @@ class DagsterApiServer(DagsterApiServicer):
 
             self._check_for_orphaned_runs()
 
-    def _check_for_orphaned_runs(self):
+    def _check_for_orphaned_runs(self) -> None:
         with self._execution_lock:
             runs_to_clear = []
             for run_id, (process, instance_ref) in self._executions.items():
@@ -322,7 +328,7 @@ class DagsterApiServer(DagsterApiServicer):
                     self._server_termination_event.set()
 
     # Assumes execution lock is being held
-    def _clear_run(self, run_id):
+    def _clear_run(self, run_id: str) -> None:
         del self._executions[run_id]
         del self._termination_events[run_id]
         if run_id in self._termination_times:
@@ -339,22 +345,22 @@ class DagsterApiServer(DagsterApiServicer):
             )
         return loaded_repos.definitions_by_name[external_repo_origin.repository_name]
 
-    def Ping(self, request, _context):
+    def Ping(self, request, _context) -> api_pb2.PingReply:
         echo = request.echo
         return api_pb2.PingReply(echo=echo)
 
-    def StreamingPing(self, request, _context):
+    def StreamingPing(self, request, _context) -> Iterator[api_pb2.StreamingPingEvent]:
         sequence_length = request.sequence_length
         echo = request.echo
         for sequence_number in range(sequence_length):
             yield api_pb2.StreamingPingEvent(sequence_number=sequence_number, echo=echo)
 
-    def Heartbeat(self, request, _context):
+    def Heartbeat(self, request, _context) -> api_pb2.PingReply:
         self.__last_heartbeat_time = time.time()
         echo = request.echo
         return api_pb2.PingReply(echo=echo)
 
-    def GetServerId(self, _request, _context):
+    def GetServerId(self, _request, _context) -> api_pb2.GetServerIdReply:
         return api_pb2.GetServerIdReply(server_id=self._server_id)
 
     def ExecutionPlanSnapshot(self, request, _context):
@@ -376,7 +382,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ListRepositories(self, request, _context):
+    def ListRepositories(self, request: api_pb2.ListRepositoriesRequest, _context) -> api_pb2.ListRepositoriesReply:
         if self._serializable_load_error:
             return api_pb2.ListRepositoriesReply(
                 serialized_list_repositories_response_or_error=serialize_dagster_namedtuple(
@@ -399,7 +405,7 @@ class DagsterApiServer(DagsterApiServicer):
             serialized_list_repositories_response_or_error=serialize_dagster_namedtuple(response)
         )
 
-    def ExternalPartitionNames(self, request, _context):
+    def ExternalPartitionNames(self, request: api_pb2.ExternalPartitionNamesRequest, _context) -> api_pb2.ExternalPartitionNamesReply:
         partition_names_args = deserialize_as(
             request.serialized_partition_names_args,
             PartitionNamesArgs,
@@ -413,7 +419,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ExternalNotebookData(self, request, _context):
+    def ExternalNotebookData(self, request: api_pb2.ExternalNotebookDataRequest, _context) -> api_pb2.ExternalNotebookDataReply:
         notebook_path = request.notebook_path
         check.str_param(notebook_path, "notebook_path")
         return api_pb2.ExternalNotebookDataReply(content=get_notebook_data(notebook_path))
@@ -447,7 +453,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ExternalPartitionTags(self, request, _context):
+    def ExternalPartitionTags(self, request: api_pb2.ExternalPartitionTagsRequest, _context) -> api_pb2.ExternalPartitionTagsReply:
         partition_args = deserialize_as(request.serialized_partition_args, PartitionArgs)
 
         return api_pb2.ExternalPartitionTagsReply(
@@ -460,7 +466,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def ExternalPipelineSubsetSnapshot(self, request, _context):
+    def ExternalPipelineSubsetSnapshot(self, request: api_pb2.ExternalPipelineSubsetSnapshotRequest, _context) -> api_pb2.ExternalPipelineSubsetSnapshotReply:
         pipeline_subset_snapshot_args = deserialize_as(
             request.serialized_pipeline_subset_snapshot_args,
             PipelineSubsetSnapshotArgs,
@@ -503,7 +509,7 @@ class DagsterApiServer(DagsterApiServicer):
             serialized_external_repository_data=serialized_external_repository_data,
         )
 
-    def ExternalJob(self, request, _context):
+    def ExternalJob(self, request: api_pb2.ExternalJobRequest, _context) -> api_pb2.ExternalJobReply:
         try:
             repository_origin = deserialize_as(
                 request.serialized_repository_origin,
@@ -591,7 +597,7 @@ class DagsterApiServer(DagsterApiServicer):
 
         yield from self._split_serialized_data_into_chunk_events(serialized_sensor_data)
 
-    def ShutdownServer(self, request, _context):
+    def ShutdownServer(self, request, _context) -> api_pb2.ShutdownServerReply:
         try:
             self._shutdown_once_executions_finish_event.set()
             return api_pb2.ShutdownServerReply(
@@ -611,7 +617,7 @@ class DagsterApiServer(DagsterApiServicer):
                 )
             )
 
-    def CancelExecution(self, request, _context):
+    def CancelExecution(self, request: Any, _context):
         success = False
         message = None
         serializable_error_info = None
@@ -639,7 +645,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def CanCancelExecution(self, request, _context):
+    def CanCancelExecution(self, request: Any, _context) -> api_pb2.CancelExecutionReply:
         can_cancel_execution_request = deserialize_as(
             request.serialized_can_cancel_execution_request,
             CanCancelExecutionRequest,
@@ -656,7 +662,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def StartRun(self, request, _context):
+    def StartRun(self, request: api_pb2.StartRunRequest, _context) -> api_pb2.StartRunReply:
         if self._shutdown_once_executions_finish_event.is_set():
             return api_pb2.StartRunReply(
                 serialized_start_run_result=serialize_dagster_namedtuple(
@@ -779,7 +785,7 @@ class DagsterApiServer(DagsterApiServicer):
             )
         )
 
-    def GetCurrentRuns(self, request, context):
+    def GetCurrentRuns(self, request, context) -> api_pb2.GetCurrentRunsReply:
         with self._execution_lock:
             return api_pb2.GetCurrentRunsReply(
                 serialized_current_runs=serialize_dagster_namedtuple(
@@ -867,7 +873,7 @@ class DagsterGrpcServer:
         )
 
         check.opt_bool_param(inject_env_vars_from_instance, "inject_env_vars_from_instance")
-        check.opt_inst_param(instance_ref, "instance_ref", InstanceRef)
+        check.opt_inst_param(instance_ref, "instance_ref", DagsterInstanceRef)
         check.opt_str_param(location_name, "location_name")
 
         self.server = grpc.server(
@@ -1022,7 +1028,7 @@ def wait_for_grpc_server(server_process, client, subprocess_args, timeout=60):
 
 
 def open_server_process(
-    instance_ref: InstanceRef,
+    instance_ref: DagsterInstanceRef,
     port: Optional[int],
     socket: Optional[str],
     location_name: Optional[str] = None,
@@ -1089,7 +1095,7 @@ def open_server_process(
 
 
 def _open_server_process_on_dynamic_port(
-    instance_ref: InstanceRef,
+    instance_ref: DagsterInstanceRef,
     location_name: Optional[str] = None,
     max_retries: int = 10,
     loadable_target_origin: Optional[LoadableTargetOrigin] = None,
@@ -1101,9 +1107,10 @@ def _open_server_process_on_dynamic_port(
     cwd: Optional[str] = None,
     log_level: str = "INFO",
     env: Optional[Dict[str, str]] = None,
-):
+) -> Tuple[Optional[Popen[str]], Optional[int]]:
     server_process = None
     retries = 0
+    port = None
     while server_process is None and retries < max_retries:
         port = find_free_port()
         try:
@@ -1133,7 +1140,7 @@ def _open_server_process_on_dynamic_port(
 class GrpcServerProcess:
     def __init__(
         self,
-        instance_ref: InstanceRef,
+        instance_ref: DagsterInstanceRef,
         location_name: Optional[str] = None,
         loadable_target_origin: Optional[LoadableTargetOrigin] = None,
         force_port: bool = False,
