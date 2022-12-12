@@ -10,6 +10,11 @@ interface ILoadingProps<TData> {
   purpose: 'section' | 'page';
 }
 
+// A list of error HTTP status codes to surface to the user.
+const ERROR_CODES_TO_SURFACE = new Set([
+  504, // Gateway timeout
+]);
+
 const BLANK_LOADING_DELAY_MSEC = 500;
 
 export const Loading = <TData extends Record<string, any>>(props: ILoadingProps<TData>) => {
@@ -41,10 +46,24 @@ export const Loading = <TData extends Record<string, any>>(props: ILoadingProps<
     if (renderError) {
       return <>{renderError(error)}</>;
     }
-    if (!error.networkError) {
+
+    const {networkError} = error;
+    if (!networkError) {
       return (
         <Box padding={64} flex={{justifyContent: 'center'}}>
           <NonIdealState icon="error" title="GraphQL Error - see console for details" />
+        </Box>
+      );
+    }
+
+    if ('statusCode' in networkError && ERROR_CODES_TO_SURFACE.has(networkError.statusCode)) {
+      return (
+        <Box padding={64} flex={{justifyContent: 'center'}}>
+          <NonIdealState
+            icon="error"
+            title="A network error occurred"
+            description="See console for details."
+          />
         </Box>
       );
     }
