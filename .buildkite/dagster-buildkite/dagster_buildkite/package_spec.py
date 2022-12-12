@@ -98,8 +98,6 @@ class PackageSpec:
         timeout_in_minutes (int, optional): Fail after this many minutes.
         queue (BuildkiteQueue, optional): Schedule steps to this queue.
         run_pytest (bool, optional): Whether to run pytest. Enabled by default.
-        run_mypy (bool, optional): Whether to run mypy. Runs in the highest available supported
-            Python version. Enabled by default.
     """
 
     directory: str
@@ -116,7 +114,6 @@ class PackageSpec:
     timeout_in_minutes: Optional[int] = None
     queue: Optional[BuildkiteQueue] = None
     run_pytest: bool = True
-    run_mypy: bool = True
 
     def __post_init__(self):
         if not self.name:
@@ -205,18 +202,6 @@ class PackageSpec:
                             skip_reason=self.skip_reason,
                         )
                     )
-
-        if self.run_mypy:
-            steps.append(
-                build_tox_step(
-                    self.directory,
-                    "mypy",
-                    base_label=base_name,
-                    command_type="mypy",
-                    python_version=supported_python_versions[-1],
-                    skip_reason=self.skip_reason,
-                )
-            )
 
         emoji = _PACKAGE_TYPE_TO_EMOJI_MAP[self.package_type]  # type: ignore[index]
         return [
