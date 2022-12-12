@@ -101,7 +101,6 @@ class Definitions:
         """Get a job definition by name. If you passed in a an UnresolvedAssetJobDefinition
         (return value of define_asset_job) it will be resolved to a JobDefinition when returned
         from this function."""
-
         check.str_param(name, "name")
         return self.get_repository_def().get_job(name)
 

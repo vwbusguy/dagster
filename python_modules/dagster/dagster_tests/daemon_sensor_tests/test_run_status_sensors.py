@@ -6,9 +6,11 @@ from typing import Dict, Generator, NamedTuple
 import pendulum
 import pytest
 
-from dagster import DagsterRunStatus
-from dagster import _check as check
-from dagster import file_relative_path
+from dagster import (
+    DagsterRunStatus,
+    _check as check,
+    file_relative_path,
+)
 from dagster._core.events import DagsterEvent, DagsterEventType
 from dagster._core.events.log import EventLogEntry
 from dagster._core.host_representation import ExternalRepository, RepositoryLocation
