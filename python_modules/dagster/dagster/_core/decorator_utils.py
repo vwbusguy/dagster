@@ -1,6 +1,6 @@
 import textwrap
 from inspect import Parameter, signature
-from typing import Any, Callable, Optional, Sequence, Set, TypeGuard, TypeVar, Union
+from typing import Any, Callable, Optional, Sequence, Set, TypeVar, Union
 
 from typing_extensions import Concatenate, ParamSpec, TypeGuard
 
