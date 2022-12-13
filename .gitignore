@@ -163,3 +163,6 @@ pyrightconfig.json
 
 # Scripts working directory
 scripts/.build
+
+# Created when running `dagster-ge` tests
+.ge_store_backend_id
