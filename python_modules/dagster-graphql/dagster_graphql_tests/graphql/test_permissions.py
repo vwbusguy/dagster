@@ -4,12 +4,18 @@ import pytest
 from dagster_graphql.implementation.utils import (
     UserFacingGraphQLError,
     assert_permission,
+    assert_permission_for_location,
     check_permission,
 )
 from dagster_graphql.test.utils import execute_dagster_graphql
 
 import dagster._check as check
-from dagster._core.workspace.permissions import EDITOR_PERMISSIONS, VIEWER_PERMISSIONS, Permissions
+from dagster._core.workspace.permissions import (
+    EDITOR_PERMISSIONS,
+    VIEWER_PERMISSIONS,
+    Permissions,
+    get_location_scoped_user_permissions,
+)
 
 from .graphql_context_test_suite import NonLaunchableGraphQLContextTestMatrix
 
@@ -19,6 +25,22 @@ PERMISSIONS_QUERY = """
         permission
         value
         disabledReason
+      }
+    }
+"""
+
+WORKSPACE_PERMISSIONS_QUERY = """
+    query WorkspacePermissionsQuery {
+      workspaceOrError {
+        ... on Workspace {
+          locationEntries {
+            permissions {
+              permission
+              value
+              disabledReason
+            }
+          }
+        }
       }
     }
 """
@@ -48,16 +70,24 @@ class FakeEnumPermissionMutation:
         pass
 
 
-class FakeOtherEnumPermisisonMutation:
+class FakeOtherEnumPermissionMutation:
     @check_permission(Permissions.LAUNCH_PIPELINE_REEXECUTION)
     def mutate(self, graphene_info, **_kwargs):
         pass
 
 
-class FakeMissingEnumPermisisonMutation:
+class FakeMissingEnumPermissionMutation:
     @check_permission(Permissions.LAUNCH_PARTITION_BACKFILL)
     def mutate(self, graphene_info, **_kwargs):
         pass
+
+
+class FakeEnumLocationPermissionMutation:
+    def mutate(self, graphene_info, **kwargs):
+        location_name = kwargs["locationName"]
+        assert_permission_for_location(
+            graphene_info, Permissions.LAUNCH_PIPELINE_EXECUTION, location_name
+        )
 
 
 @pytest.fixture(name="fake_graphene_info")
@@ -76,10 +106,24 @@ def fake_graphene_info_fixture():
 
     context.has_permission = Mock(side_effect=fake_has_permission)
 
+    def fake_has_permission_for_location(_permission, location_name):
+        return location_name == "has_location_permission"
+
+    context.has_permission_for_location = Mock(side_effect=fake_has_permission_for_location)
+
     graphene_info = Mock()
     graphene_info.context = context
 
     return graphene_info
+
+
+def test_check_location_mutation(fake_graphene_info):
+    # Fails per-location check
+    mutation = FakeEnumLocationPermissionMutation()
+    mutation.mutate(fake_graphene_info, locationName="has_location_permission")
+
+    with pytest.raises(UserFacingGraphQLError, match="GrapheneUnauthorizedError"):
+        mutation.mutate(fake_graphene_info, locationName="no_location_permission")
 
 
 @pytest.mark.parametrize("mutation", [FakeMutation(), FakeEnumPermissionMutation()])
@@ -88,7 +132,7 @@ def test_check_permission_has_permission(fake_graphene_info, mutation):
 
 
 @pytest.mark.parametrize(
-    "mutation", [FakeOtherPermissionMutation(), FakeOtherEnumPermisisonMutation()]
+    "mutation", [FakeOtherPermissionMutation(), FakeOtherEnumPermissionMutation()]
 )
 def test_check_permission_does_not_have_permission(fake_graphene_info, mutation):
     with pytest.raises(UserFacingGraphQLError, match="GrapheneUnauthorizedError"):
@@ -96,7 +140,7 @@ def test_check_permission_does_not_have_permission(fake_graphene_info, mutation)
 
 
 @pytest.mark.parametrize(
-    "mutation", [FakeMissingPermissionMutation(), FakeMissingEnumPermisisonMutation()]
+    "mutation", [FakeMissingPermissionMutation(), FakeMissingEnumPermissionMutation()]
 )
 def test_check_permission_permission_does_not_exist(fake_graphene_info, mutation):
     with pytest.raises(check.CheckError):
@@ -159,3 +203,25 @@ class TestPermissionsQuery(NonLaunchableGraphQLContextTestMatrix):
                 pass
 
         permission_result.enabled  # pylint: disable=pointless-statement
+
+
+class TestWorkspacePermissionsQuery(NonLaunchableGraphQLContextTestMatrix):
+    def test_workspace_permissions_query(self, graphql_context):
+        result = execute_dagster_graphql(graphql_context, WORKSPACE_PERMISSIONS_QUERY)
+        assert result.data
+
+        assert result.data["workspaceOrError"]["locationEntries"]
+
+        for location in result.data["workspaceOrError"]["locationEntries"]:
+            permissions_map = {
+                permission["permission"]: permission["value"]
+                for permission in location["permissions"]
+            }
+
+            expected_permissions_map = {
+                key: perm.enabled
+                for key, perm in get_location_scoped_user_permissions(
+                    graphql_context.read_only
+                ).items()
+            }
+            assert permissions_map == expected_permissions_map

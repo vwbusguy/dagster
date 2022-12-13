@@ -37,7 +37,11 @@ from dagster._core.instance import DagsterInstance
 from dagster._utils.error import SerializableErrorInfo, serializable_error_info_from_exc_info
 
 from .load_target import WorkspaceLoadTarget
-from .permissions import PermissionResult, get_user_permissions
+from .permissions import (
+    PermissionResult,
+    get_location_scoped_user_permissions,
+    get_user_permissions,
+)
 from .workspace import (
     IWorkspace,
     WorkspaceLocationEntry,
@@ -102,6 +106,18 @@ class BaseWorkspaceRequestContext(IWorkspace):
     @abstractmethod
     def permissions(self) -> Mapping[str, PermissionResult]:
         pass
+
+    @abstractmethod
+    def permissions_for_location(self, location_name: str) -> Mapping[str, PermissionResult]:
+        pass
+
+    def has_permission_for_location(self, permission: str, location_name: str) -> bool:
+        if self.has_repository_location_name(location_name):
+            permissions = self.permissions_for_location(location_name)
+            return permissions[permission].enabled
+
+        # if not in workspace, fall back to the global permissions across all code locations
+        return self.has_permission(permission)
 
     @abstractmethod
     def has_permission(self, permission: str) -> bool:
@@ -319,6 +335,9 @@ class WorkspaceRequestContext(BaseWorkspaceRequestContext):
     def permissions(self) -> Mapping[str, PermissionResult]:
         return get_user_permissions(self._read_only)
 
+    def permissions_for_location(self, location_name: str) -> Mapping[str, PermissionResult]:
+        return get_location_scoped_user_permissions(self._read_only)
+
     def has_permission(self, permission: str) -> bool:
         permissions = self.permissions
         check.invariant(
@@ -497,6 +516,9 @@ class WorkspaceProcessContext(IWorkspaceProcessContext):
     @property
     def permissions(self) -> Mapping[str, PermissionResult]:
         return get_user_permissions(True)
+
+    def permissions_for_location(self, _location_name: str) -> Mapping[str, PermissionResult]:
+        return get_location_scoped_user_permissions(True)
 
     @property
     def version(self) -> str:

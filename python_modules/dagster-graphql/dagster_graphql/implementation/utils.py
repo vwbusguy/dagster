@@ -41,6 +41,14 @@ GrapheneResolverFn: TypeAlias = Callable[..., object]
 T_Callable = TypeVar("T_Callable", bound=Callable)
 
 
+def assert_permission_for_location(graphene_info: ResolveInfo, permission: str, location_name: str):
+    from dagster_graphql.schema.errors import GrapheneUnauthorizedError
+
+    context = cast(BaseWorkspaceRequestContext, graphene_info.context)
+    if not context.has_permission_for_location(permission, location_name):
+        raise UserFacingGraphQLError(GrapheneUnauthorizedError())
+
+
 def check_permission(permission: str) -> Callable[[GrapheneResolverFn], GrapheneResolverFn]:
     def decorator(fn: GrapheneResolverFn) -> GrapheneResolverFn:
         def _fn(

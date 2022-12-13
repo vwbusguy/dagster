@@ -10,8 +10,9 @@ from dagster._core.execution.backfill import (
 )
 from dagster._core.host_representation import RepositorySelector
 from dagster._core.utils import make_new_backfill_id
+from dagster._core.workspace.permissions import Permissions
 
-from ..utils import capture_error
+from ..utils import assert_permission_for_location, capture_error
 
 BACKFILL_CHUNK_SIZE = 25
 
@@ -26,6 +27,11 @@ def create_and_launch_partition_backfill(graphene_info, backfill_params):
     repository_selector = RepositorySelector.from_graphql_input(
         partition_set_selector.get("repositorySelector")
     )
+
+    assert_permission_for_location(
+        graphene_info, Permissions.LAUNCH_PARTITION_BACKFILL, repository_selector.location_name
+    )
+
     location = graphene_info.context.get_repository_location(repository_selector.location_name)
     repository = location.get_repository(repository_selector.repository_name)
     matches = [
@@ -109,6 +115,11 @@ def cancel_partition_backfill(graphene_info, backfill_id):
     if not backfill:
         check.failed(f"No backfill found for id: {backfill_id}")
 
+    location_name = backfill.partition_set_origin.selector.location_name
+    assert_permission_for_location(
+        graphene_info, Permissions.CANCEL_PARTITION_BACKFILL, location_name
+    )
+
     graphene_info.context.instance.update_backfill(backfill.with_status(BulkActionStatus.CANCELED))
     return GrapheneCancelBackfillSuccess(backfill_id=backfill_id)
 
@@ -120,6 +131,11 @@ def resume_partition_backfill(graphene_info, backfill_id):
     backfill = graphene_info.context.instance.get_backfill(backfill_id)
     if not backfill:
         check.failed(f"No backfill found for id: {backfill_id}")
+
+    location_name = backfill.partition_set_origin.selector.location_name
+    assert_permission_for_location(
+        graphene_info, Permissions.LAUNCH_PARTITION_BACKFILL, location_name
+    )
 
     graphene_info.context.instance.update_backfill(backfill.with_status(BulkActionStatus.REQUESTED))
     return GrapheneResumeBackfillSuccess(backfill_id=backfill_id)
