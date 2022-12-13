@@ -83,11 +83,12 @@ filterwarnings = [
 [tool.pyright]
 
 include = [
-  ".buildkite/dagster-buildkite",
-  "python_modules/*",
-  "examples/*",
-  "integration_tests/*",
-  "scripts/*",
+  # ".buildkite/dagster-buildkite",
+  # "python_modules/*",
+  # "examples/*",
+  # "integration_tests/*",
+  # "scripts/*",
+  "python_modules/libraries/dagster-airbyte",
 ]
 
 # Unfortunately pyright does not offer a way to extend the default exclusions, so we have to
@@ -118,6 +119,86 @@ typeCheckingMode = "basic"
 
 # We use ruff for this.
 reportInvalidStringEscapeSequence = false
+
+# echo "{ root = \"$x\", extraPaths = [\"${x}.tox/py39/lib/python3.9/site-packages\"] }"
+
+executionEnvironments = [
+  
+  # buildkite
+  { root = ".buildkite/dagster-buildkite/", extraPaths = [".buildkite/dagster-buildkite/.tox/py39/lib/python3.9/site-packages"] },
+
+  # examples
+  { root = "examples/assets_dbt_python/", extraPaths = ["examples/assets_dbt_python/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/assets_modern_data_stack/", extraPaths = ["examples/assets_modern_data_stack/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/assets_pandas_pyspark/", extraPaths = ["examples/assets_pandas_pyspark/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/assets_pandas_type_metadata/", extraPaths = ["examples/assets_pandas_type_metadata/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/assets_reconciliation/", extraPaths = ["examples/assets_reconciliation/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/assets_smoke_test/", extraPaths = ["examples/assets_smoke_test/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/deploy_docker/", extraPaths = ["examples/deploy_docker/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/deploy_ecs/", extraPaths = ["examples/deploy_ecs/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/deploy_k8s/", extraPaths = ["examples/deploy_k8s/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/development_to_production/", extraPaths = ["examples/development_to_production/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/docs_snippets/", extraPaths = ["examples/docs_snippets/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/feature_graph_backed_assets/", extraPaths = ["examples/feature_graph_backed_assets/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/project_fully_featured/", extraPaths = ["examples/project_fully_featured/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/quickstart_etl/", extraPaths = ["examples/quickstart_etl/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/tutorial_dbt_dagster/", extraPaths = ["examples/tutorial_dbt_dagster/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/tutorial_notebook_assets/", extraPaths = ["examples/tutorial_notebook_assets/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/with_airflow/", extraPaths = ["examples/with_airflow/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/with_great_expectations/", extraPaths = ["examples/with_great_expectations/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/with_pyspark/", extraPaths = ["examples/with_pyspark/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "examples/with_pyspark_emr/", extraPaths = ["examples/with_pyspark_emr/.tox/py39/lib/python3.9/site-packages"] },
+
+  # python_modules
+  { root = "python_modules/automation/", extraPaths = ["python_modules/automation/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/dagit/", extraPaths = ["python_modules/dagit/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/dagster/", extraPaths = ["python_modules/dagster/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/dagster-graphql/", extraPaths = ["python_modules/dagster-graphql/.tox/py39/lib/python3.9/site-packages"] },
+
+  # python_modules/libraries
+  { root = "python_modules/libraries/dagster-airbyte/", extraPaths = ["python_modules/libraries/dagster-airbyte/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-airflow/", extraPaths = ["python_modules/libraries/dagster-airflow/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-aws/", extraPaths = ["python_modules/libraries/dagster-aws/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-azure/", extraPaths = ["python_modules/libraries/dagster-azure/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-celery-docker/", extraPaths = ["python_modules/libraries/dagster-celery-docker/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-celery-k8s/", extraPaths = ["python_modules/libraries/dagster-celery-k8s/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-celery/", extraPaths = ["python_modules/libraries/dagster-celery/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-census/", extraPaths = ["python_modules/libraries/dagster-census/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-dask/", extraPaths = ["python_modules/libraries/dagster-dask/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-databricks/", extraPaths = ["python_modules/libraries/dagster-databricks/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-datadog/", extraPaths = ["python_modules/libraries/dagster-datadog/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-datahub/", extraPaths = ["python_modules/libraries/dagster-datahub/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-dbt/", extraPaths = ["python_modules/libraries/dagster-dbt/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-docker/", extraPaths = ["python_modules/libraries/dagster-docker/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-duckdb-pandas/", extraPaths = ["python_modules/libraries/dagster-duckdb-pandas/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-duckdb-pyspark/", extraPaths = ["python_modules/libraries/dagster-duckdb-pyspark/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-duckdb/", extraPaths = ["python_modules/libraries/dagster-duckdb/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-fivetran/", extraPaths = ["python_modules/libraries/dagster-fivetran/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-gcp/", extraPaths = ["python_modules/libraries/dagster-gcp/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-ge/", extraPaths = ["python_modules/libraries/dagster-ge/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-github/", extraPaths = ["python_modules/libraries/dagster-github/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-k8s/", extraPaths = ["python_modules/libraries/dagster-k8s/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-managed-elements/", extraPaths = ["python_modules/libraries/dagster-managed-elements/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-mlflow/", extraPaths = ["python_modules/libraries/dagster-mlflow/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-msteams/", extraPaths = ["python_modules/libraries/dagster-msteams/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-mysql/", extraPaths = ["python_modules/libraries/dagster-mysql/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-pagerduty/", extraPaths = ["python_modules/libraries/dagster-pagerduty/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-pandas/", extraPaths = ["python_modules/libraries/dagster-pandas/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-pandera/", extraPaths = ["python_modules/libraries/dagster-pandera/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-papertrail/", extraPaths = ["python_modules/libraries/dagster-papertrail/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-postgres/", extraPaths = ["python_modules/libraries/dagster-postgres/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-prometheus/", extraPaths = ["python_modules/libraries/dagster-prometheus/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-pyspark/", extraPaths = ["python_modules/libraries/dagster-pyspark/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-shell/", extraPaths = ["python_modules/libraries/dagster-shell/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-slack/", extraPaths = ["python_modules/libraries/dagster-slack/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-snowflake-pandas/", extraPaths = ["python_modules/libraries/dagster-snowflake-pandas/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-snowflake/", extraPaths = ["python_modules/libraries/dagster-snowflake/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-spark/", extraPaths = ["python_modules/libraries/dagster-spark/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-ssh/", extraPaths = ["python_modules/libraries/dagster-ssh/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagster-twilio/", extraPaths = ["python_modules/libraries/dagster-twilio/.tox/py39/lib/python3.9/site-packages"] },
+  { root = "python_modules/libraries/dagstermill/", extraPaths = ["python_modules/libraries/dagstermill/.tox/py39/lib/python3.9/site-packages"] },
+
+]
 
 # ########################
 # ##### RUFF

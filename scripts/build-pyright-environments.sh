@@ -29,7 +29,7 @@ typeset -a failed
 
 local packages
 if [[ $# -eq 0 ]]; then
-  packages=( $(find . -name tox.ini -exec dirname {} \;) )
+  packages=( $(git ls-files '*/tox.ini' | xargs -n1 dirname) )
 else
   packages=( $@ )
 fi
@@ -38,7 +38,7 @@ for pkg in $packages; do
   local tox_config="$pkg/tox.ini"
   echo "Building tox env for $(dirname $tox_config)..."
   printf -- '=%.0s' {1..80}; printf "\n"
-  tox ${rebuild:+-r} --notest -e $TARGET_PYTHON_VERSION -c $tox_config
+  tox run ${rebuild:+-r} --notest -e $TARGET_PYTHON_VERSION -c $tox_config
   if [[ $? -ne 0 ]]; then
     failed+=($(dirname $tox_config))
   fi

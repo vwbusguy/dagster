@@ -33,6 +33,6 @@ setup(
     ],
     packages=find_packages(exclude=["dagster_ssh_tests*"]),
     install_requires=[f"dagster{pin}", "sshtunnel", "paramiko"],
-    extras_require={"test": ["cryptography==2.6.1", "pytest-sftpserver==1.2.0"]},
+    extras_require={"test": ["cryptography==38.0.4", "pytest-sftpserver==1.2.0"]},
     zip_safe=False,
 )
