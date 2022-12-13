@@ -119,7 +119,7 @@ setup(
             "pytest==7.0.1",  # last version supporting python 3.6
             "responses==0.10.*",
             "snapshottest==0.6.0",
-            "tox==3.25.0",
+            "tox==4.0.8",
             "yamllint",
         ],
         "black": [
