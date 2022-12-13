@@ -48,10 +48,11 @@ def main(quiet: bool, extra_packages: List[str]) -> None:
         "-e python_modules/libraries/dagster-aws[test]",
         "-e python_modules/libraries/dagster-celery",
         "-e python_modules/libraries/dagster-celery-docker",
-        '-e "python_modules/libraries/dagster-dask[yarn,pbs,kube]"',
+        "-e python_modules/libraries/dagster-dask[yarn,pbs,kube]",
         "-e python_modules/libraries/dagster-databricks",
         "-e python_modules/libraries/dagster-datadog",
         "-e python_modules/libraries/dagster-datahub",
+        "-e python_modules/libraries/dagster-dbt",
         "-e python_modules/libraries/dagster-docker",
         "-e python_modules/libraries/dagster-gcp",
         "-e python_modules/libraries/dagster-fivetran",
@@ -92,7 +93,6 @@ def main(quiet: bool, extra_packages: List[str]) -> None:
 
     if sys.version_info > (3, 6) and sys.version_info < (3, 10):
         install_targets += [
-            "-e python_modules/libraries/dagster-dbt",
         ]
 
     # NOTE: `dagster-ge` is out of date and does not support recent versions of great expectations.
