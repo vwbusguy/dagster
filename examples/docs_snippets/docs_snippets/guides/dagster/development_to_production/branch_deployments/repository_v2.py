@@ -38,28 +38,25 @@ resources = {
                 "database": "PRODUCTION",
             }
         ),
-        "snowflake": snowflake_resource.configured(
-            {**snowflake_config, "database": "PRODUCTION"}
-        ),
+        "snowflake": snowflake_resource.configured({**snowflake_config, "database": "PRODUCTION"}),
     },
 }
 # end_resources
 
 
+def is_branch_depl():
+    return bool(os.getenv("DAGSTER_CLOUD_IS_BRANCH_DEPLOYMENT"))
+
+
 def get_current_env():
-    is_branch_depl = os.getenv("DAGSTER_CLOUD_IS_BRANCH_DEPLOYMENT")
-    assert is_branch_depl != None  # env var must be set
-    return "branch" if is_branch_depl else "prod"
+    return "branch" if is_branch_depl() else "prod"
 
 
 # start_repository
-branch_deployment_jobs = [clone_prod.to_job(resource_defs=resources[get_current_env()])]
 defs = Definitions(
     assets=[items, comments, stories],
     resources=resources[get_current_env()],
-    jobs=branch_deployment_jobs
-    if os.getenv("DAGSTER_CLOUD_IS_BRANCH_DEPLOYMENT") == "1"
-    else [],
+    jobs=[clone_prod] if is_branch_depl() else [],
 )
 
 # end_repository
