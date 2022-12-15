@@ -58,6 +58,18 @@ if TYPE_CHECKING:
     from .run_config_schema import RunConfigSchema
 
 
+def get_resource_requirements_for_graph(graph_def, hook_defs=None, asset_layer=None) -> Set[str]:
+    from ..execution.resources_init import get_transitive_required_resource_keys
+
+    requirements = list(graph_def.get_resource_requirements(asset_layer))
+    for hook_def in hook_defs or []:
+        requirements += list(
+            # hook_def.get_resource_requirements(outer_context=f"{self.target_type} '{self._name}'")
+            hook_def.get_resource_requirements()
+        )
+    return {requirement.key for requirement in requirements}
+
+
 class PipelineDefinition:
     """Defines a Dagster pipeline.
 
