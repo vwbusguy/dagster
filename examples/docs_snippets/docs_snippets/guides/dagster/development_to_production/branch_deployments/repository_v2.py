@@ -38,7 +38,9 @@ resources = {
                 "database": "PRODUCTION",
             }
         ),
-        "snowflake": snowflake_resource.configured({**snowflake_config, "database": "PRODUCTION"}),
+        "snowflake": snowflake_resource.configured(
+            {**snowflake_config, "database": "PRODUCTION"}
+        ),
     },
 }
 # end_resources
